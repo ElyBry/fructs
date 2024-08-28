@@ -1,0 +1,60 @@
+// содержит переменные, сбросы, миксины и другие подобные стили
+$primary-color: #08aa8c;
+$secondary-color: #07e6bd;
+$note-color: #8597a3;
+
+$font-weight-base: 500;
+$font-weight-bold: 700;
+$font-size-h1: 38px;
+$font-size-note: 14px;
+$font-size-base: 18px;
+
+$margin-text: 16px;
+$margin-h1: 36px;
+
+$padding: 30px;
+$padding-elements: 15px;
+$border-radius: 30px;
+$border-radius-elements: 20px;
+
+$line-height-base: 1.2;
+$line-height-h1: 0.8;
+
+$invalid-color: rgba(250, 2, 2, 0.6);
+$input-padding: 1.5rem;
+$transition-base: .3s;
+
+// Миксины
+@mixin check-input-field($field) {
+    $color: $primary-color;
+    @if $field == "invalid" {
+        $color: $invalid-color;
+    }
+    outline: 0;
+    border-bottom-color: $color;
+    &+.input-label {
+        color: $color;
+        transform: translateY(-$input-padding);
+    }
+}
+// сброс
+*, *:after, *:before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+a {
+    text-decoration: none;
+    color: $secondary-color;
+}
+// Основа
+body {
+    font-family: "DM Sans", sans-serif;
+    line-height: $line-height-base;
+}

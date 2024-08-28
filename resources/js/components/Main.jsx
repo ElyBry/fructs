@@ -1,0 +1,154 @@
+import React, { Component, useState } from 'react';
+import ReactDOM from 'react-dom/client';
+
+const Main = () => {
+    const [Name, setName] = useState('');
+    const [Email, setEmail] = useState('');
+    const [Password, setPass] = useState('');
+    const [isValid, setIsValid] = useState(true);
+    const handleSubmit = (event, is = "") => {
+        event.preventDefault();
+        if (is === "in") {
+            alert('Вход ' + Name + ' ' + Email + ' ' + Password);
+        } else {
+            alert('Регистрация ' + Name + ' ' + Email + ' ' + Password);
+        }
+    }
+    const handleOnChange = (email) => {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        setIsValid(re.test(email));
+    }
+    const changePanel = () => {
+        const panel = document.querySelector('.panel');
+        const main_sign_in = document.querySelector('#main_sign_in');
+        const main_create_acc = document.querySelector('#main_create_acc');
+        //const sizeWindowWidth = main_sign_in.clientWidth;
+        //const sizeWindowHeight = main_sign_in.clientHeight;
+        //main_create_acc.style.width = sizeWindowWidth;
+        //main_create_acc.style.height = sizeWindowHeight;
+        if (panel.style.transform === 'translateX(150%)') {
+            panel.style.transform =  'translateX(0)';
+            panel.style.borderRadius = '30px 0 0 30px';
+            //.style.opacity = '0';
+            main_sign_in.style.display = 'flex';
+            //main_create_acc.opacity = '1';
+            main_create_acc.style.display = 'none';
+        } else {
+            panel.style.transform =  'translateX(150%)';
+            panel.style.borderRadius = '0 30px 30px 0';
+            main_sign_in.style.display = 'none';
+            main_create_acc.style.display = 'flex';
+        }
+
+    }
+    return  (
+        <div id={"main_div"}>
+            <div id={"logo"}>
+                <img src={"../../image/logos/nocolorlogo.png"}/>
+            </div>
+            <div className={"panel"}></div>
+            <div id={"main_sign_in"}>
+                <div id={"hello"} className={"second_block"}>
+                    <h1>Привет, друг!</h1>
+                    <div className={"note"}>
+                        Необходимо авторизоваться, чтобы продолжить заказ
+                    </div>
+                    <button id={"button_to_sign_up"} onClick={changePanel}>Зарегистрироваться</button>
+                </div>
+                <div id={"sign_in"}>
+                    <h1>Войти</h1>
+                    <div className={"from_acc"}>
+                        <div className={"icons"}>
+                            <a href={"#"}><img src={"../../image/icons/icon-google.png"}/></a>
+                            <a href={"#"}><img src={"../../image/icons/icon-telegram.png"}/></a>
+                            <a href={"#"}><img src={"../../image/icons/icon-vk.png"}/></a>
+                        </div>
+                        <div className={"note"}>
+                            или используйте вашу почту и пароль для входа:
+                        </div>
+                    </div>
+                    <div id={"form_login"}>
+                        <form onSubmit={(e) => handleSubmit(e, "in")}>
+                            <div className={"input"}>
+                                <input type={"email"} value={Email} onBlur={(e) => handleOnChange(e.target.value)}
+                                       onChange={(e) => setEmail(e.target.value)}
+                                       className={`input-field ${isValid ? '' : 'invalid'}`} required={true}/>
+                                <label className={"input-label"}>Почта</label>
+                            </div>
+                            <div className={"input"}>
+                                <input type={"password"} value={Password} onChange={(e) => setPass(e.target.value)}
+                                       className={"input-field"} required={true}/>
+                                <label className={"input-label"}>Пароль</label>
+                            </div>
+                            <div id={"block_button_sign_in"}>
+                                <button className={"button_sign"}>
+                                    Войти в аккаунт
+                                </button>
+                            </div>
+                        </form>
+                        <div className={"note"}>
+                            <button className={"secondary-element"}>Забыли пароль?</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id={"main_create_acc"}>
+                <div id={"create_acc"}>
+                    <h1>Создать аккаунт</h1>
+                    <div className={"from_acc"}>
+                        <div className={"icons"}>
+                            <a href={"#"}><img src={"../../image/icons/icon-google.png"}/></a>
+                            <a href={"#"}><img src={"../../image/icons/icon-telegram.png"}/></a>
+                            <a href={"#"}><img src={"../../image/icons/icon-vk.png"}/></a>
+                        </div>
+                        <div className={"note"}>
+                            или используйте ваш email для регистрации:
+                        </div>
+                    </div>
+                    <div id={"form_registration"}>
+                        <form onSubmit={handleSubmit}>
+                            <div className={"input"}>
+                                <input type={"text"} value={Name} onChange={(e) => setName(e.target.value)}
+                                       className={"input-field"} required={true}/>
+                                <label className={"input-label"}>ФИО</label>
+                            </div>
+                            <div className={"input"}>
+                                <input type={"email"} value={Email} onBlur={(e) => handleOnChange(e.target.value)}
+                                       onChange={(e) => setEmail(e.target.value)}
+                                       className={`input-field ${isValid ? '' : 'invalid'}`} required={true}/>
+                                <label className={"input-label"}>Почта</label>
+                            </div>
+                            <div className={"input"}>
+                                <input type={"password"} value={Password} onChange={(e) => setPass(e.target.value)}
+                                       className={"input-field"} required={true}/>
+                                <label className={"input-label"}>Пароль</label>
+                            </div>
+                            <div id={"block_button_sign_up"}>
+                                <button className={"button_sign"}>
+                                    Зарегистрироваться
+                                </button>
+                            </div>
+                            <div className={"note"}>
+                                Регистрируясь, вы подтверждаете, что согласны с <a href={"#"}>Нашими правилами</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div id={"welcome"} className={"second_block"}>
+                    <h1>Добро пожаловать!</h1>
+                    <div className={"note"}>
+                        Для создания заказа необходимо зарегистрироваться, введя персональные данные
+                    </div>
+                    <button id={"button_to_sign_in"} onClick={changePanel}>Войти</button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
+const rootElement = document.getElementById('root');
+if (rootElement) {
+    const root = ReactDOM.createRoot(rootElement);
+    root.render(<Main/>);
+}
