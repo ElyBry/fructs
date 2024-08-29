@@ -23,6 +23,8 @@ $line-height-h1: 0.8;
 $invalid-color: rgba(250, 2, 2, 0.6);
 $input-padding: 1.5rem;
 $transition-base: .3s;
+$transition-block-move: .35s all linear;
+$transition-block-move-another: .6s all linear;
 
 // Миксины
 @mixin check-input-field($field) {

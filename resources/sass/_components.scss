@@ -1,5 +1,95 @@
 // стили для каждого компонента необходимого для этого проекта, включая кнопки, модальные окна и т.д.
 
+#root {
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(243, 243, 243, 0.1);
+    position: relative;
+    background-image: url('../../public/image/background-images/fruits_veg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+#main_div {
+    display: flex;
+    width: 60%;
+    height: 60%;
+    inset:0;
+    margin: auto;
+    border-radius: $border-radius;
+    position: relative;
+    box-shadow: 2px 2px 10px 0 rgba(#333, 0.2);
+}
+#main_sign_in,
+#main_create_acc{
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: $transition-block-move;
+}
+#main_create_acc {
+    display: none;
+}
+#create_acc {
+    border-radius: $border-radius 0 0 $border-radius ;
+    text-align: center;
+}
+.second_block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: auto;
+    z-index: 20;
+    position: relative;
+    padding: $padding;
+    color: white;
+    width: 40%;
+}
+.second_block h1 {
+    margin-bottom: $margin-h1;
+    @include font-size($font-size-h1);
+}
+#logo {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: absolute;
+    z-index: 100;
+}
+#logo img {
+    width: 45px;
+    position: relative;
+    top: 20px;
+    left: 20px;
+}
+.panel {
+    mask-image: linear-gradient(white, transparent);
+    background-color: $primary-color;
+    height: 100%;
+    width: 40%;
+    position: absolute;
+    z-index: 15;
+    border-radius: $border-radius 0 0 $border-radius;
+    transition: $transition-block-move-another;
+}
+#sign_in h1,#create_acc h1 {
+    margin-bottom: $margin-h1;
+}
+#sign_in,#create_acc {
+    width: 60%;
+    padding: $padding;
+    background-color: white;
+    border-radius: 0 $border-radius $border-radius 0;
+    transition: $transition-block-move;
+}
+
 // Форма ввода
 #form_registration form{
     @include font-size($font-size-base);
@@ -55,27 +145,10 @@
 }
 #button_to_sign_up,#button_to_sign_in {
     border: 1px solid white;
-    width: 60%;
     text-align: center;
     background-color: transparent;
 }
-.second_block {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    margin: auto;
-    z-index: 20;
-    position: relative;
-    padding: $padding;
-    color: white;
-    width: 40%;
-}
-.second_block h1 {
-    margin-bottom: $margin-h1;
-    @include font-size($font-size-h1);
-}
+
 .secondary-element {
     margin-top: $margin-text;
 }
@@ -105,73 +178,4 @@
     align-items: center;
     margin-bottom: $margin-text;
 }
-#main_div {
-    display: flex;
-    width: 60%;
-    height: 60%;
-    inset:0;
-    margin: auto;
-    border-radius: $border-radius;
-    position: relative;
-    box-shadow: 2px 2px 10px 0 rgba(#333, 0.2);
-}
-#main_sign_in,
-#main_create_acc{
-    display: flex;
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-#main_create_acc {
-    display: none;
-}
-#sign_in h1 {
-    margin-bottom: $margin-h1;
-}
-#sign_in,#create_acc {
-    width: 60%;
-    padding: $padding;
-    background-color: white;
-    border-radius: 0 $border-radius $border-radius 0 ;
-}
-#create_acc {
-    border-radius: $border-radius 0 0 $border-radius ;
-    text-align: center;
-}
-#root {
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(243, 243, 243, 0.1);
-    position: relative;
-    background-image: url('../../public/image/background-images/fruits_veg.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-#logo {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    position: absolute;
-    z-index: 100;
-}
-#logo img {
-    width: 45px;
-    position: relative;
-    top: 20px;
-    left: 20px;
-}
-.panel {
-    mask-image: linear-gradient(white, transparent);
-    background-color: $primary-color;
-    height: 100%;
-    width: 40%;
-    position: absolute;
-    z-index: 15;
-    border-radius: $border-radius 0 0 $border-radius;
-    transition: 1.7s all ease;
-}
+

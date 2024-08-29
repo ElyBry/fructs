@@ -6,12 +6,39 @@ const Main = () => {
     const [Email, setEmail] = useState('');
     const [Password, setPass] = useState('');
     const [isValid, setIsValid] = useState(true);
+    const [isDisabled, setIsDisabled] = useState(false);
+
     const handleSubmit = (event, is = "") => {
         event.preventDefault();
         if (is === "in") {
-            alert('Вход ' + Name + ' ' + Email + ' ' + Password);
+            fetch(`http://localhost:8000/api/auth/login`, {
+                method: 'POST',
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                }),
+                body: JSON.stringify({
+                    email: Email,
+                    password: Password
+                })
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error));
         } else {
-            alert('Регистрация ' + Name + ' ' + Email + ' ' + Password);
+            fetch(`http://localhost:8000/api/auth/register`, {
+                method: 'POST',
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                }),
+                body: JSON.stringify({
+                    name: Name,
+                    email: Email,
+                    password: Password
+                })
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error));
         }
     }
     const handleOnChange = (email) => {
@@ -19,27 +46,46 @@ const Main = () => {
         setIsValid(re.test(email));
     }
     const changePanel = () => {
+        if (isDisabled) return;
+        setIsDisabled(true);
         const panel = document.querySelector('.panel');
         const main_sign_in = document.querySelector('#main_sign_in');
         const main_create_acc = document.querySelector('#main_create_acc');
-        //const sizeWindowWidth = main_sign_in.clientWidth;
-        //const sizeWindowHeight = main_sign_in.clientHeight;
-        //main_create_acc.style.width = sizeWindowWidth;
-        //main_create_acc.style.height = sizeWindowHeight;
+        const sign_in = document.querySelector('#sign_in');
+        const create_acc = document.querySelector('#create_acc');
         if (panel.style.transform === 'translateX(150%)') {
-            panel.style.transform =  'translateX(0)';
+            panel.style.transform = 'translateX(0%)';
+            panel.style.transformOrigin = 'right';
+            panel.style.transform += 'scaleX(2.4)';
+            sign_in.style.transform = 'translateX(0%)';
+            create_acc.style.transform = 'translateX(67%)';
             panel.style.borderRadius = '30px 0 0 30px';
-            //.style.opacity = '0';
-            main_sign_in.style.display = 'flex';
-            //main_create_acc.opacity = '1';
-            main_create_acc.style.display = 'none';
+            setTimeout(() => {
+                main_sign_in.style.display = 'flex';
+                main_create_acc.style.display = 'none';
+            }, 345);
+            setTimeout(() => {
+                panel.style.transform =  'translateX(0%)';
+            },250);
         } else {
             panel.style.transform =  'translateX(150%)';
+            panel.style.transform += 'scaleX(2.4)';
+            panel.style.transformOrigin = 'left';
+            sign_in.style.transform = 'translateX(-67%)';
+            create_acc.style.transform = 'translateX(0%)';
+            create_acc.style.borderRadius = '30px 0 0 30px';
             panel.style.borderRadius = '0 30px 30px 0';
-            main_sign_in.style.display = 'none';
-            main_create_acc.style.display = 'flex';
+            setTimeout(() => {
+                main_create_acc.style.display = 'flex';
+                main_sign_in.style.display = 'none';
+            }, 345);
+            setTimeout(() => {
+                panel.style.transform =  'translateX(150%)';
+            },250)
         }
-
+        setTimeout(() => {
+            setIsDisabled(false);
+        }, 600)
     }
     return  (
         <div id={"main_div"}>
