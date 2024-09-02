@@ -19,14 +19,19 @@ Route::group([
     Route::put('products/{product}',[ProductsController::class, 'update']);
     Route::delete('products/{product}', [ProductsController::class, 'delete']);
 });
+Route::group([
+    'withoutMiddleware' => 'auth:api',
+    'prefix' => 'api/auth'
+], function ($router) {
+    Route::post('register', [AuthController::class, 'register'])->withoutMiddleware('auth:api');
+    Route::post('login', [AuthController::class, 'login'])->withoutMiddleware('auth:api');
+});
 
-Route::post('api/auth/register', [AuthController::class, 'register'])->withoutMiddleware('auth:api');
-Route::post('api/auth/login', [AuthController::class, 'login'])->withoutMiddleware('auth:api');
 Route::group([
     'middleware' => 'auth:api',
     'prefix' => 'api/auth'
 ], function ($router) {
-    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
+    Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::post('/profile', [AuthController::class, 'profile']);
 });

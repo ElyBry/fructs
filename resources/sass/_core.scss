@@ -1,6 +1,6 @@
 // содержит переменные, сбросы, миксины и другие подобные стили
-$primary-color: #08aa8c;
-$secondary-color: #07e6bd;
+$primary-color: #ff9a00;
+$secondary-color: #e4b47d;
 $note-color: #8597a3;
 
 $font-weight-base: 500;
@@ -11,16 +11,21 @@ $font-size-base: 18px;
 
 $margin-text: 16px;
 $margin-h1: 36px;
+$margin-top-block: 15%;
+$margin-header: 7%;
 
+$padding-page: 55px;
 $padding: 30px;
+$padding-headers: 10px;
 $padding-elements: 15px;
+
 $border-radius: 30px;
 $border-radius-elements: 20px;
 
 $line-height-base: 1.2;
 $line-height-h1: 0.8;
 
-$invalid-color: rgba(250, 2, 2, 0.6);
+$invalid-color: red;
 $input-padding: 1.5rem;
 $transition-base: .3s;
 $transition-block-move: .35s all linear;
@@ -45,6 +50,19 @@ $transition-block-move-another: .6s all linear;
     margin: 0;
     padding: 0;
 }
+#root {
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(243, 243, 243, 0.1);
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 button {
     background: none;
     border: none;
@@ -59,4 +77,17 @@ a {
 body {
     font-family: "DM Sans", sans-serif;
     line-height: $line-height-base;
+}
+.highlight {
+    color: $primary-color;
+}
+.content {
+    padding: 0 $padding-page;
+    width: 100%;
+}
+h1 {
+    font-size: $font-size-h1;
+}
+h2 {
+    margin-top: $margin-text;
 }

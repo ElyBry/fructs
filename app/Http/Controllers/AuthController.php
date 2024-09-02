@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends BaseController
 {
+    protected function respondWithToken($token)
+    {
+        return cookie('token', $token, auth()->factory()->getTTL() * 60,null,null,true,true);
+    }
     public function register(Request $request) {
 
         $validator = Validator::make($request->all(), [
@@ -33,13 +37,12 @@ class AuthController extends BaseController
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
-            return $this->sendError('Ошибка.', ['error'=>'Неверно введён пароль или email']);
+            return $this->sendError('Ошибка.', ['error'=>'Неверно введён пароль или email'], 400);
         }
 
-        $success = $this->respondWithToken($token);
-
-        return $this->sendResponse($success, 'Пользователь успешно авторизован');
-
+        $success['user'] = auth()->user();
+        $cookie = $this->respondWithToken($token);
+        return $this->sendResponse($success, 'Пользователь успешно авторизован.')->withCookie($cookie);
     }
 
     /**
@@ -51,7 +54,7 @@ class AuthController extends BaseController
     {
         $success = auth()->user();
 
-        return $this->sendResponse($success, 'Refresh token return successfully.');
+        return $this->sendResponse($success, 'Профиль пользователя успешно получен');
     }
 
     /**
@@ -66,25 +69,14 @@ class AuthController extends BaseController
         return $this->sendResponse([], 'Successfully logged out.');
     }
 
-    /**
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function refresh()
     {
-        $success = $this->respondWithToken(auth()->refresh());
+        $cookie = $this->respondWithToken(auth()->refresh());
 
-        return $this->sendResponse($success, 'Refresh token return successfully.');
+        return $this->sendResponse('', 'Обновлённый токен успешно передан.')->withCookie($cookie);
     }
 
 
-    protected function respondWithToken($token)
-    {
-        return ([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ]);
-    }
+
 }

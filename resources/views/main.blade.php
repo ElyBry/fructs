@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Продукты</title>
     @viteReactRefresh
-    @vite(['resources/sass/_componentsForSignInUp.scss', 'resources/js/app.js'])
+    @vite(['resources/sass/_componentsForMain.scss', 'resources/js/Main.tsx'])
 </head>
-<body class="antialiased">
-<div id="root">
-</div>
-</body>
+<body class="antialiased"><div id="root"></div></body>
 </html>

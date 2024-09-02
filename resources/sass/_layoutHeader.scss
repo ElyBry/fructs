@@ -1,16 +1,25 @@
 // содержит стили для хедера и футера, сетки и т.д
-
 header {
-    display: grid;
     width: 100%;
-    grid-template-columns: 30% 60%;
-    justify-content: center;
+    display: flex;
+    white-space: nowrap;
     align-items: center;
+    justify-content: space-between;
     margin-top: $margin-h1;
+    &:hover {
+        #bg {
+
+        }
+    }
 }
 #logo {
     position: relative;
-    margin-right: $margin-header;
+    cursor: pointer;
+    padding: $padding-headers;
+    display: flex;
+    gap: $margin-h1;
+    align-items: center;
+    font-size: $font-size-h1;
 }
 #logo img {
     position: relative;
@@ -18,10 +27,19 @@ header {
 }
 #hHead {
     display: flex;
-    white-space: nowrap;
+    gap: $margin-h1;
 }
-.hSection:not(:last-child) {
-    margin-right: $margin-header;
+.hSection {
+    &:hover {
+        box-shadow: none;
+        border: 1px solid transparent;
+    }
+    transition: .7s box-shadow ease;
+    cursor: pointer;
+    border: 1px solid rgba(#333, 0.2);
+    padding: $padding-headers;
+    border-radius: $border-radius-elements;
+    box-shadow: 2px 2px 10px 0 rgba(#333, 0.2);
 }
 #burger {
     display: none;

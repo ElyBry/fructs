@@ -1,5 +1,6 @@
-import React, { Component, useState } from 'react';
-import ReactDOM from 'react-dom/client';
+import * as React from 'react';
+import { Component, useState } from 'react';
+import * as ReactDOM from 'react-dom/client';
 
 const SignInUp = () => {
     const [Name, setName] = useState('');
@@ -7,9 +8,11 @@ const SignInUp = () => {
     const [Password, setPass] = useState('');
     const [isValid, setIsValid] = useState(true);
     const [isDisabled, setIsDisabled] = useState(false);
-
+    const errorOut:HTMLInputElement = document.querySelector('#errors');
+    const errorEmail:HTMLInputElement = document.querySelector('#errorEmail');
     const handleSubmit = (event, is = "") => {
         event.preventDefault();
+        if (!isValid) return;
         const url = is === "in" ? 'http://localhost:8000/api/auth/login' : 'http://localhost:8000/api/auth/register';
         const body = is === "in" ? {
             email: Email,
@@ -26,31 +29,31 @@ const SignInUp = () => {
                 'Content-Type': 'application/json',
             }),
             body: JSON.stringify(body),
-            credentials: 'include' // Обязательно добавьте этот параметр
+            credentials: 'include'
         })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Плохое подключение к сети');
+                if (response.status === 400) {
+                    errorOut.textContent = 'Неверно введены данные для авторизации';
+                    throw new Error('Неверно введены данные для авторизации');
                 }
-                return response.json();
             })
             .then(data => {
                 console.log(data);
             })
             .catch(error => console.error(error));
     }
-    const handleOnChange = (email) => {
+    const handleOnChangeEmail = (email) => {
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         setIsValid(re.test(email));
     }
     const changePanel = () => {
         if (isDisabled) return;
         setIsDisabled(true);
-        const panel = document.querySelector('.panel');
-        const main_sign_in = document.querySelector('#main_sign_in');
-        const main_create_acc = document.querySelector('#main_create_acc');
-        const sign_in = document.querySelector('#sign_in');
-        const create_acc = document.querySelector('#create_acc');
+        const panel:HTMLElement = document.querySelector('.panel');
+        const main_sign_in:HTMLElement = document.querySelector('#main_sign_in');
+        const main_create_acc:HTMLElement = document.querySelector('#main_create_acc');
+        const sign_in:HTMLElement = document.querySelector('#sign_in');
+        const create_acc:HTMLElement = document.querySelector('#create_acc');
         if (panel.style.transform === 'translateX(150%)') {
             panel.style.transform = 'translateX(0%)';
             panel.style.transformOrigin = 'right';
@@ -114,7 +117,7 @@ const SignInUp = () => {
                     <div id={"form_login"}>
                         <form onSubmit={(e) => handleSubmit(e, "in")}>
                             <div className={"input"}>
-                                <input type={"email"} value={Email} onBlur={(e) => handleOnChange(e.target.value)}
+                                <input type={"email"} value={Email} onBlur={(e) => handleOnChangeEmail(e.target.value)}
                                        onChange={(e) => setEmail(e.target.value)}
                                        className={`input-field ${isValid ? '' : 'invalid'}`} required={true}/>
                                 <label className={"input-label"}>Почта</label>
@@ -124,6 +127,7 @@ const SignInUp = () => {
                                        className={"input-field"} required={true}/>
                                 <label className={"input-label"}>Пароль</label>
                             </div>
+                            <div id={"errors"}>{isValid ? '' : 'Неверно введена почта'}</div>
                             <div id={"block_button_sign_in"}>
                                 <button className={"button_sign"}>
                                     Войти в аккаунт
@@ -157,11 +161,12 @@ const SignInUp = () => {
                                 <label className={"input-label"}>ФИО</label>
                             </div>
                             <div className={"input"}>
-                                <input type={"email"} value={Email} onBlur={(e) => handleOnChange(e.target.value)}
+                                <input type={"email"} value={Email} onBlur={(e) => handleOnChangeEmail(e.target.value)}
                                        onChange={(e) => setEmail(e.target.value)}
                                        className={`input-field ${isValid ? '' : 'invalid'}`} required={true}/>
                                 <label className={"input-label"}>Почта</label>
                             </div>
+                            <div id={"errorEmail"}>{isValid ? '' : 'Неверно введена почта'}</div>
                             <div className={"input"}>
                                 <input type={"password"} value={Password} onChange={(e) => setPass(e.target.value)}
                                        className={"input-field"} required={true}/>

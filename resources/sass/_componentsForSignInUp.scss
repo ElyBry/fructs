@@ -1,5 +1,5 @@
 // стили для каждого компонента необходимого для этого проекта, включая кнопки, модальные окна и т.д.
-
+@import "app";
 #root {
     inset: 0;
     width: 100vw;
@@ -79,10 +79,12 @@
     border-radius: $border-radius 0 0 $border-radius;
     transition: $transition-block-move-another;
 }
-#sign_in h1,#create_acc h1 {
+#sign_in h1,
+#create_acc h1 {
     margin-bottom: $margin-h1;
 }
-#sign_in,#create_acc {
+#sign_in,
+#create_acc {
     width: 60%;
     padding: $padding;
     background-color: white;
@@ -120,7 +122,8 @@
     font: inherit;
     @include font-size($font-size-base);
     padding: .25rem 5px;
-    &:focus, &:valid {
+    &:focus,
+    &:valid:not(.invalid) {
         @include check-input-field("focus")
     }
 
@@ -128,7 +131,9 @@
 .invalid {
     @include check-input-field("invalid")
 }
-.button_sign,#button_to_sign_up,#button_to_sign_in {
+.button_sign,
+#button_to_sign_up,
+#button_to_sign_in {
     border-radius: $border-radius-elements;
     background-color: $primary-color;
     color: white;
@@ -143,7 +148,8 @@
 #block_button_sign_up {
     margin-bottom: $margin-text;
 }
-#button_to_sign_up,#button_to_sign_in {
+#button_to_sign_up,
+#button_to_sign_in {
     border: 1px solid white;
     text-align: center;
     background-color: transparent;
@@ -178,4 +184,9 @@
     align-items: center;
     margin-bottom: $margin-text;
 }
-
+#errors,
+#errorEmail {
+    text-align: center;
+    margin-top: $margin-text;
+    color: $invalid-color;
+}
