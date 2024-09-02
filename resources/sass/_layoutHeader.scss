@@ -1,0 +1,31 @@
+// содержит стили для хедера и футера, сетки и т.д
+
+header {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 30% 60%;
+    justify-content: center;
+    align-items: center;
+    margin-top: $margin-h1;
+}
+#logo {
+    position: relative;
+    margin-right: $margin-header;
+}
+#logo img {
+    position: relative;
+    width: 45px;
+}
+#hHead {
+    display: flex;
+    white-space: nowrap;
+}
+.hSection:not(:last-child) {
+    margin-right: $margin-header;
+}
+#burger {
+    display: none;
+}
+#burger img {
+
+}
