@@ -5,7 +5,7 @@ import Header from "./components/_header.js";
 const Main: React.FC = () => {
     return (
         <>
-            <div id={"bg"}>
+            <div className={"background"} id={"bgTarget"}>
                 <div className={"content"}>
                     <Header/>
                     <div className={"block"} id={"targetBlock"}>
@@ -15,22 +15,28 @@ const Main: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div className={"block"} id={"infoBlock"}>
+            <div className={"background"} id={"bgInfo"}>
                 <div className={"content"}>
-                    <div className={"infoText"}>
-                        <h3>Совершено более</h3>
-                        <h2>100 заказов</h2>
-                    </div>
-                    <div className={"infoText"}>
-                        <h3>Около </h3>
-                        <h2>30 постоянных клиентов</h2>
-                    </div>
-                    <div className={"infoText"}>
-                        <h3>Работаем для вас</h3>
-                        <h2>Более 8 лет</h2>
+                    <div className={"block"} id={"infoBlock"}>
+                        <div className={"infoText"}>
+                            <img src={"../image/icons/elements/basket.svg"} alt={"Заказы"}/>
+                            <h3>Совершено более</h3>
+                            <h2>1000 доставок</h2>
+                        </div>
+                        <div className={"infoText"}>
+                            <img src={"../image/icons/elements/icon _people_.png"} alt={"Клиенты"}/>
+                            <h3>Около </h3>
+                            <h2>30 постоянных клиентов</h2>
+                        </div>
+                        <div className={"infoText"}>
+                            <img src={"../image/icons/elements/icon _clock_.png"} alt={"Лет"}/>
+                            <h3>Работаем для вас</h3>
+                            <h2>Более 8 лет</h2>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div className={"block"} id={"guaranteeBlock"}>
                 <div className={"content"}>
                     <h1>Гарантии:</h1>
@@ -60,6 +66,28 @@ const Main: React.FC = () => {
                     </div>
                 </div>
             </div>
+            <div className={"block"} id={"superiorityBlock"}>
+                <div className={"superiorityText"}>
+                    <h2>Удобный интерфейс для доставки</h2>
+                    <h2>Быстрая доставка</h2>
+                    <h2>Выбираем удобное для вас время</h2>
+                    <h2>Доступные цены и прозрачность</h2>
+                    <h2>Возможность выбрать продукт самостоятельно</h2>
+                </div>
+            </div>
+            <div className={"block"} id={"bestBlock"}>
+                <h1>Только у нас <span className={"highlight"}>сладкие </span>и <span className={"highlight"}>насыщенные</span> фрукты и овощи в нелетнее время</h1>
+            </div>
+            <div className={"block"} id={"workBlock"}>
+
+            </div>
+            <div className={"block"} id={"faqBlock"}>
+
+            </div>
+            <div className={"block"} id={"feedbackBlock"}>
+
+            </div>
+
             <Footer/>
         </>
     )

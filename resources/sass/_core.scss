@@ -1,6 +1,7 @@
 // содержит переменные, сбросы, миксины и другие подобные стили
 $primary-color: #ff9a00;
 $secondary-color: #e4b47d;
+$third-color: #ffdc00;
 $note-color: #8597a3;
 
 $font-weight-base: 500;
@@ -90,4 +91,21 @@ h1 {
 }
 h2 {
     margin-top: $margin-text;
+}
+.background {
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+.block {
+    margin-top: $margin-top-block;
+}
+#oneWidth {
+    max-width: 1600px;
+    width: 100%;
+    padding: 0 $padding-page;
 }

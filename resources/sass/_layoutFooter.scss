@@ -1,44 +1,32 @@
 // содержит стили для хедера и футера, сетки и т.д
-header {
+#bgFooter {
+    width: 100%;
+    background-color: $secondary-color;
+}
+footer {
+    margin: calc($margin-top-block / 8) 0 calc($margin-top-block / 2);
     width: 100%;
     display: flex;
-    white-space: nowrap;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: $margin-h1;
-}
-#logo {
-    position: relative;
-    cursor: pointer;
-    padding: $padding-headers;
-    display: flex;
-    gap: $margin-h1;
-    align-items: center;
-    font-size: $font-size-h1;
-}
-#logo img {
-    position: relative;
-    width: 45px;
-}
-#hHead {
-    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: $margin-h1;
 }
-.hSection {
-    transition: .7s box-shadow ease;
-    cursor: pointer;
-    border: 1px solid rgba(#333, 0.2);
-    padding: $padding-headers;
-    border-radius: $border-radius-elements;
-    box-shadow: 2px 2px 10px 0 rgba(#333, 0.2);
-    &:hover {
-        box-shadow: none;
-        border: 1px solid transparent;
-    }
+footer div {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    gap: $margin-text;
 }
-#burger {
-    display: none;
+footer div h2 {
+    margin-top: 0;
 }
-#burger img {
+footer div a {
+    color: black;
+    display: block;
+}
+footer div p {
 
 }
