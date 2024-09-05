@@ -109,3 +109,21 @@ h2 {
     width: 100%;
     padding: 0 $padding-page;
 }
+.dot {
+    display: flex;
+    background-color: transparent;
+    border: 2px solid $primary-color;
+    padding: 6px;
+    width: 3px;
+    border-radius: 50%;
+    &:not(.active) {
+        padding: 4px;
+        border: 2px solid black;
+    }
+}
+.dotsLayout {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+}

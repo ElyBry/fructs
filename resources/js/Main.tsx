@@ -3,6 +3,28 @@ import * as ReactDOM from 'react-dom/client';
 import Footer from "./components/_footer.js";
 import Header from "./components/_header.js";
 const Main: React.FC = () => {
+
+    let index = 0;
+    const arrowAction = (side : string) => {
+        const guarantee:HTMLCollection = document.getElementsByClassName("guaranteeText");
+        const countGuarantee:number = guarantee.length;
+        const dots = document.getElementsByClassName("dot");
+        if (side == "right") {
+            guarantee[index].className = "guaranteeText";
+            dots[index].className = "dot";
+            index += 1;
+            if (index == countGuarantee) index = 0;
+            guarantee[index].className += " active";
+            dots[index].className += " active";
+        } else {
+            guarantee[index].className = "guaranteeText";
+            dots[index].className = "dot";
+            index -= 1;
+            if (index < 0) index = countGuarantee - 1;
+            guarantee[index].className += " active";
+            dots[index].className += " active";
+        }
+    }
     return (
         <>
             <div className={"background"} id={"bgTarget"}>
@@ -39,29 +61,48 @@ const Main: React.FC = () => {
             <div className={"block"} id={"guaranteeBlock"}>
                 <div className={"content"}>
                     <h1>Гарантии:</h1>
-                    <div className={"guaranteeText"}>
-                        <h2>Гарантия качества</h2>
-                        <h3>Мы гарантируем, что все овощи и фрукты, которые вы покупаете у нас, являются свежими
-                            и
-                            высокого качества. Мы работаем только с проверенными поставщиками и фермерами.</h3>
-                    </div>
-                    <div className={"guaranteeText"}>
-                        <h2>Гарантия возврата</h2>
-                        <h3> Если вы получили поврежденный или недоброкачественный продукт, сообщите нам в
-                            течение
-                            24 часов, и мы без проблем организуем возврат или обмен.</h3>
-                    </div>
-                    <div className={"guaranteeText"}>
-                        <h2>Гарантия доставки</h2>
-                        <h3>Мы стремимся доставлять ваш заказ в оговоренные сроки. Если по какой-то причине ваш
-                            заказ не был доставлен в срок, сообщите нам, и мы предложим вам компенсацию или
-                            сюрприз
-                            в следующем заказе!</h3>
-                    </div>
-                    <div className={"guaranteeText"}>
-                        <h2>Прозрачность</h2>
-                        <h3>Мы предоставляем полную информацию о каждом продукте, включая его происхождение и
-                            состав, чтобы вы могли делать осознанный выбор.</h3>
+                    <div className={"guarantees"}>
+                        <div className={"sliderLayout"}>
+                            <div className={"dotsLayout"}>
+                                <span className={"dot active"}></span>
+                                <span className={"dot"}></span>
+                                <span className={"dot"}></span>
+                                <span className={"dot"}></span>
+                            </div>
+                            <div className={"arrows"}>
+                                <button className={"icons"} id={"leftArrow"} onClick={(e) => arrowAction("left")}><span
+                                    className="material-symbols-outlined">arrow_back_ios</span></button>
+                                <button className={"icons"} id={"rightArrow"}
+                                        onClick={(e) => arrowAction("right")}><span
+                                    className="material-symbols-outlined">arrow_forward_ios</span></button>
+                            </div>
+                        </div>
+                        <div className={"slider"}>
+                            <div className={"guaranteeText active"}>
+                                <h2>Качество</h2>
+                                <h3>Мы гарантируем, что все овощи и фрукты, которые вы покупаете у нас, являются свежими
+                                    и
+                                    высокого качества. Мы работаем только с проверенными поставщиками и фермерами.</h3>
+                            </div>
+                            <div className={"guaranteeText"}>
+                                <h2>Возврат</h2>
+                                <h3> Если вы получили поврежденный или недоброкачественный продукт, сообщите нам в
+                                    течение
+                                    24 часов, и мы без проблем организуем возврат или обмен.</h3>
+                            </div>
+                            <div className={"guaranteeText"}>
+                                <h2>Доставка</h2>
+                                <h3>Мы стремимся доставлять ваш заказ в оговоренные сроки. Если по какой-то причине ваш
+                                    заказ не был доставлен в срок, сообщите нам, и мы предложим вам компенсацию или
+                                    сюрприз
+                                    в следующем заказе!</h3>
+                            </div>
+                            <div className={"guaranteeText"}>
+                                <h2>Прозрачность</h2>
+                                <h3>Мы предоставляем полную информацию о каждом продукте, включая его происхождение и
+                                    состав, чтобы вы могли делать осознанный выбор.</h3>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
