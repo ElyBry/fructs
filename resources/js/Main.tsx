@@ -28,60 +28,57 @@ const Main: React.FC = () => {
     return (
         <>
             <div className={"parallax"} id={"target"}>
-                <div className={"parallaxGroup"}>
-                    <div className={"parallaxLayer parallaxImage parallaxLayer-deep"} id={"bgTarget"}>
+                <div className={"parallaxLayer parallaxImage parallaxLayer-deep"} id={"bgTarget"}>
+                </div>
+                <div className={"parallaxLayer parallaxImage parallaxLayer-base"} id={"bgTargetS"}>
+                </div>
+                <div className={"parallaxLayer content parallaxLayer-fore"}>
+                    <Header/>
+                    <div className={"block"} id={"targetBlock"}>
+                        <h1>Сочные овощи и фрукты - прямо от природы к вашему столу!</h1>
+                        <h2>Свежесть, качество и удобство доставки по <span
+                            className={"highlight"}>Екатеринбургу</span></h2>
                     </div>
-                    <div className={"parallaxLayer parallaxImage parallaxLayer-base"} id={"bgTargetS"}>
-                    </div>
-                    <div className={"parallaxLayer content parallaxLayer-fore"}>
-                        <Header/>
-                        <div className={"block"} id={"targetBlock"}>
-                            <h1>Сочные овощи и фрукты - прямо от природы к вашему столу!</h1>
-                            <h2>Свежесть, качество и удобство доставки по <span
-                                className={"highlight"}>Екатеринбургу</span></h2>
+                </div>
+                <div className={"background"} id={"stats"}>
+                    <div className={"content"}>
+                        <div className={"block"} id={"statsBlock"}>
+                            <div className={"statsText"}>
+                                <img src={"../image/icons/elements/basket.svg"} alt={"Заказы"}/>
+                                <h3>Совершено более</h3>
+                                <h2>1000 доставок</h2>
+                            </div>
+                            <div className={"statsText"}>
+                                <img src={"../image/icons/elements/clients.svg"} alt={"Клиенты"}/>
+                                <h3>Около </h3>
+                                <h2>30 постоянных клиентов</h2>
+                            </div>
+                            <div className={"statsText"}>
+                                <img src={"../image/icons/elements/clock.svg"} alt={"Лет"}/>
+                                <h3>Работаем для вас</h3>
+                                <h2>Более 8 лет</h2>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-            <div className={"background"} id={"stats"}>
+            <div className={"block"} id={"guaranteeBlock"}>
                 <div className={"content"}>
-                    <div className={"block"} id={"statsBlock"}>
-                        <div className={"statsText"}>
-                            <img src={"../image/icons/elements/basket.svg"} alt={"Заказы"}/>
-                            <h3>Совершено более</h3>
-                            <h2>1000 доставок</h2>
-                        </div>
-                        <div className={"statsText"}>
-                            <img src={"../image/icons/elements/clients.svg"} alt={"Клиенты"}/>
-                            <h3>Около </h3>
-                            <h2>30 постоянных клиентов</h2>
-                        </div>
-                        <div className={"statsText"}>
-                            <img src={"../image/icons/elements/clock.svg"} alt={"Лет"}/>
-                            <h3>Работаем для вас</h3>
-                        <h2>Более 8 лет</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <div className={"block"} id={"guaranteeBlock"}>
-            <div className={"content"}>
-                <h1>Гарантии:</h1>
-                <div className={"guarantees"}>
-                    <div className={"sliderLayout"}>
-                        <div className={"dotsLayout"}>
-                            <span className={"dot active"}></span>
-                            <span className={"dot"}></span>
-                            <span className={"dot"}></span>
-                            <span className={"dot"}></span>
-                        </div>
-                        <div className={"arrows"}>
-                            <button className={"icons"} id={"leftArrow"} onClick={(e) => arrowAction("left")}><span
-                                className="material-symbols-outlined">arrow_back_ios</span></button>
-                            <button className={"icons"} id={"rightArrow"}
-                                    onClick={(e) => arrowAction("right")}><span
-                                className="material-symbols-outlined">arrow_forward_ios</span></button>
+                    <h1>Гарантии:</h1>
+                    <div className={"guarantees"}>
+                        <div className={"sliderLayout"}>
+                            <div className={"dotsLayout"}>
+                                <span className={"dot active"}></span>
+                                <span className={"dot"}></span>
+                                <span className={"dot"}></span>
+                                <span className={"dot"}></span>
+                            </div>
+                            <div className={"arrows"}>
+                                <button className={"icons"} id={"leftArrow"} onClick={(e) => arrowAction("left")}><span
+                                    className="material-symbols-outlined">arrow_back_ios</span></button>
+                                <button className={"icons"} id={"rightArrow"}
+                                        onClick={(e) => arrowAction("right")}><span
+                                    className="material-symbols-outlined">arrow_forward_ios</span></button>
                         </div>
                     </div>
                     <div className={"slider"}>
