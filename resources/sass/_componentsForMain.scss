@@ -11,22 +11,28 @@
 #bgTarget {
     background-image: url("../../public/image/background-images/fruitsWwhitebg.jpg");
 }
+#bgTargetS {
+    background-image: url("../../public/image/background-images/green-apple.png");
+    transform: translateZ(-300px);
+    background-size: contain;
+}
 #targetBlock {
     position: relative;
     top: 40vh;
     margin-top: 0;
+    transition: $transition-load;
 }
-#bgInfo {
-    background-color: $third-color;
+#stats {
     height: 60vh;
+    background-color: $third-color;
 }
-#infoBlock {
+#statsBlock {
     margin-top: 15vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-.infoText img{
+.statsText img{
     width: 155px;
 }
 #guaranteeBlock {
@@ -59,7 +65,11 @@
             height: 100%;
         }
     }
+    .imgGuarantee img{
+        width: 100%;
+    }
     .guaranteeText {
+        display: flex;
         border-radius: 5px;
         padding: 25px;
         box-shadow: 2px 2px 10px 0 rgba(#333, 0.2);

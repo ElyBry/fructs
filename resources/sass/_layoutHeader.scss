@@ -6,6 +6,8 @@ header {
     align-items: center;
     justify-content: space-between;
     margin-top: $margin-h1;
+    z-index: 10001;
+    position: relative;
 }
 #logo {
     position: relative;

@@ -27,85 +27,99 @@ const Main: React.FC = () => {
     }
     return (
         <>
-            <div className={"background"} id={"bgTarget"}>
-                <div className={"content"}>
-                    <Header/>
-                    <div className={"block"} id={"targetBlock"}>
-                        <h1>Сочные овощи и фрукты - прямо от природы к вашему столу!</h1>
-                        <h2>Свежесть, качество и удобство доставки по <span
-                            className={"highlight"}>Екатеринбургу</span></h2>
+            <div className={"parallax"} id={"target"}>
+                <div className={"parallaxGroup"}>
+                    <div className={"parallaxLayer parallaxImage parallaxLayer-deep"} id={"bgTarget"}>
+                    </div>
+                    <div className={"parallaxLayer parallaxImage parallaxLayer-base"} id={"bgTargetS"}>
+                    </div>
+                    <div className={"parallaxLayer content parallaxLayer-fore"}>
+                        <Header/>
+                        <div className={"block"} id={"targetBlock"}>
+                            <h1>Сочные овощи и фрукты - прямо от природы к вашему столу!</h1>
+                            <h2>Свежесть, качество и удобство доставки по <span
+                                className={"highlight"}>Екатеринбургу</span></h2>
+                        </div>
                     </div>
                 </div>
+
             </div>
-            <div className={"background"} id={"bgInfo"}>
+            <div className={"background"} id={"stats"}>
                 <div className={"content"}>
-                    <div className={"block"} id={"infoBlock"}>
-                        <div className={"infoText"}>
+                    <div className={"block"} id={"statsBlock"}>
+                        <div className={"statsText"}>
                             <img src={"../image/icons/elements/basket.svg"} alt={"Заказы"}/>
                             <h3>Совершено более</h3>
                             <h2>1000 доставок</h2>
                         </div>
-                        <div className={"infoText"}>
+                        <div className={"statsText"}>
                             <img src={"../image/icons/elements/clients.svg"} alt={"Клиенты"}/>
                             <h3>Около </h3>
                             <h2>30 постоянных клиентов</h2>
                         </div>
-                        <div className={"infoText"}>
+                        <div className={"statsText"}>
                             <img src={"../image/icons/elements/clock.svg"} alt={"Лет"}/>
                             <h3>Работаем для вас</h3>
-                            <h2>Более 8 лет</h2>
+                        <h2>Более 8 лет</h2>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className={"block"} id={"guaranteeBlock"}>
-                <div className={"content"}>
-                    <h1>Гарантии:</h1>
-                    <div className={"guarantees"}>
-                        <div className={"sliderLayout"}>
-                            <div className={"dotsLayout"}>
-                                <span className={"dot active"}></span>
-                                <span className={"dot"}></span>
-                                <span className={"dot"}></span>
-                                <span className={"dot"}></span>
-                            </div>
-                            <div className={"arrows"}>
-                                <button className={"icons"} id={"leftArrow"} onClick={(e) => arrowAction("left")}><span
-                                    className="material-symbols-outlined">arrow_back_ios</span></button>
-                                <button className={"icons"} id={"rightArrow"}
-                                        onClick={(e) => arrowAction("right")}><span
-                                    className="material-symbols-outlined">arrow_forward_ios</span></button>
-                            </div>
+        <div className={"block"} id={"guaranteeBlock"}>
+            <div className={"content"}>
+                <h1>Гарантии:</h1>
+                <div className={"guarantees"}>
+                    <div className={"sliderLayout"}>
+                        <div className={"dotsLayout"}>
+                            <span className={"dot active"}></span>
+                            <span className={"dot"}></span>
+                            <span className={"dot"}></span>
+                            <span className={"dot"}></span>
                         </div>
-                        <div className={"slider"}>
-                            <div className={"guaranteeText active"}>
+                        <div className={"arrows"}>
+                            <button className={"icons"} id={"leftArrow"} onClick={(e) => arrowAction("left")}><span
+                                className="material-symbols-outlined">arrow_back_ios</span></button>
+                            <button className={"icons"} id={"rightArrow"}
+                                    onClick={(e) => arrowAction("right")}><span
+                                className="material-symbols-outlined">arrow_forward_ios</span></button>
+                        </div>
+                    </div>
+                    <div className={"slider"}>
+                        <div className={"guaranteeText active"}>
+                            <div className={"imgGuarantee"}>
+                                <img src={"image/background-images/woman.jpg"}/>
+                            </div>
+                            <div>
                                 <h2>Качество</h2>
-                                <h3>Мы гарантируем, что все овощи и фрукты, которые вы покупаете у нас, являются свежими
+                                <h3>Мы гарантируем, что все овощи и фрукты, которые вы покупаете у нас, являются
+                                    свежими
                                     и
-                                    высокого качества. Мы работаем только с проверенными поставщиками и фермерами.</h3>
+                                    высокого качества. Мы работаем только с проверенными поставщиками и
+                                    фермерами.</h3>
                             </div>
-                            <div className={"guaranteeText"}>
-                                <h2>Возврат</h2>
-                                <h3> Если вы получили поврежденный или недоброкачественный продукт, сообщите нам в
-                                    течение
-                                    24 часов, и мы без проблем организуем возврат или обмен.</h3>
-                            </div>
-                            <div className={"guaranteeText"}>
-                                <h2>Доставка</h2>
-                                <h3>Мы стремимся доставлять ваш заказ в оговоренные сроки. Если по какой-то причине ваш
-                                    заказ не был доставлен в срок, сообщите нам, и мы предложим вам компенсацию или
-                                    сюрприз
-                                    в следующем заказе!</h3>
-                            </div>
-                            <div className={"guaranteeText"}>
-                                <h2>Прозрачность</h2>
-                                <h3>Мы предоставляем полную информацию о каждом продукте, включая его происхождение и
-                                    состав, чтобы вы могли делать осознанный выбор.</h3>
-                            </div>
+                        </div>
+                        <div className={"guaranteeText"}>
+                            <h2>Возврат</h2>
+                            <h3> Если вы получили поврежденный или недоброкачественный продукт, сообщите нам в
+                                течение
+                                24 часов, и мы без проблем организуем возврат или обмен.</h3>
+                        </div>
+                        <div className={"guaranteeText"}>
+                            <h2>Доставка</h2>
+                            <h3>Мы стремимся доставлять ваш заказ в оговоренные сроки. Если по какой-то причине ваш
+                                заказ не был доставлен в срок, сообщите нам, и мы предложим вам компенсацию или
+                                сюрприз
+                                в следующем заказе!</h3>
+                        </div>
+                        <div className={"guaranteeText"}>
+                            <h2>Прозрачность</h2>
+                            <h3>Мы предоставляем полную информацию о каждом продукте, включая его происхождение и
+                                состав, чтобы вы могли делать осознанный выбор.</h3>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
             <div className={"block"} id={"superiorityBlock"}>
                 <div className={"content"}>
                     <h1>Отличия от конкурентов</h1>
