@@ -15,7 +15,7 @@ const Main: React.FC = () => {
                 trigger: "#stats",
                 start: "top 80%",
                 end: "top 20%",
-                markers: true,
+                //markers: true,
                 scrub: 0.5,
                 toggleActions: "play none none none",
             },
@@ -45,7 +45,18 @@ const Main: React.FC = () => {
             },
             x: () => -totalWidth + containerHeight - 100, // Перемещаем по оси X
         });
+        document.querySelectorAll(".questAnswerFaq").forEach((element) => {
+            element.addEventListener('click', () => openFaq(element))
+        });
     })
+    const openFaq = (element: Element) => {
+        const classListElement = element.classList;
+        if (classListElement.contains("open")) {
+            classListElement.remove("open")
+        } else {
+            classListElement.add("open")
+        }
+    }
     return (
         <>
             <div id={"target"}>
@@ -184,8 +195,11 @@ const Main: React.FC = () => {
                 <div className={"content"}>
                     <h1>FAQ</h1>
                     <div className={"questAnswerFaq"}>
-                        <div className={"questFaq"}>
-                            Как сделать заказ?
+                        <div className={"headFaq"}>
+                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
+                            <div className={"questFaq"}>
+                                Как сделать заказ?
+                            </div>
                         </div>
                         <div className={"answerFaq"}>
                             Чтобы сделать заказ, просто выберите необходимые фрукты и овощи на нашем сайте, добавьте
@@ -194,8 +208,11 @@ const Main: React.FC = () => {
                         </div>
                     </div>
                     <div className={"questAnswerFaq"}>
-                        <div className={"questFaq"}>
-                            Какой минимальный размер заказа?
+                        <div className={"headFaq"}>
+                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
+                            <div className={"questFaq"}>
+                                Какой минимальный размер заказа?
+                            </div>
                         </div>
                         <div className={"answerFaq"}>
                             Минимальный размер заказа составляет <span className={"highlight"}> 500 рублей</span>.
@@ -204,8 +221,11 @@ const Main: React.FC = () => {
                         </div>
                     </div>
                     <div className={"questAnswerFaq"}>
-                        <div className={"questFaq"}>
-                            Как быстро доставляется заказ?
+                        <div className={"headFaq"}>
+                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
+                            <div className={"questFaq"}>
+                                Как быстро доставляется заказ?
+                            </div>
                         </div>
                         <div className={"answerFaq"}>
                             Мы доставляем заказы от <span className={"highlight"}> 10 минут</span> после их
@@ -214,8 +234,11 @@ const Main: React.FC = () => {
                         </div>
                     </div>
                     <div className={"questAnswerFaq"}>
-                        <div className={"questFaq"}>
-                            Могу ли я изменить время доставки?
+                        <div className={"headFaq"}>
+                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
+                            <div className={"questFaq"}>
+                                Могу ли я изменить время доставки?
+                            </div>
                         </div>
                         <div className={"answerFaq"}>
                             Да, вы можете изменить время доставки до момента, пока ваш заказ <span
@@ -223,16 +246,22 @@ const Main: React.FC = () => {
                         </div>
                     </div>
                     <div className={"questAnswerFaq"}>
-                        <div className={"questFaq"}>
-                            Какие способы оплаты вы принимаете?
+                        <div className={"headFaq"}>
+                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
+                            <div className={"questFaq"}>
+                                Какие способы оплаты вы принимаете?
+                            </div>
                         </div>
                         <div className={"answerFaq"}>
                             Мы принимаем <span className={"highlight"}> различные</span> способы оплаты
                         </div>
                     </div>
                     <div className={"questAnswerFaq"}>
-                        <div className={"questFaq"}>
-                            Что делать, если что-то не так с заказом?
+                        <div className={"headFaq"}>
+                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
+                            <div className={"questFaq"}>
+                                Что делать, если что-то не так с заказом?
+                            </div>
                         </div>
                         <div className={"answerFaq"}>
                             Если с вашим заказом возникли проблемы, пожалуйста, свяжитесь с нашей службой поддержки,
@@ -240,8 +269,11 @@ const Main: React.FC = () => {
                         </div>
                     </div>
                     <div className={"questAnswerFaq"}>
-                        <div className={"questFaq"}>
-                            Как я могу отменить заказ?
+                        <div className={"headFaq"}>
+                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
+                            <div className={"questFaq"}>
+                                Как я могу отменить заказ?
+                            </div>
                         </div>
                         <div className={"answerFaq"}>
                             Вы можете отменить заказ, если <span

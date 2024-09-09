@@ -23,6 +23,7 @@
 #bgTargetS {
     background-image: url("../../public/image/background-images/green-apple.png");
     background-size: contain;
+    background-repeat: no-repeat;
     z-index: 1;
     position: absolute;
     top: 10%;
@@ -86,10 +87,64 @@
             display: flex;
             padding: $padding-elements;
             border-radius: 50%;
+            width: $padding-elements;
+            height: $padding-elements;
             background-color: $secondary-color;
             flex-direction: row;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
+        }
+    }
+}
+
+#faqBlock {
+    .questAnswerFaq {
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        margin: $margin-text 0;
+        border-bottom: 1px solid $note-color;
+        &.open {
+            .answerFaq {
+                line-height: $line-height-base;
+            }
+            .icon-plus {
+                transform: rotate(45deg);
+            }
+        }
+        &:hover {
+            .icon-plus {
+                background-color: $primary-color;
+                color: white;
+            }
+
+        }
+        .answerFaq {
+            overflow: hidden;
+            line-height: 0;
+            transition: $transition-base;
+            margin-block-start: 0.5lh;
+        }
+        .headFaq {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .questFaq {
+            margin: $margin-text 0;
+            font-weight: $font-weight-bold;
+        }
+        .icon-plus {
+            display: flex;
+            width: $width-icon;
+            height: $width-icon;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border-radius: 50%;
+            border: 1px solid $secondary-color;
+            transition: $transition-base;
         }
     }
 }

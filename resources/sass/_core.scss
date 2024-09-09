@@ -28,6 +28,8 @@ $border-radius-elements: 20px;
 $line-height-base: 1.2;
 $line-height-h1: 0.8;
 
+$width-icon: 35px;
+
 $invalid-color: red;
 $input-padding: 1.5rem;
 
@@ -61,7 +63,12 @@ body {
 }
 html {
     scroll-behavior: smooth;
-
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 #root {
     inset: 0;
@@ -85,9 +92,6 @@ button {
 a {
     text-decoration: none;
     color: $secondary-color;
-}
-div {
-    background-repeat: no-repeat;
 }
 // Основа
 body {

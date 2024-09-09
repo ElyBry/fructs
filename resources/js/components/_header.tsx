@@ -14,7 +14,7 @@ export default () => {
                 <div className={"hSection"}>Войти</div>
             </div>
             <div id={"burger"}>
-            <img src={"../../image/elements/icons/burger-menu-right.svg"}/>
+                <img src={"../../image/icons/elements/burger-menu-right.svg"}/>
             </div>
         </header>
     );
