@@ -55,6 +55,13 @@ $transition-block-move-another: .6s all linear;
     margin: 0;
     padding: 0;
 }
+html {
+    scroll-behavior: smooth;
+    &::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+    }
+}
 #root {
     inset: 0;
     width: 100vw;
@@ -89,6 +96,7 @@ body {
 .content {
     padding: 0 $padding-page;
     width: 100%;
+    height: 100%;
 }
 h1 {
     font-size: $font-size-h1;
@@ -121,7 +129,7 @@ h2 {
     background-size: cover;
     background-repeat: no-repeat;
     width: 100vw;
-    height: 200%;
+    height: 100%;
     position: absolute;
     top: 0;
     -moz-transition: -webkit-filter 0.5s;
@@ -136,24 +144,51 @@ h2 {
     height: 100%;
 }
 .parallaxLayer-fore {
-    transform: translateZ(0);
+    -webkit-transform: translateZ(90px) scale(.7);
+    transform: translateZ(90px) scale(.7);
+    z-index: 1;
+
 }
 
 .parallaxLayer-base {
-    transform: translateZ(-1px);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    z-index: 4;
 }
 
 .parallaxLayer-back {
-    transform: translateZ(-2px);
+    -webkit-transform: translateZ(-300px) scale(2);
+    transform: translateZ(-300px) scale(2);
+    z-index: 3;
 }
 
 .parallaxLayer-deep {
-    transform: translateZ(-5px) scale(1.02);
+    transform: translateZ(-600px) scale(3);
 }
 
-
+//Animations
+@keyframes appear {
+    0% {
+        opacity: 0;
+        scale: 0.5;
+    }
+    50% {
+        opacity: 1;
+        scale: 1;
+    }
+    100% {
+        opacity: 0;
+        scale: 0.5;
+    }
+}
 .block {
     margin-top: $margin-top-block;
+    position: relative;
+    top:100%;
+
+    .active {
+        animation: appear linear;
+    }
 }
 #oneWidth {
     max-width: 1600px;
