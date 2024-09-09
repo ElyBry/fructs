@@ -55,12 +55,13 @@ $transition-block-move-another: .6s all linear;
     margin: 0;
     padding: 0;
 }
+body {
+    overflow: hidden;
+    overflow-y: scroll;
+}
 html {
     scroll-behavior: smooth;
-    &::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-    }
+
 }
 #root {
     inset: 0;
@@ -84,6 +85,9 @@ button {
 a {
     text-decoration: none;
     color: $secondary-color;
+}
+div {
+    background-repeat: no-repeat;
 }
 // Основа
 body {
@@ -111,89 +115,10 @@ h2 {
     width: 100%;
     height: 100vh;
 }
-// Parallax
-.parallax {
-    width: 100vw;
-    height: 100vh;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    -moz-perspective: $perspective;
-    -webkit-perspective: $perspective;
-    perspective: $perspective;
-    &::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-    }
-}
-.parallaxLayer {
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 100vw;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    -moz-transition: -webkit-filter 0.5s;
-    -o-transition: -webkit-filter 0.5s;
-    -webkit-transition: -webkit-filter 0.5s;
-    transition: -webkit-filter 0.5s;
-}
-.parallaxImage {
-    background-repeat: no-repeat;
-    background-size: cover;
-    width: 100%;
-    height: 100%;
-}
-.parallaxLayer-fore {
-    -webkit-transform: translateZ(90px) scale(.7);
-    transform: translateZ(90px) scale(.7);
-    z-index: 1;
 
-}
-
-.parallaxLayer-base {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    z-index: 4;
-}
-
-.parallaxLayer-back {
-    -webkit-transform: translateZ(-300px) scale(2);
-    transform: translateZ(-300px) scale(2);
-    z-index: 3;
-}
-
-.parallaxLayer-deep {
-    transform: translateZ(-600px) scale(3);
-}
-
-//Animations
-@keyframes appear {
-    0% {
-        opacity: 0;
-        scale: 0.5;
-    }
-    50% {
-        opacity: 1;
-        scale: 1;
-    }
-    100% {
-        opacity: 0;
-        scale: 0.5;
-    }
-}
 .block {
     margin-top: $margin-top-block;
-    position: relative;
-    top:100%;
-
-    .active {
-        animation: appear linear;
-    }
-}
-#oneWidth {
-    max-width: 1600px;
     width: 100%;
-    padding: 0 $padding-page;
 }
 .dot {
     display: flex;
