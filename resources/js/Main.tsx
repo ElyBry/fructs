@@ -46,7 +46,6 @@ const Main: React.FC = () => {
     })
     return (
         <>
-
             <div className={"parallax"} id={"target"}>
                 <div className={"parallaxLayer parallaxImage parallaxLayer-deep"} id={"bgTarget"}>
                 </div>
