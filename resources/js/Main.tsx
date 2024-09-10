@@ -5,28 +5,27 @@ import Footer from "./components/_footer.js";
 import Header from "./components/_header.js";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+const random = gsap.utils.random;
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Main: React.FC = () => {
     useEffect(() => {
-        gsap.from("#statsBlock", {
+        gsap.from(".statsText:nth-child(odd)", {
             scrollTrigger: {
                 trigger: "#stats",
                 start: "top 80%",
                 end: "top 20%",
-                //markers: true,
-                scrub: 0.5,
-                toggleActions: "play none none none",
+                scrub: 3,
             },
-            y: 500,
+            yPercent: 150
         })
         gsap.to("#bgTargetS", {
             yPercent: -150,
-            ease: "none",
+            ease: "sine",
             scrollTrigger: {
                 trigger: "#bgTargetS",
-                scrub: true
+                scrub: 3
             }
         });
         const scrollContainer = document.querySelector('.slider');
@@ -38,13 +37,67 @@ const Main: React.FC = () => {
         gsap.to(horizontalScroll, {
             scrollTrigger: {
                 trigger: scrollContainer,
-                start: "top top",
+                start: "top 10%",
                 end: () => `+=${totalWidth}`,
-                scrub: 1,
+                scrub: 5,
                 pin: true,
             },
-            x: () => -totalWidth + containerHeight - 100, // Перемещаем по оси X
+            x: () => -totalWidth + containerHeight,
         });
+        document.querySelectorAll(".superiorityText h2").forEach((element) => {
+            gsap.from(element, {
+                scrollTrigger: {
+                    trigger: element,
+                    start: "top bottom",
+                    end: "top center",
+                    scrub: 3,
+                },
+                x: -1200
+            })
+        });
+        gsap.fromTo("#bestBlock h1",
+            {
+                opacity: 0,
+                x: 1000
+            },
+            {
+                opacity: 1,
+                duration: 1,
+                x: 0,
+                scrollTrigger: {
+                    trigger: "#bestBlock",
+                    start: "top center",
+                    end: "top top",
+                    scrub: 5,
+                }
+            })
+        document.querySelectorAll("#cartBlock .fruit").forEach((el,index) => {
+            const offsetX = index * 250
+            gsap.fromTo(el, {
+                    x: offsetX,
+                },
+                {
+                    scrollTrigger: {
+                        trigger: "#cartBlock",
+                        start: "top center",
+                        markers: true,
+                        end: "top 30%",
+                        scrub: 5,
+                    },
+                    x: random(250,500),
+                    rotate: random(-180,180),
+                    y: window.innerHeight * 0.2
+                })
+        })
+        gsap.to("#cartBlock",{
+            scrollTrigger: {
+                trigger: "#cartBlock",
+                start: "top top",
+                markers: true,
+                scrub: 5,
+            },
+            x: 1500,
+        })
         document.querySelectorAll(".questAnswerFaq").forEach((element) => {
             element.addEventListener('click', () => openFaq(element))
         });
@@ -59,18 +112,17 @@ const Main: React.FC = () => {
     }
     return (
         <>
+            <Header/>
             <div id={"target"}>
                 <div id={"bgTarget"}></div>
                 <div id={"bgTargetS"}></div>
                 <div className={"content"}>
-                    <Header/>
                     <div className={"block"} id={"targetBlock"}>
                         <h1>Сочные овощи и фрукты - прямо от природы к вашему столу!</h1>
                         <h2>Свежесть, качество и удобство доставки по <span
                             className={"highlight"}>Екатеринбургу</span></h2>
                     </div>
                 </div>
-
             </div>
             <div className={"background"} id={"stats"}>
                 <div className={"content"}>
@@ -112,27 +164,42 @@ const Main: React.FC = () => {
                                 </div>
                             </div>
                             <div className={"guaranteeText"}>
-                                <h2>Возврат</h2>
-                                <h3> Если вы получили поврежденный или недоброкачественный продукт, сообщите нам в
-                                    течение
-                                    24 часов, и мы без проблем организуем возврат или обмен.</h3>
+                                <div className={"imgGuarantee"}>
+                                    <img src={"image/background-images/woman_refund.jpg"}/>
+                                </div>
+                                <div>
+                                    <h2>Возврат</h2>
+                                    <h3> Если вы получили поврежденный или недоброкачественный продукт, сообщите нам в
+                                        течение
+                                        24 часов, и мы без проблем организуем возврат или обмен.</h3>
+                                </div>
                             </div>
                             <div className={"guaranteeText"}>
-                                <h2>Доставка</h2>
-                                <h3>Мы стремимся доставлять ваш заказ в оговоренные сроки. Если по какой-то причине
-                                    ваш
-                                    заказ не был доставлен в срок, сообщите нам, и мы предложим вам компенсацию или
-                                    сюрприз
-                                    в следующем заказе!</h3>
+                                <div className={"imgGuarantee"}>
+                                    <img src={"image/background-images/courier-delivering.jpg"}/>
+                                </div>
+                                <div>
+                                    <h2>Доставка</h2>
+                                    <h3>Мы стремимся доставлять ваш заказ в оговоренные сроки. Если по какой-то причине
+                                        ваш
+                                        заказ не был доставлен в срок, сообщите нам, и мы предложим вам компенсацию или
+                                        сюрприз
+                                        в следующем заказе!</h3>
+                                </div>
+
                             </div>
                             <div className={"guaranteeText"}>
-                                <h2>Прозрачность</h2>
-                                <h3>Мы предоставляем полную информацию о каждом продукте, включая его происхождение
-                                    и
-                                    состав, чтобы вы могли делать осознанный выбор.</h3>
+                                <div className={"imgGuarantee"}>
+                                    <img src={"image/background-images/meal_with_transparency.jpg"}/>
+                                </div>
+                                <div>
+                                    <h2>Прозрачность</h2>
+                                    <h3>Мы предоставляем полную информацию о каждом продукте, включая его происхождение
+                                        и
+                                        состав, чтобы вы могли делать осознанный выбор.</h3>
+                                </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -281,6 +348,18 @@ const Main: React.FC = () => {
                             стоимость услуг курьера.
                         </div>
                     </div>
+                </div>
+            </div>
+            <div className={"block"} id={"cartBlock"}>
+                <img className={"fruit"} src={"image/fruits/apple.png"}/>
+                <img className={"fruit"} src={"image/fruits/onion.png"}/>
+                <img className={"fruit"} src={"image/fruits/carrot.png"}/>
+                <img className={"fruit"} src={"image/fruits/eggplant.png"}/>
+                <img className={"fruit"} src={"image/fruits/garlic.png"}/>
+                <img className={"fruit"} src={"image/fruits/orange.png"}/>
+                <img className={"cart"} src={"image/fruits/cart.png"}/>
+                <div className={"content"}>
+                    <button>Заказать</button>
                 </div>
             </div>
             <div className={"block"} id={"feedbackBlock"}>

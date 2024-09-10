@@ -1,0 +1,59 @@
+@import "app";
+#root {
+    justify-content: space-between;
+    overflow-x: hidden;
+}
+header {
+    position: relative;
+}
+#search {
+    padding: $padding-page;
+    width: 100%;
+    display: flex;
+    #inputSearch {
+        width: 100%;
+        input {
+            width: 100%;
+        }
+    }
+    #buttonSearch {
+
+        button {
+
+        }
+    }
+}
+#tableProducts {
+    display: flex;
+    gap: $padding-elements;
+    padding: $padding-page;
+    flex-wrap: wrap;
+    .products {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: $note-color;
+        padding: $padding-elements;
+        border-radius: $border-radius-elements;
+        .imgProducts {
+            width: 80%;
+            img {
+                width: 100%;
+            }
+        }
+        .textProducts {
+
+        }
+        .buttonsProducts {
+            display: flex;
+            flex-direction: column;
+            .addCart {
+                padding: $padding-elements;
+            }
+            .aboutProducts {
+
+            }
+        }
+    }
+}
