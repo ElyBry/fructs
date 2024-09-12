@@ -14,16 +14,18 @@ class ProductsTableSeeder extends Seeder
     public function run()
     {
         $faker = \Faker\Factory::create();
+        $arrUnits = ['Грамм','Килограмм','Штуку'];
         // Create 50 product records
         for ($i = 0; $i < 50; $i++) {
             $countAvailable = $faker->numberBetween(0,100);
+            shuffle($arrUnits);
             Product::create([
-                'title' => $faker->title,
+                'title' => $faker->word,
                 'description' => $faker->paragraph,
                 'price' => $faker->randomNumber(2),
                 'availability' => $countAvailable > 0,
                 'count' => $countAvailable,
-                'weight' => 'Грамм'
+                'weight' => $arrUnits[0]
             ]);
         }
     }

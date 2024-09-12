@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description');
             $table->integer('price');
             $table->string('weight');
+            $table->string('img');
             $table->integer('count');
             $table->boolean('availability');
         });

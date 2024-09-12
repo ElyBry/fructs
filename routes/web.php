@@ -12,5 +12,7 @@ Route::get('/', function () {
 Route::get('/products', function () {
     return view('products');
 });
-Route::middleware('auth:api')->group(base_path('routes/api.php'));
+Route::group([], function () {
+    require base_path('routes/api.php');
+});
 

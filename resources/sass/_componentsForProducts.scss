@@ -6,20 +6,61 @@
 header {
     position: relative;
 }
+svg {
+    width: 300px;
+    transform: translate3d(-125px,0,0);
+    transition: $transition-base;
+    pointer-events: none;
+}
 #search {
     padding: $padding-page;
-    width: 100%;
-    display: flex;
+    position: absolute;
+    inset:0;
     #inputSearch {
-        width: 100%;
-        input {
-            width: 100%;
+        width: $width-icon;
+        height: $width-icon;
+        color: transparent;
+        position: relative;
+        border: 1px solid transparent;
+        border-radius: 0;
+        cursor: pointer;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+        &:focus {
+            border-bottom-color: #ccc;
+            width: 50vw;
+            color: #2b2b2b;
+            cursor: default;
+            .searchIcon {
+                background-color: transparent;
+                cursor: pointer;
+                pointer-events: auto;
+            }
         }
-    }
-    #buttonSearch {
-
-        button {
-
+        input {
+            position: absolute;
+            border: none;
+            font-size: 1.5rem;
+            &:focus {
+                border: 0;
+                outline:none;
+            }
+        }
+        .searchIcon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: $note-color;
+            width: $width-icon;
+            height: $width-icon;
+            font-size: 1.35em;
+            text-align: center;
+            border-color: transparent;
+            border-radius: 50%;
+            pointer-events: none;
+            display: inline-block;
+            -webkit-transition: background-color 0.2s ease-in-out;
+            transition: background-color 0.2s ease-in-out;
         }
     }
 }
@@ -29,29 +70,40 @@ header {
     padding: $padding-page;
     flex-wrap: wrap;
     .products {
-        display: flex;
+        flex: 1 1 15%;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background-color: $note-color;
+        box-shadow: 1px 1px 3px 0 rgba(#333, 0.2);
         padding: $padding-elements;
         border-radius: $border-radius-elements;
         .imgProducts {
             width: 80%;
+            margin: auto;
             img {
                 width: 100%;
             }
         }
         .textProducts {
-
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        .priceProducts {
+            text-align: center;
+            font-size: 1.5rem;
         }
         .buttonsProducts {
             display: flex;
             flex-direction: column;
-            .addCart {
+            gap: $padding-elements;
+            .addCart,
+            .aboutProducts{
+                font-size: 1rem;
+                border-radius: $border-radius-elements;
                 padding: $padding-elements;
+                box-shadow: 2px 2px 10px 0 rgba(#333, 0.2);
             }
-            .aboutProducts {
+            .addCart {
 
             }
         }
