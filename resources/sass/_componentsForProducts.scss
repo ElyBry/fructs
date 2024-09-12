@@ -9,60 +9,57 @@ header {
 svg {
     width: 300px;
     transform: translate3d(-125px,0,0);
-    transition: $transition-base;
+    transition: $transition-base ease;
     pointer-events: none;
 }
+
+
 #search {
     padding: $padding-page;
-    position: absolute;
+    position: relative;
     inset:0;
     #inputSearch {
-        width: $width-icon;
-        height: $width-icon;
-        color: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         position: relative;
-        border: 1px solid transparent;
-        border-radius: 0;
-        cursor: pointer;
-        -webkit-transition: all 0.3s ease-in-out;
-        transition: all 0.3s ease-in-out;
-        &:focus {
-            border-bottom-color: #ccc;
-            width: 50vw;
-            color: #2b2b2b;
-            cursor: default;
-            .searchIcon {
-                background-color: transparent;
-                cursor: pointer;
-                pointer-events: auto;
-            }
-        }
         input {
-            position: absolute;
-            border: none;
-            font-size: 1.5rem;
+            border: 0;
+            max-width: 0;
+            transition: all $transition-base ease;
+            transform-origin: right;
             &:focus {
                 border: 0;
                 outline:none;
             }
         }
         .searchIcon {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background-color: $note-color;
-            width: $width-icon;
-            height: $width-icon;
-            font-size: 1.35em;
-            text-align: center;
-            border-color: transparent;
-            border-radius: 50%;
-            pointer-events: none;
-            display: inline-block;
-            -webkit-transition: background-color 0.2s ease-in-out;
-            transition: background-color 0.2s ease-in-out;
+            display: flex;
+            transition: all $transition-base ease;
+            transform-origin: center;
         }
     }
+    .searching {
+        input {
+            border-radius: $border-radius-elements;
+            padding: $padding-elements;
+            border: 1px solid black !important;
+            max-width: 100% !important;
+        }
+        .searchIcon {
+            padding: $padding-elements;
+            right: 0;
+        }
+    }
+}
+[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 10px;
+    width: 10px;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE2LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgd2lkdGg9IjEyMy4wNXB4IiBoZWlnaHQ9IjEyMy4wNXB4IiB2aWV3Qm94PSIwIDAgMTIzLjA1IDEyMy4wNSIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTIzLjA1IDEyMy4wNTsiDQoJIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPHBhdGggZD0iTTEyMS4zMjUsMTAuOTI1bC04LjUtOC4zOTljLTIuMy0yLjMtNi4xLTIuMy04LjUsMGwtNDIuNCw0Mi4zOTlMMTguNzI2LDEuNzI2Yy0yLjMwMS0yLjMwMS02LjEwMS0yLjMwMS04LjUsMGwtOC41LDguNQ0KCQljLTIuMzAxLDIuMy0yLjMwMSw2LjEsMCw4LjVsNDMuMSw0My4xbC00Mi4zLDQyLjVjLTIuMywyLjMtMi4zLDYuMSwwLDguNWw4LjUsOC41YzIuMywyLjMsNi4xLDIuMyw4LjUsMGw0Mi4zOTktNDIuNGw0Mi40LDQyLjQNCgkJYzIuMywyLjMsNi4xLDIuMyw4LjUsMGw4LjUtOC41YzIuMy0yLjMsMi4zLTYuMSwwLTguNWwtNDIuNS00Mi40bDQyLjQtNDIuMzk5QzEyMy42MjUsMTcuMTI1LDEyMy42MjUsMTMuMzI1LDEyMS4zMjUsMTAuOTI1eiIvPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPC9zdmc+DQo=);
+    background-size: 10px 10px;
+    cursor: pointer;
 }
 #tableProducts {
     display: flex;
@@ -70,7 +67,7 @@ svg {
     padding: $padding-page;
     flex-wrap: wrap;
     .products {
-        flex: 1 1 15%;
+        flex: 1 1 19%;
         flex-direction: column;
         justify-content: center;
         align-items: center;

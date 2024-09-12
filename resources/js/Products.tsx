@@ -1,5 +1,5 @@
-// @ts-ignore
-import React, {useEffect, useRef} from 'react';
+import * as React from 'react';
+import {useEffect, useRef, useState} from 'react';
 import * as ReactDOM from 'react-dom/client';
 import Footer from "./components/_footer.js";
 import Header from "./components/_header.js";
@@ -10,7 +10,10 @@ const random = gsap.utils.random;
 gsap.registerPlugin(ScrollTrigger);
 
 const Products: React.FC = () => {
+    const [isSearch, setIsSearch] = useState(true);
     const url = "http://localhost:8000/api/products";
+    const inputRef = useRef(null);
+
     fetch(url)
         .then(response => {
             if (!response.ok) {
@@ -66,22 +69,33 @@ const Products: React.FC = () => {
         .catch(error => {
             console.log(error);
         })
+    const toggleSearch = () => {
+        setIsSearch(!isSearch);
+        if (!isSearch) {
+            inputRef.current.focus();
+        }
+    }
     return (
         <>
             <Header/>
             <div id={"search"}>
-                <div id={"inputSearch"}>
-                    <input placeholder={"Поиск"} type={"search"} autoComplete={"off"}/>
-                    <button type={"submit"} className={"searchIcon"}><span className="material-symbols-outlined">search</span></button>
+                <div id={"inputSearch"} className={isSearch ? "searching" : ""}>
+                    <input placeholder={"Поиск"} type={"search"} autoComplete={"off"} ref={inputRef}/>
+                    <button type={"submit"} className={"searchIcon"} onClick={toggleSearch}><span className="material-symbols-outlined">search</span></button>
                 </div>
             </div>
-            <div id={"filter"}>
-                <h1>Фильтрация по:</h1>
+            <div id={"main"}>
+                <div className={"content"}>
+                    <div id={"filter"}>
+                        <h2>Фильтр:</h2>
 
+                        Страна:
+                    </div>
+                    <div id={"tableProducts"}>
+                    </div>
+                </div>
             </div>
-            <div id={"tableProducts"}>
 
-            </div>
             <div className={"block"}>
                 <Footer/>
             </div>

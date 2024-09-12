@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('price');
             $table->string('weight');
             $table->string('img');
+            $table->integer('country_id');
             $table->integer('count');
             $table->boolean('availability');
         });
