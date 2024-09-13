@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('country_id');
             $table->integer('count');
             $table->boolean('availability');
+            $table->foreign('country_id')->references('id')->on('countries');
         });
     }
 
