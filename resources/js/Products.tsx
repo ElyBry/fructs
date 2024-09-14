@@ -11,10 +11,12 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Products: React.FC = () => {
     const [isSearch, setIsSearch] = useState(true);
-    const url = "http://localhost:8000/api/products";
+    const urlProducts = "http://localhost:8000/api/products";
     const inputRef = useRef(null);
+    let minPrice = 0;
+    let maxPrice = 0;
 
-    fetch(url)
+    fetch(urlProducts)
         .then(response => {
             if (!response.ok) {
                 throw new Error(response.statusText)
@@ -87,9 +89,19 @@ const Products: React.FC = () => {
             <div id={"main"}>
                 <div className={"content"}>
                     <div id={"filter"}>
-                        <h2>Фильтр:</h2>
-
-                        Страна:
+                        <h2>Цена:</h2>
+                        <label>От</label>
+                        <input type={"number"} name={"minPrice"} value={minPrice}/>
+                        <label>До</label>
+                        <input type={"number"} name={"maxPrice"} value={maxPrice}/>
+                        <h2>Страна:</h2>
+                        <div id={"countries"}></div>
+                        <h2>Тип:</h2>
+                        <label><input type={"checkbox"} name={"type"} value={"fruits"}/>Фрукты</label>
+                        <label><input type={"checkbox"} name={"type"} value={"vegetables"}/>Овощи</label>
+                        <label><input type={"checkbox"} name={"type"} value={"fruits"}/>Фрукты</label>
+                        <h2>Цвет:</h2>
+                        <div id={"colors"}></div>
                     </div>
                     <div id={"tableProducts"}>
                     </div>

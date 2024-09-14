@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'api/*',
         ]);
+        $middleware->alias([
+           'role' => \Spatie\Permission\Models\Role::class,
+           'permission' => \Spatie\Permission\Models\Permission::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

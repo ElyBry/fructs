@@ -6,14 +6,15 @@
 header {
     position: relative;
 }
-svg {
-    width: 300px;
-    transform: translate3d(-125px,0,0);
-    transition: $transition-base ease;
-    pointer-events: none;
+
+
+#main .content {
+    display: flex;
+    padding: $padding-page;
+    #filter {
+        margin-right: $margin-h1;
+    }
 }
-
-
 #search {
     padding: $padding-page;
     position: relative;
@@ -61,10 +62,17 @@ svg {
     background-size: 10px 10px;
     cursor: pointer;
 }
+.show {
+    .filter {
+        display: block;
+    }
+    .search {
+        display: block;
+    }
+}
 #tableProducts {
     display: flex;
     gap: $padding-elements;
-    padding: $padding-page;
     flex-wrap: wrap;
     .products {
         flex: 1 1 19%;
@@ -76,7 +84,7 @@ svg {
         border-radius: $border-radius-elements;
         .imgProducts {
             width: 80%;
-            margin: auto;
+            margin: 10% auto;
             img {
                 width: 100%;
             }
@@ -84,10 +92,12 @@ svg {
         .textProducts {
             text-align: center;
             font-size: 1.5rem;
+            margin: 10% auto;
         }
         .priceProducts {
             text-align: center;
             font-size: 1.5rem;
+            margin: 10% auto;
         }
         .buttonsProducts {
             display: flex;
@@ -95,6 +105,7 @@ svg {
             gap: $padding-elements;
             .addCart,
             .aboutProducts{
+                margin: 1% ;
                 font-size: 1rem;
                 border-radius: $border-radius-elements;
                 padding: $padding-elements;

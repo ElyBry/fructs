@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Controllers\BaseController as BaseController;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class ProductsController extends Controller
+class ProductsController extends BaseController
 {
     public function index()
     {
@@ -17,12 +19,15 @@ class ProductsController extends Controller
     }
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'title' => 'required|unique:products|max:255',
             'description' => 'required',
             'price' => 'integer',
             'available' => 'boolean'
         ]);
+        if($validator->fails()){
+            return $this->sendError('Ошибка валидации', $validator->errors());
+        }
         $product = Product::create($request->all());
         return response()->json($product, 201);
     }

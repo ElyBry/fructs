@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
+
+
 Route::get('/login', function () {
     return view('SignInUp');
 });
@@ -15,4 +17,3 @@ Route::get('/products', function () {
 Route::group([], function () {
     require base_path('routes/api.php');
 });
-
