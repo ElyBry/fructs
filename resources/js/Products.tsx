@@ -29,6 +29,9 @@ const Products: React.FC = () => {
             productsContainer.innerHTML = '';
 
             data.forEach((product) => {
+                if (product.availability == 0) {
+
+                }
                 const div = document.createElement('div');
                 div.className = 'products';
 
@@ -36,8 +39,8 @@ const Products: React.FC = () => {
                 divImg.className = 'imgProducts';
 
                 const img = document.createElement('img');
-                //img.src = product.image;
-                img.src = "image/fruits/apple.png";
+                img.src = product.img;
+                //img.src = "image/fruits/apple.png";
                 divImg.appendChild(img);
 
                 const divText = document.createElement('div');

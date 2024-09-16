@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller {
     /**
@@ -44,7 +47,7 @@ class UserController extends Controller {
      */
     public function store(Request $request): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|same:confirm-password',
@@ -98,7 +101,7 @@ class UserController extends Controller {
      */
     public function update(Request $request, $id): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
             'password' => 'same:confirm-password',

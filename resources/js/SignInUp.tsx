@@ -3,6 +3,7 @@ import { Component, useState } from 'react';
 import * as ReactDOM from 'react-dom/client';
 
 const SignInUp = () => {
+    const [User, setUser] = useState(null);
     const [Name, setName] = useState('');
     const [Email, setEmail] = useState('');
     const [Password, setPass] = useState('');
@@ -30,15 +31,19 @@ const SignInUp = () => {
             }),
             body: JSON.stringify(body),
             credentials: 'include'
-        })
+            })
             .then(response => {
                 if (response.status === 400) {
                     errorOut.textContent = 'Неверно введены данные для авторизации';
                     throw new Error('Неверно введены данные для авторизации');
                 }
+                return response.json();
             })
             .then(data => {
-                console.log(data);
+                if (data.success) {
+                    setUser(data.user);
+                    window.location.replace('http://localhost:8000/roles');
+                }
             })
             .catch(error => console.error(error));
     }

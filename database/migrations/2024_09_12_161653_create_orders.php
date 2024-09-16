@@ -21,10 +21,6 @@ return new class extends Migration
             $table->unsignedBigInteger('payment_method_id');
             $table->unsignedBigInteger('payment_status_id');
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('payment_method_id')->references('id')->on('payment_methods');
-            $table->foreign('payment_status_id')->references('id')->on('payment_statuses');
         });
     }
 
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('orders');
     }
 };

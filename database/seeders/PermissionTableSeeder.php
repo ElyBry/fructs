@@ -14,24 +14,29 @@ class PermissionTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Permission::create(['name' => 'create-users']);
-        Permission::create(['name' => 'edit-users']);
-        Permission::create(['name' => 'delete-users']);
-        Permission::create(['name' => 'create-products']);
-        Permission::create(['name' => 'edit-products']);
-        Permission::create(['name' => 'delete-products']);
-        Permission::create(['name' => 'buy-products']);
+        $permissions = [
+          'create-users',
+          'edit-users',
+          'delete-users',
+          'view-users',
+          'create-roles',
+          'edit-roles',
+          'delete-roles',
+          'view-roles',
+          'edit-products',
+          'create-products',
+          'delete-products',
+          'buy-products',
+        ];
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
+        }
 
         // role
+        $superAdminRole = Role::create(['name' => 'Super Admin']);
+        $superAdminRole->givePermissionTo($permissions);
         $adminRole = Role::create(['name' => 'Admin']);
-
-        $adminRole->givePermissionTo([
-            'create-users',
-            'delete-users',
-            'create-posts',
-            'edit-posts',
-            'delete-posts',
-        ]);
+        $adminRole->givePermissionTo($permissions);
 
         $managerRole = Role::create(['name' => 'Manager']);
         $managerRole->givePermissionTo([
@@ -40,7 +45,7 @@ class PermissionTableSeeder extends Seeder
             'delete-products',
         ]);
 
-        $buyerRole = Role::create(['name' => 'Buyer']);
+        $buyerRole = Role::create(['name' => 'User']);
         $buyerRole->givePermissionTo([
             'buy-products',
         ]);

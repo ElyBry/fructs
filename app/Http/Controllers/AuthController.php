@@ -28,16 +28,24 @@ class AuthController extends BaseController
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
+        $user->assignRole('User');
         $success['user'] =  $user;
 
-        return $this->sendResponse($success, 'Пользователь успешно зарегистрирован');
+        $credentials = request(['email', 'password']);
+
+        if (! $token = auth()->attempt($credentials)) {
+            return $this->sendError('Ошибка.', ['error' => 'Неверно введён пароль или email'], 400);
+        }
+        $cookie = $this->respondWithToken($token);
+
+        return $this->sendResponse($success, 'Пользователь успешно зарегистрирован')->withCookie($cookie);
     }
     public function login()
     {
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
-            return $this->sendError('Ошибка.', ['error'=>'Неверно введён пароль или email'], 400);
+            return $this->sendError('Ошибка.', ['error' => 'Неверно введён пароль или email'], 400);
         }
 
         $success['user'] = auth()->user();

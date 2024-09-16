@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -10,13 +12,19 @@ Route::group([
     Route::get('products', [ProductsController::class, 'index']);
     Route::get('products/{product}', [ProductsController::class, 'show']);
 });
+//middleware('permission:view-roles|edit-roles|create-roles|delete-roles', ['only' => ['index','show']]);
+//middleware('permission:roles-create', ['only' => ['create','store']]);
+//middleware('permission:roles-edit', ['only' => ['edit','update']]);
+//middleware('permission:roles-delete', ['only' => ['destroy']]);
 
 Route::group([
-    'middleware' => ['auth']
+    'middleware' => [
+        'api',
+        'permission:view-roles|edit-roles|create-roles|delete-roles'
+    ]
 ], function () {
-    //Route::resource('roles', 'App\Http\Controllers\RoleController'); #fix
-    //Route::resource('users', 'App\Http\Controllers\UserController'); #fix
-    //Route::resource('products', 'App\Http\Controllers\ProductsController'); #fix
+    Route::get('/roles', [RoleController::class, 'index']);
+    Route::get('/users', [UserController::class, 'index']);
 });
 Route::group([
     'middleware' => 'api',
