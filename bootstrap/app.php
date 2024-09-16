@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
            'role' => \Spatie\Permission\Models\Role::class,
-           'permission' => \Spatie\Permission\Models\Permission::class,
+           'permission' => \Spatie\Permission\Models\Permission::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
