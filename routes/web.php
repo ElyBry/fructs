@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
 
 Route::get('/login', function () {
+    if (Auth::check()){
+        return redirect('/products');
+    }
     return view('SignInUp');
 });
 Route::get('/', function () {

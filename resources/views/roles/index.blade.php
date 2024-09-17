@@ -4,10 +4,10 @@
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>Role Management</h2>
+                <h2>Управление ролями</h2>
             </div>
             <div class="pull-right">
-                @can('role-create')
+                @can('create-roles')
                     <a class="btn btn-success btn-sm mb-2" href="{{ route('roles.create') }}"><i class="fa fa-plus"></i> Create New Role</a>
                 @endcan
             </div>
@@ -32,11 +32,11 @@
                 <td>{{ $role->name }}</td>
                 <td>
 
-                    @can('role-edit')
+                    @can('edit-roles')
                         <a class="btn btn-primary btn-sm" href="{{ route('roles.edit',$role->id) }}"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
                     @endcan
 
-                    @can('role-delete')
+                    @can('delete-roles')
                         <form method="POST" action="{{ route('roles.destroy', $role->id) }}" style="display:inline">
                             @csrf
                             @method('DELETE')
@@ -51,5 +51,4 @@
 
     {!! $roles->links('pagination::bootstrap-5') !!}
 
-    <p class="text-center text-primary"><small>Tutorial by ItSolutionStuff.com</small></p>
 @endsection
