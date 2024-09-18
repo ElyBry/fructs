@@ -21,10 +21,9 @@ class UserController extends Controller {
      */
     public function index(Request $request): View
     {
-        $data = User::latest()->paginate(5);
+        $user = User::orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(12);
 
-        return view('users.index',compact('data'))
-            ->with('i', ($request->input('page', 1) - 1) * 5);
+        return $user;
     }
 
     /**

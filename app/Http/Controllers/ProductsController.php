@@ -12,7 +12,20 @@ class ProductsController extends BaseController
 {
     public function index(Request $request)
     {
-        $products = Product::orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(12);
+        $query = Product::query();
+        if ($request->has('name') && $request->get('name') != '') {
+            $query->where('title', 'like', '%' . $request->get('name') . '%');
+        }
+        if ($request->has('min_price') && $request->get('min_price') != '') {
+            $query->where('price','>=',$request->get('min_price'));
+        }
+        if ($request->has('max_price') && $request->get('max_price') != '') {
+            $query->where('price','<=',$request->get('max_price'));
+        }
+        if ($request->has('category_id') && $request->get('category_id') != '') {
+            $query->where('category_id', $request->get('category_id'));
+        }
+        $products = $query->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(12);
 
         return $products;
     }

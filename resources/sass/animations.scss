@@ -1,0 +1,14 @@
+// Здесь находятся анимации
+@keyframes loadingSkeleton {
+    to {
+        background-position: 315px 0, 0 0, 0 190px, 50px 195px;
+    }
+}
+@mixin loadSkeleton {
+    cursor: progress;
+    background:linear-gradient(0.25turn, transparent, #fff, transparent),linear-gradient(#eee, #eee);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: -315px 0, 0 0, 0px 190px, 50px 195px;
+    animation: $animation-loading $time-animations-loading infinite;
+}

@@ -17,29 +17,55 @@ const Products: React.FC = () => {
 
     const [isSearch, setIsSearch] = useState(true);
     const inputRef = useRef(null);
-    let minPrice = 0;
-    let maxPrice = 0;
-
+    const [minPrice, setMinPrice] = useState('');
+    const [maxPrice, setMaxPrice] = useState('');
+    const [selectedTypes, setSelectedTypes] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const fetchProducts = async (pageNumber: number) => {
         try {
             setLoading(true);
-            const response = await axios.get(`/api/products?page=${pageNumber}`);
+            console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes,searchTerm });
+            const response = await axios.get<any>('/api/products', {
+                params: {
+                    page: pageNumber,
+                    name: searchTerm,
+                    min_price: minPrice || undefined,
+                    max_price: maxPrice || undefined,
+                    types: selectedTypes.length > 0 ? selectedTypes : undefined
+                }
+            });
             const newData = response.data;
 
             setProducts((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);
+            return response;
         } catch (error) {
             console.error("Ошибка получения данных: ", error);
         } finally {
             setLoading(false);
         }
     };
+    const handleTypeChange = (event) => {
+        const value = event.target.value;
+        if (event.target.checked) {
+            setSelectedTypes((prev) => [...prev, value]);
+        } else {
+            setSelectedTypes((prev) => prev.filter((type) => type !== value));
+        }
+    };
+    const handleMinPriceChange = (event) => setMinPrice(event.target.value);
+    const handleMaxPriceChange = (event) => setMaxPrice(event.target.value);
+    const handleSearchChange = (event) => setSearchTerm(event.target.value);
     useEffect(() =>{
         fetchProducts(page);
-    }, [page]);
+    }, [page, minPrice, maxPrice, selectedTypes, searchTerm]);
+    useEffect(() => {
+        if (searchTerm) {
+            setProducts([]); // Очищаем результаты, если есть ввод
+        }
+    }, [searchTerm]);
     useEffect(() => {
         const tableProducts:HTMLElement = document.querySelector('#root');
-
         const handleScroll = () => {
             const scrollTop = tableProducts.scrollTop;
             const tableHeight = tableProducts.offsetHeight;
@@ -74,7 +100,7 @@ const Products: React.FC = () => {
             <Header/>
             <div id={"search"}>
                 <div id={"inputSearch"} className={isSearch ? "searching" : ""}>
-                    <input placeholder={"Поиск"} type={"search"} autoComplete={"off"} ref={inputRef}/>
+                    <input placeholder={"Поиск"} type={"search"} autoComplete={"off"} ref={inputRef} onChange={handleSearchChange}/>
                     <button type={"submit"} className={"searchIcon"} onClick={toggleSearch}><span className="material-symbols-outlined">search</span></button>
                 </div>
             </div>
@@ -83,15 +109,15 @@ const Products: React.FC = () => {
                     <div id={"filter"}>
                         <h2>Цена:</h2>
                         <label>От</label>
-                        <input type={"number"} name={"minPrice"} defaultValue={minPrice}/>
+                        <input type={"number"} name={"minPrice"} value={minPrice} onChange={handleMinPriceChange}/>
                         <label>До</label>
-                        <input type={"number"} name={"maxPrice"} defaultValue={maxPrice}/>
+                        <input type={"number"} name={"maxPrice"} value={maxPrice} onChange={handleMaxPriceChange}/>
                         <h2>Страна:</h2>
                         <div id={"countries"}></div>
                         <h2>Тип:</h2>
-                        <label><input type={"checkbox"} name={"type"} value={"fruits"}/>Фрукты</label>
-                        <label><input type={"checkbox"} name={"type"} value={"vegetables"}/>Овощи</label>
-                        <label><input type={"checkbox"} name={"type"} value={"fruits"}/>Фрукты</label>
+                        <label><input type={"checkbox"} name={"type"} value={"fruits"} onChange={handleTypeChange}/>Фрукты</label>
+                        <label><input type={"checkbox"} name={"type"} value={"vegetables"} onChange={handleTypeChange}/>Овощи</label>
+                        <label><input type={"checkbox"} name={"type"} value={"fruits"} onChange={handleTypeChange}/>Фрукты</label>
                         <h2>Цвет:</h2>
                         <div id={"colors"}></div>
                     </div>
@@ -100,12 +126,13 @@ const Products: React.FC = () => {
                             <div key={product.id} className={"products"}>
                                 <div className={"imgProducts"}>
                                     <img src={product.img}/>
+                                    {product.id}
                                 </div>
                                 <div className={"textProducts"}>
                                     {product.title}
                                 </div>
                                 <div className={"priceProducts"}>
-                                    {product.price} р / {product.weight};
+                                    {product.price}р /{product.weight}
                                 </div>
                                 <div className={"buttonsProducts"}>
                                     <button className={"addCart"}>Добавить в корзину</button>
@@ -114,13 +141,13 @@ const Products: React.FC = () => {
                             </div>
                         ))}
                         {loading && [...Array(12)].map((_, index) => (
-                            <div key={index} className={"products"}>
-                                <div className={"imgProducts gray"}></div>
-                                <div className={"textProducts gray"}></div>
-                                <div className={"priceProducts gray"}></div>
+                            <div key={index} className={"products grey_card"}>
+                                <div className={"imgProducts grey"}></div>
+                                <div className={"textProducts grey"}></div>
+                                <div className={"priceProducts grey"}></div>
                                 <div className={"buttonsProducts"}>
-                                    <button className={"addCart gray"} disabled>Добавить в корзину</button>
-                                    <button className={"aboutProducts gray"} disabled>Подробнее</button>
+                                    <button className={"addCart grey"} disabled>Добавить в корзину</button>
+                                    <button className={"aboutProducts grey"} disabled>Подробнее</button>
                                 </div>
                             </div>
                         ))}
