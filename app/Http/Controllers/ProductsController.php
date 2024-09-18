@@ -5,13 +5,16 @@ use App\Http\Controllers\BaseController as BaseController;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProductsController extends BaseController
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Product::all();
+        $products = Product::orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(12);
+
+        return $products;
     }
     public function show(Product $product)
     {

@@ -5,75 +5,64 @@ import Footer from "./components/_footer.js";
 import Header from "./components/_header.js";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import axios from "axios";
 const random = gsap.utils.random;
 
 gsap.registerPlugin(ScrollTrigger);
-
 const Products: React.FC = () => {
+    const [products, setProducts] = useState([]);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+
     const [isSearch, setIsSearch] = useState(true);
-    const urlProducts = "http://localhost:8000/api/products";
     const inputRef = useRef(null);
     let minPrice = 0;
     let maxPrice = 0;
 
-    fetch(urlProducts)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(response.statusText)
+    const fetchProducts = async (pageNumber: number) => {
+        try {
+            setLoading(true);
+            const response = await axios.get(`/api/products?page=${pageNumber}`);
+            const newData = response.data;
+
+            setProducts((prev) => [...prev, ...newData.data]);
+            setHasMore(newData.current_page < newData.last_page);
+        } catch (error) {
+            console.error("Ошибка получения данных: ", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() =>{
+        fetchProducts(page);
+    }, [page]);
+    useEffect(() => {
+        const tableProducts:HTMLElement = document.querySelector('#root');
+
+        const handleScroll = () => {
+            const scrollTop = tableProducts.scrollTop;
+            const tableHeight = tableProducts.offsetHeight;
+
+            if ((scrollTop >= tableHeight * 0.75) && hasMore && !loading) {
+                setPage((prev) => prev + 1);
             }
-            return response.json();
-        })
-        .then(data => {
-            const productsContainer = document.querySelector("#tableProducts");
 
-            productsContainer.innerHTML = '';
+            // Для отладки
+            //console.log(scrollTop, tableHeight);
+        };
 
-            data.forEach((product) => {
-                if (product.availability == 0) {
+        if (tableProducts) {
+            tableProducts.addEventListener('scroll', handleScroll);
+        }
 
-                }
-                const div = document.createElement('div');
-                div.className = 'products';
+        return () => {
+            if (tableProducts) {
+                tableProducts.removeEventListener('scroll', handleScroll);
+            }
+        };
+    }, [hasMore, loading])
 
-                const divImg = document.createElement('div');
-                divImg.className = 'imgProducts';
-
-                const img = document.createElement('img');
-                img.src = product.img;
-                //img.src = "image/fruits/apple.png";
-                divImg.appendChild(img);
-
-                const divText = document.createElement('div');
-                divText.className = 'textProducts';
-                divText.textContent = product.title;
-
-                const divPrice = document.createElement('div');
-                divPrice.className = 'priceProducts';
-                divPrice.textContent = product.price + "р / " + product.weight;
-
-                const buttonsDiv = document.createElement('div');
-                buttonsDiv.className = 'buttonsProducts';
-                const addCartButton = document.createElement('button');
-                addCartButton.className = 'addCart';
-                addCartButton.textContent = 'Добавить в корзину';
-                const aboutButton = document.createElement('button');
-                aboutButton.className = 'aboutProducts';
-                aboutButton.textContent = 'Подробнее';
-
-                buttonsDiv.appendChild(addCartButton);
-                buttonsDiv.appendChild(aboutButton)
-
-                div.appendChild(divImg);
-                div.appendChild(divText);
-                div.appendChild(divPrice);
-                div.appendChild(buttonsDiv);
-
-                productsContainer.appendChild(div);
-            })
-        })
-        .catch(error => {
-            console.log(error);
-        })
     const toggleSearch = () => {
         setIsSearch(!isSearch);
         if (!isSearch) {
@@ -94,9 +83,9 @@ const Products: React.FC = () => {
                     <div id={"filter"}>
                         <h2>Цена:</h2>
                         <label>От</label>
-                        <input type={"number"} name={"minPrice"} value={minPrice}/>
+                        <input type={"number"} name={"minPrice"} defaultValue={minPrice}/>
                         <label>До</label>
-                        <input type={"number"} name={"maxPrice"} value={maxPrice}/>
+                        <input type={"number"} name={"maxPrice"} defaultValue={maxPrice}/>
                         <h2>Страна:</h2>
                         <div id={"countries"}></div>
                         <h2>Тип:</h2>
@@ -107,6 +96,34 @@ const Products: React.FC = () => {
                         <div id={"colors"}></div>
                     </div>
                     <div id={"tableProducts"}>
+                        {products.map((product) => (
+                            <div key={product.id} className={"products"}>
+                                <div className={"imgProducts"}>
+                                    <img src={product.img}/>
+                                </div>
+                                <div className={"textProducts"}>
+                                    {product.title}
+                                </div>
+                                <div className={"priceProducts"}>
+                                    {product.price} р / {product.weight};
+                                </div>
+                                <div className={"buttonsProducts"}>
+                                    <button className={"addCart"}>Добавить в корзину</button>
+                                    <button className={"aboutProducts"}>Подробнее</button>
+                                </div>
+                            </div>
+                        ))}
+                        {loading && [...Array(12)].map((_, index) => (
+                            <div key={index} className={"products"}>
+                                <div className={"imgProducts gray"}></div>
+                                <div className={"textProducts gray"}></div>
+                                <div className={"priceProducts gray"}></div>
+                                <div className={"buttonsProducts"}>
+                                    <button className={"addCart gray"} disabled>Добавить в корзину</button>
+                                    <button className={"aboutProducts gray"} disabled>Подробнее</button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

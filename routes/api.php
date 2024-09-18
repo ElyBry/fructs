@@ -18,10 +18,12 @@ Route::group([
     'middleware' => [
         'api',
         'permission:view-roles|edit-roles|create-roles|delete-roles'
-    ]
+    ],
+    'prefix' => 'admin/'
 ], function () {
     Route::resource('/roles', RoleController::class);
     Route::resource('/users', UserController::class);
+    Route::resource('/products', ProductsController::class);
 });
 Route::group([
     'middleware' => [
