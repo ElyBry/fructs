@@ -6,6 +6,7 @@ import Header from "./components/_header.js";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import axios from "axios";
+import { debounce } from 'lodash';
 const random = gsap.utils.random;
 
 gsap.registerPlugin(ScrollTrigger);
@@ -21,11 +22,13 @@ const Products: React.FC = () => {
     const [maxPrice, setMaxPrice] = useState('');
     const [selectedTypes, setSelectedTypes] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const fetchProducts = async (pageNumber: number) => {
+    const controller = new AbortController();
+    const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm) => {
         try {
             setLoading(true);
-            console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes,searchTerm });
+            console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes,searchTerm,pageNumber,hasMore,loading });
             const response = await axios.get<any>('/api/products', {
+                signal: controller.signal,
                 params: {
                     page: pageNumber,
                     name: searchTerm,
@@ -40,7 +43,11 @@ const Products: React.FC = () => {
             setHasMore(newData.current_page < newData.last_page);
             return response;
         } catch (error) {
-            console.error("Ошибка получения данных: ", error);
+            if (axios.isCancel(error)) {
+                console.log(error.message);
+            } else {
+                console.error("Ошибка получения данных: ", error);
+            }
         } finally {
             setLoading(false);
         }
@@ -56,36 +63,34 @@ const Products: React.FC = () => {
     const handleMinPriceChange = (event) => setMinPrice(event.target.value);
     const handleMaxPriceChange = (event) => setMaxPrice(event.target.value);
     const handleSearchChange = (event) => setSearchTerm(event.target.value);
-    useEffect(() =>{
-        fetchProducts(page);
-    }, [page, minPrice, maxPrice, selectedTypes, searchTerm]);
     useEffect(() => {
-        if (searchTerm) {
-            setProducts([]); // Очищаем результаты, если есть ввод
-        }
-    }, [searchTerm]);
+        fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm);
+    }, [page,minPrice, maxPrice, selectedTypes, searchTerm]);
     useEffect(() => {
-        const tableProducts:HTMLElement = document.querySelector('#root');
-        const handleScroll = () => {
-            const scrollTop = tableProducts.scrollTop;
-            const tableHeight = tableProducts.offsetHeight;
-
-            if ((scrollTop >= tableHeight * 0.75) && hasMore && !loading) {
-                setPage((prev) => prev + 1);
-            }
-
-            // Для отладки
-            //console.log(scrollTop, tableHeight);
+        setProducts([]);
+        setPage(1);
+        setHasMore(true);
+        return () => {
+            controller.abort();
         };
+    }, [minPrice, maxPrice, selectedTypes, searchTerm]);
+    const tableProducts:HTMLElement = document.querySelector('#root');
+    const handleScroll = () => {
+        const scrollTop = tableProducts.scrollTop;
+        const tableHeight = tableProducts.offsetHeight;
 
-        if (tableProducts) {
-            tableProducts.addEventListener('scroll', handleScroll);
+        if ((scrollTop >= tableHeight * 0.75) && hasMore && !loading) {
+            setPage(prev => prev + 1);
         }
+
+        // Для отладки
+        //console.log(scrollTop, tableHeight);
+    };
+    useEffect(() => {
+        tableProducts.addEventListener('scroll', handleScroll);
 
         return () => {
-            if (tableProducts) {
-                tableProducts.removeEventListener('scroll', handleScroll);
-            }
+            tableProducts.removeEventListener('scroll', handleScroll);
         };
     }, [hasMore, loading])
 
