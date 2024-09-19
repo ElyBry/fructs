@@ -6,7 +6,6 @@ import Header from "./components/_header.js";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import axios from "axios";
-import { debounce } from 'lodash';
 const random = gsap.utils.random;
 
 gsap.registerPlugin(ScrollTrigger);
@@ -25,8 +24,8 @@ const Products: React.FC = () => {
     const controller = new AbortController();
     const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm) => {
         try {
+            //console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes,searchTerm,pageNumber,hasMore,loading });
             setLoading(true);
-            console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes,searchTerm,pageNumber,hasMore,loading });
             const response = await axios.get<any>('/api/products', {
                 signal: controller.signal,
                 params: {
@@ -38,7 +37,7 @@ const Products: React.FC = () => {
                 }
             });
             const newData = response.data;
-
+            setLoading(false);
             setProducts((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);
             return response;
@@ -48,8 +47,6 @@ const Products: React.FC = () => {
             } else {
                 console.error("Ошибка получения данных: ", error);
             }
-        } finally {
-            setLoading(false);
         }
     };
     const handleTypeChange = (event) => {
@@ -74,26 +71,25 @@ const Products: React.FC = () => {
             controller.abort();
         };
     }, [minPrice, maxPrice, selectedTypes, searchTerm]);
-    const tableProducts:HTMLElement = document.querySelector('#root');
-    const handleScroll = () => {
-        const scrollTop = tableProducts.scrollTop;
-        const tableHeight = tableProducts.offsetHeight;
-
-        if ((scrollTop >= tableHeight * 0.75) && hasMore && !loading) {
-            setPage(prev => prev + 1);
-        }
-
-        // Для отладки
-        //console.log(scrollTop, tableHeight);
-    };
     useEffect(() => {
+        const tableProducts:HTMLElement = document.querySelector('#root');
+        const handleScroll = () => {
+            const scrollTop = tableProducts.scrollTop;
+            const tableHeight = tableProducts.scrollHeight - tableProducts.clientHeight;
+
+            if ((scrollTop >= tableHeight * 0.75) && hasMore && !loading) {
+                setPage(prev => prev + 1);
+            }
+
+            // Для отладки
+            //console.log(scrollTop, tableHeight,window.innerHeight,document.documentElement.scrollTop);
+        };
         tableProducts.addEventListener('scroll', handleScroll);
 
         return () => {
             tableProducts.removeEventListener('scroll', handleScroll);
         };
     }, [hasMore, loading])
-
     const toggleSearch = () => {
         setIsSearch(!isSearch);
         if (!isSearch) {
