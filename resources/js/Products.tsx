@@ -105,22 +105,82 @@ const Products: React.FC = () => {
                     <button type={"submit"} className={"searchIcon"} onClick={toggleSearch}><span className="material-symbols-outlined">search</span></button>
                 </div>
             </div>
+            <div id={"infoProducts"}>
+                <div className={"content"}>
+                    <div>
+                        <div className={"infoCard"}>
+                            <div>
+                                <h4>Самый Популярный Продукт(за месяц)</h4>
+                                <h1>Яблоко</h1>
+                                <h3>320р/ Килограмм</h3>
+                                <button>Добавить в корзину</button>
+                            </div>
+                            <div>
+                                <img src={"image/fruits/apple.png"}/>
+                            </div>
+                        </div>
+                        <div className={"infoCard"}>
+                            <div>
+                                <h4>Новая Категория</h4>
+                                <h1>Фрукты</h1>
+                                <button>Отфильтровать</button>
+                            </div>
+                            <div>
+                                <img src={"image/background-images/fruits-realistic-set.png"}/>
+                            </div>
+                        </div>
+                        <div className={"infoCard"}>
+                            <div>
+                                <h4>Новый Продукт</h4>
+                                <h1>Апельсин</h1>
+                                <h3>320р/ Килограмм</h3>
+                                <button>Подробнее</button>
+                            </div>
+                            <div>
+                                <img src={"image/fruits/orange.png"}/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div id={"main"}>
                 <div className={"content"}>
                     <div id={"filter"}>
-                        <h2>Цена:</h2>
-                        <label>От</label>
-                        <input type={"number"} name={"minPrice"} value={minPrice} onChange={handleMinPriceChange}/>
-                        <label>До</label>
-                        <input type={"number"} name={"maxPrice"} value={maxPrice} onChange={handleMaxPriceChange}/>
-                        <h2>Страна:</h2>
-                        <div id={"countries"}></div>
-                        <h2>Тип:</h2>
-                        <label><input type={"checkbox"} name={"type"} value={"fruits"} onChange={handleTypeChange}/>Фрукты</label>
-                        <label><input type={"checkbox"} name={"type"} value={"vegetables"} onChange={handleTypeChange}/>Овощи</label>
-                        <label><input type={"checkbox"} name={"type"} value={"fruits"} onChange={handleTypeChange}/>Фрукты</label>
-                        <h2>Цвет:</h2>
-                        <div id={"colors"}></div>
+                        <div className={"mainType"}>
+                            <label className={"active"}><input type={"radio"} name={"type"} value={"all"} onChange={handleTypeChange}/>Все</label>
+                            <label><input type={"radio"} name={"type"} value={"fruits"} onChange={handleTypeChange}/>Фрукты</label>
+                            <label><input type={"radio"} name={"type"} value={"vegetables"} onChange={handleTypeChange}/>Овощи</label>
+                            <label><input type={"radio"} name={"type"} value={"fruits"} onChange={handleTypeChange}/>Фрукты</label>
+                        </div>
+                        <div className={"tree"}>
+                            <div className={"filter"}>
+                                <span className="material-symbols-outlined">filter_alt</span>
+                                Фильтр
+                            </div>
+                            <div className={"sort"}>
+                                <span className="material-symbols-outlined">filter_list</span>
+                                Сортировка
+                            </div>
+                        </div>
+                        <div className={"contentTreeSort"}>
+                            <div>Отсортировать по</div>
+                            <button>Самые популярные</button>
+                            <button>Новые</button>
+                            <button>С высокой оценкой</button>
+                        </div>
+                        <div className={"contentTreeFilter"}>
+                            <div>Добавить фильтр</div>
+                            <h2>Цена:</h2>
+                            <label>От</label>
+                            <input type={"number"} name={"minPrice"} value={minPrice} onChange={handleMinPriceChange}/>
+                            <label>До</label>
+                            <input type={"number"} name={"maxPrice"} value={maxPrice} onChange={handleMaxPriceChange}/>
+                            <h2>Страна:</h2>
+                            <div id={"countries"}></div>
+                            <h2>Цвет:</h2>
+                            <div id={"colors"}></div>
+                        </div>
+
                     </div>
                     <div id={"tableProducts"}>
                         {products.map((product) => (
@@ -130,7 +190,7 @@ const Products: React.FC = () => {
                                     {product.id}
                                 </div>
                                 <div className={"textProducts"}>
-                                    {product.title}
+                                {product.title}
                                 </div>
                                 <div className={"priceProducts"}>
                                     {product.price}р /{product.weight}
