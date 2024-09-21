@@ -169,22 +169,62 @@ header {
         }
         .tree {
             display: flex;
-            div:not(:last-child) {
-                margin-right: $margin-text;
-            }
-            div {
+            .filter,
+            .sort, {
                 border-radius: $border-radius-elements;
                 padding: $padding-elements;
                 background-color: rgba(255, 248, 240, 0.8);
                 cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                position: relative;
+                .iconTree {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .active {
+                    display: block;
+                    transform: translateY(7vh);
+                    .blocksTree {
+                        display: grid;
+                    }
+                }
+            }
+            .filter {
+                margin-right: $margin-text;
             }
         }
         .contentTreeSort,
         .contentTreeFilter {
             display: none;
+            padding: $padding-elements;
+            background-color: rgb(255, 255, 255);
+            z-index: 25;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+            top: 0;
+            right: 0;
+            border-radius: $border-radius-elements;
+            position: absolute;
+            transition: $transition-base all ease;
+            .textTree {
+                text-align: left;
+                font-weight: 600;
+            }
+            .blocksTree {
+                grid-template-columns: 40% 40%;
+                justify-content: center;
+                grid-gap: $margin-text;
+                button {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    padding: $padding-elements;
+                    border-radius: $border-radius-elements;
+                    background-color: rgba(255, 248, 240, 0.8);
+                }
+            }
 
         }
     }
@@ -208,6 +248,7 @@ header {
         justify-content: center;
         align-items: center;
         box-shadow: 1px 1px 3px 0 rgba(#333, 0.2);
+        background-color: rgba(255, 255, 255, 0.6);
         border-radius: $border-radius-elements;
         .imgProducts {
             width: 100%;

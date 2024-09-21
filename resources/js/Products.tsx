@@ -154,32 +154,47 @@ const Products: React.FC = () => {
                         </div>
                         <div className={"tree"}>
                             <div className={"filter"}>
-                                <span className="material-symbols-outlined">filter_alt</span>
-                                Фильтр
+                                <div className={"iconTree"}>
+                                    <span className="material-symbols-outlined">filter_alt</span>
+                                    Фильтр
+                                </div>
+                                <div className={"contentTreeFilter active"}>
+                                    <div className={"textTree"}>Добавить фильтр</div>
+                                    <div className={"blocksTree"}>
+                                        <h2>Цена:</h2>
+                                        <label>От</label>
+                                        <input type={"number"} name={"minPrice"} value={minPrice}
+                                               onChange={handleMinPriceChange}/>
+                                        <label>До</label>
+                                        <input type={"number"} name={"maxPrice"} value={maxPrice}
+                                               onChange={handleMaxPriceChange}/>
+                                        <h2>Страна:</h2>
+                                        <div id={"countries"}></div>
+                                        <h2>Цвет:</h2>
+                                        <div id={"colors"}></div>
+                                    </div>
+                                </div>
                             </div>
                             <div className={"sort"}>
-                                <span className="material-symbols-outlined">filter_list</span>
-                                Сортировка
+                                <div className={"iconTree"}>
+                                    <span className="material-symbols-outlined">filter_list</span>
+                                    Сортировка
+                                </div>
+                                <div className={"contentTreeSort active"}>
+                                    <div className={"textTree"}>Отсортировать по</div>
+                                    <div className={"blocksTree"}>
+                                        <button><span className="material-symbols-outlined">trending_up</span>
+                                            Популярным
+                                        </button>
+                                        <button><span className="material-symbols-outlined">update</span>Новизне</button>
+                                        <button><span className="material-symbols-outlined">favorite</span>Отзывам
+                                        </button>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
-                        <div className={"contentTreeSort"}>
-                            <div>Отсортировать по</div>
-                            <button>Самые популярные</button>
-                            <button>Новые</button>
-                            <button>С высокой оценкой</button>
-                        </div>
-                        <div className={"contentTreeFilter"}>
-                            <div>Добавить фильтр</div>
-                            <h2>Цена:</h2>
-                            <label>От</label>
-                            <input type={"number"} name={"minPrice"} value={minPrice} onChange={handleMinPriceChange}/>
-                            <label>До</label>
-                            <input type={"number"} name={"maxPrice"} value={maxPrice} onChange={handleMaxPriceChange}/>
-                            <h2>Страна:</h2>
-                            <div id={"countries"}></div>
-                            <h2>Цвет:</h2>
-                            <div id={"colors"}></div>
-                        </div>
+
 
                     </div>
                     <div id={"tableProducts"}>
@@ -190,10 +205,10 @@ const Products: React.FC = () => {
                                     {product.id}
                                 </div>
                                 <div className={"textProducts"}>
-                                {product.title}
+                                    {product.title}
                                 </div>
                                 <div className={"priceProducts"}>
-                                    {product.price}р /{product.weight}
+                                {product.price}р /{product.weight}
                                 </div>
                                 <div className={"buttonsProducts"}>
                                     <button className={"addCart"}>Добавить в корзину</button>
