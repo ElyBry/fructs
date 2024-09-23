@@ -38,6 +38,9 @@ $transition-base: .3s;
 $transition-block-move: .35s all linear;
 $transition-block-move-another: .6s all linear;
 
+$box-shadow-elements: 1px 1px 3px 0 rgba(#333, 0.2);
+$box-shadow-block: 2px 2px 10px 0 rgba(#333, 0.2);
+
 $time-animations-loading: 1.5s;
 $animation-loading: loadingSkeleton;
 

@@ -88,7 +88,7 @@ header {
                 padding: $padding;
                 border-radius: $border-radius;
                 background-color: rgb(255, 248, 240,0.8);
-                box-shadow: 1px 1px 3px 0 rgba(#333, 0.2);
+                box-shadow: $box-shadow-elements;
                 display: flex;
                 justify-content: space-between;
                 align-items: stretch;
@@ -160,6 +160,7 @@ header {
                 align-items: center;
                 justify-content: center;
                 background-color: rgba(255, 248, 240, 0.8);
+                box-shadow: $box-shadow-elements;
                 padding: $padding-elements;
                 border-radius: $border-radius-elements;
                 input {
@@ -174,6 +175,7 @@ header {
                 border-radius: $border-radius-elements;
                 padding: $padding-elements;
                 background-color: rgba(255, 248, 240, 0.8);
+                box-shadow: $box-shadow-elements;
                 cursor: pointer;
                 position: relative;
                 .iconTree {
@@ -198,6 +200,7 @@ header {
             display: none;
             padding: $padding-elements;
             background-color: rgb(255, 255, 255);
+            box-shadow: $box-shadow-elements;
             z-index: 25;
             flex-wrap: wrap;
             justify-content: flex-start;
@@ -235,7 +238,6 @@ header {
     flex-wrap: wrap;
     position: relative;
     .grey_card {
-        height: 46vh !important;
         display: flex;
         align-items: center !important;
         justify-content: space-between !important;
@@ -243,21 +245,21 @@ header {
     .products {
         position: relative;
         flex: 1 1 19%;
-        height: fit-content;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        box-shadow: 1px 1px 3px 0 rgba(#333, 0.2);
-        background-color: rgba(255, 255, 255, 0.6);
+        box-shadow: $box-shadow-elements;
+        backdrop-filter: blur(6px);
         border-radius: $border-radius-elements;
         .imgProducts {
             width: 100%;
             border-radius: $border-radius-elements $border-radius-elements 0 0;
-            height: 35%;
+            height: 35vh;
             img {
                 border-radius: $border-radius-elements $border-radius-elements 0 0;
                 width: 100%;
                 height: 100%;
+                object-fit: contain;
             }
 
         }
@@ -269,7 +271,7 @@ header {
         .priceProducts {
             text-align: center;
             font-size: 1.5rem;
-            margin: 10% auto;
+            margin: 0 auto 10%;
         }
         .buttonsProducts {
             display: flex;
@@ -284,6 +286,7 @@ header {
                 padding: $padding-elements;
                 box-shadow: 2px 2px 10px 0 rgba(#333, 0.2);
                 transition: $transition-base;
+                text-wrap: nowrap;
             }
             .addCart {
                 background-color: green;

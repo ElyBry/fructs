@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\DB;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['title',
+    protected $fillable = [
+        'title',
         'description',
         'weight',
         'count',

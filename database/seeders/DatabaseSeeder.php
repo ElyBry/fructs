@@ -18,12 +18,15 @@ class DatabaseSeeder extends Seeder
             CountriesSeeder::class,
             PaymentSeeder::class,
             PermissionTableSeeder::class,
-            ProductsTableSeeder::class
+            ProductsTableSeeder::class,
+            ColorSeeder::class,
+            TypeProductsSeeder::class,
+            FeedBackSeeder::class
         ]);
         $superAdmin = User::factory()->create([
             'name' => 'Test User',
             'email' => 'ermakov631@gmail.com',
-            'password' => Hash::make('1607Dazdar1607'),
+            'password' => Hash::make('12345'),
         ]);
         $superAdmin->assignRole('Super Admin');
         $admin = User::factory()->create([

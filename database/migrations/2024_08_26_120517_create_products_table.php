@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('price');
             $table->string('weight');
             $table->string('img');
+            $table->string('type_products_id');
+            $table->integer('color_id');
             $table->integer('country_id');
             $table->integer('count');
         });

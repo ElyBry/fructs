@@ -22,8 +22,8 @@ class ProductsController extends BaseController
         if ($request->has('max_price') && $request->get('max_price') != '') {
             $query->where('price','<=',$request->get('max_price'));
         }
-        if ($request->has('category_id') && $request->get('category_id') != '') {
-            $query->where('category_id', $request->get('category_id'));
+        if ($request->has('type_products_id') && $request->get('types') != '') {
+            $query->where('type_products_id', $request->get('types'));
         }
         $products = $query->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(12);
 
@@ -45,16 +45,16 @@ class ProductsController extends BaseController
             return $this->sendError('Ошибка валидации', $validator->errors());
         }
         $product = Product::create($request->all());
-        return response()->json($product, 201);
+        return $this->sendResponse($product,'Успешно добавлено');
     }
     public function update(Request $request, Product $product)
     {
         $product->update($request->all());
-        return response()->json($product, 200);
+        return $this->sendResponse($product,'Успешно обновлено');
     }
     public function delete(Product $product)
     {
         $product->delete();
-        return response()->json(null, 204);
+        return $this->sendResponse(null, 'Успешно удалено');
     }
 }

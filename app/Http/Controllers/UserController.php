@@ -13,38 +13,14 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Spatie\Permission\Models\Role;
 
-class UserController extends Controller {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+class UserController extends BaseController {
     public function index(Request $request): View
     {
         $user = User::orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(12);
 
         return $user;
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(): View
-    {
-        $roles = Role::pluck('name','name')->all();
-
-        return view('users.create',compact('roles'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required',
@@ -59,46 +35,16 @@ class UserController extends Controller {
         $user = User::create($input);
         $user->assignRole($request->input('roles'));
 
-        return redirect()->route('users.index')
-            ->with('success','User created successfully');
+        return $this->sendResponse($user,'Пользователь успешно создан');
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id): View
     {
         $user = User::find($id);
 
-        return view('users.show',compact('user'));
+        return $user;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id): View
-    {
-        $user = User::find($id);
-        $roles = Role::pluck('name','name')->all();
-        $userRole = $user->roles->pluck('name','name')->all();
-
-        return view('users.edit',compact('user','roles','userRole'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, $id)
     {
         $request->validate([
             'name' => 'required',
@@ -120,21 +66,13 @@ class UserController extends Controller {
 
         $user->assignRole($request->input('roles'));
 
-        return redirect()->route('users.index')
-            ->with('success','User updated successfully');
+        return $this->sendResponse($user,'Данные пользователя успешно обновлены');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id): RedirectResponse
+    public function destroy(User $user)
     {
-        User::find($id)->delete();
-        return redirect()->route('users.index')
-            ->with('success','User deleted successfully');
+        $user->delete();
+        return $this->sendResponse(null, 'Пользователь успешно удалён');
     }
 }
 

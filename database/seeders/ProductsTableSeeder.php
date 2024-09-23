@@ -13,19 +13,67 @@ class ProductsTableSeeder extends Seeder
      */
     public function run()
     {
-        $faker = \Faker\Factory::create();
-        $arrUnits = ['Грамм','Килограмм','Штуку'];
-        for ($i = 0; $i < 50; $i++) {
-            shuffle($arrUnits);
-            Product::create([
-                'title' => $faker->word,
-                'description' => $faker->paragraph,
-                'price' => $faker->randomNumber(2),
-                'img' => $faker->imageUrl($width = 640, $height = 480),
-                'country_id' => $faker->numberBetween(1,50),
-                'count' => $faker->numberBetween(0,100),
-                'weight' => $arrUnits[0]
-            ]);
+        $products = [
+            [
+                'title' => 'Красное Яблоко',
+                'description' => 'Сочное, сладкое и хрустящее фрукт.',
+                'color_id' => 1,
+                'type_products_id' => 2,
+                'img' => 'image/fruits_for_products/redApple.png'
+            ],
+            [
+                'title' => 'Банан',
+                'description' => 'Мягкий и сладкий фрукт, идеально подходит для завтрака.',
+                'color_id' => '2',
+                'type_products_id' => 0,
+                'img' => 'image/fruits_for_products/banana.png'
+            ],
+            [
+                'title' => 'Морковь',
+                'description' => 'Хрустящий овощ, богатый витаминами.',
+                'color_id' => '4',
+                'type_products_id' => 1,
+                'img' => 'image/fruits_for_products/morkov.png'
+            ],
+            [
+                'title' => 'Помидор',
+                'description' => 'Сладкий овощ, который часто используется в салатах.',
+                'color_id' => '1',
+                'type_products_id' => 1,
+                'img' => 'image/fruits_for_products/tomato.png'
+            ],
+            [
+                'title' => 'Картофель',
+                'description' => 'Универсальный овощ, используемый в различных блюдах.',
+                'color_id' => '0',
+                'type_products_id' => 1,
+                'img' => 'image/fruits_for_products/potato.png'
+            ],
+            [
+                'title' => 'Малина',
+                'description' => 'Ну очень вкусная',
+                'color_id' => '1',
+                'type_products_id' => 2,
+                'img' => 'image/fruits_for_products/malina.png'
+            ]
+        ];
+
+        $arrUnits = ['Грамм', 'Килограмм'];
+        $arrUnitsC = ['100','500','1000'];
+        for ($i = 0; $i <= 50; $i++) {
+            foreach ($products as $product) {
+                Product::create([
+                    'title' => $product['title'],
+                    'description' => $product['description'],
+                    'price' => rand(50, 500),
+                    'img' => $product['img'],
+                    'type_products_id' => $product['type_products_id'],
+                    'color_id' => $product['color_id'],
+                    'country_id' => rand(1, 50),
+                    'count' => rand(0, 100),
+                    'weight' => $arrUnitsC[array_rand($arrUnitsC)] ." ". $arrUnits[array_rand($arrUnits)],
+                ]);
+            }
         }
     }
 }

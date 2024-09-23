@@ -53,9 +53,11 @@ const Products: React.FC = () => {
         const value = event.target.value;
         if (event.target.checked) {
             setSelectedTypes((prev) => [...prev, value]);
+
         } else {
             setSelectedTypes((prev) => prev.filter((type) => type !== value));
         }
+        console.log(selectedTypes);
     };
     const handleMinPriceChange = (event) => setMinPrice(event.target.value);
     const handleMaxPriceChange = (event) => setMaxPrice(event.target.value);
@@ -147,10 +149,10 @@ const Products: React.FC = () => {
                 <div className={"content"}>
                     <div id={"filter"}>
                         <div className={"mainType"}>
-                            <label className={"active"}><input type={"radio"} name={"type"} value={"all"} onChange={handleTypeChange}/>Все</label>
-                            <label><input type={"radio"} name={"type"} value={"fruits"} onChange={handleTypeChange}/>Фрукты</label>
-                            <label><input type={"radio"} name={"type"} value={"vegetables"} onChange={handleTypeChange}/>Овощи</label>
-                            <label><input type={"radio"} name={"type"} value={"fruits"} onChange={handleTypeChange}/>Фрукты</label>
+                            <label htmlFor={"all"}><input id={"all"} type={"checkbox"} name={"type"} value={"all"} onChange={handleTypeChange}/>Все</label>
+                            <label htmlFor={"fruits"}><input id={"fruits"} type={"checkbox"} name={"type"} value={"fruits"} onChange={handleTypeChange}/>Фрукты</label>
+                            <label htmlFor={"vegetables"}><input id={"vegetables"} type={"checkbox"} name={"type"} value={"vegetables"} onChange={handleTypeChange}/>Овощи</label>
+                            <label htmlFor={"berries"}><input id={"berries"} type={"checkbox"} name={"type"} value={"berries"} onChange={handleTypeChange}/>Ягоды</label>
                         </div>
                         <div className={"tree"}>
                             <div className={"filter"}>
@@ -180,7 +182,7 @@ const Products: React.FC = () => {
                                     <span className="material-symbols-outlined">filter_list</span>
                                     Сортировка
                                 </div>
-                                <div className={"contentTreeSort active"}>
+                                <div className={"contentTreeSort "}>
                                     <div className={"textTree"}>Отсортировать по</div>
                                     <div className={"blocksTree"}>
                                         <button><span className="material-symbols-outlined">trending_up</span>
@@ -190,19 +192,15 @@ const Products: React.FC = () => {
                                         <button><span className="material-symbols-outlined">favorite</span>Отзывам
                                         </button>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                     <div id={"tableProducts"}>
                         {products.map((product) => (
                             <div key={product.id} className={"products"}>
                                 <div className={"imgProducts"}>
                                     <img src={product.img}/>
-                                    {product.id}
                                 </div>
                                 <div className={"textProducts"}>
                                     {product.title}
@@ -219,8 +217,8 @@ const Products: React.FC = () => {
                         {loading && [...Array(12)].map((_, index) => (
                             <div key={index} className={"products grey_card"}>
                                 <div className={"imgProducts grey"}></div>
-                                <div className={"textProducts grey"}></div>
-                                <div className={"priceProducts grey"}></div>
+                                <div className={"textProducts grey"}>Продукт</div>
+                                <div className={"priceProducts grey"}>...р / 1 Килограмм</div>
                                 <div className={"buttonsProducts"}>
                                     <button className={"addCart grey"} disabled>Добавить в корзину</button>
                                     <button className={"aboutProducts grey"} disabled>Подробнее</button>

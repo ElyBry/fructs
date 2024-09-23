@@ -22,7 +22,7 @@
     margin: auto;
     border-radius: $border-radius;
     position: relative;
-    box-shadow: 2px 2px 10px 0 rgba(#333, 0.2);
+    box-shadow: $box-shadow-block;
 }
 #main_sign_in,
 #main_create_acc{
