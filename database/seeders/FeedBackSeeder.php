@@ -23,6 +23,6 @@ class FeedBackSeeder extends Seeder
                 'updated_at' => now(),
             ]
         ];
-        DB::table('feedBacks')->insert($feedBacks);
+        DB::table('feedback')->insert($feedBacks);
     }
 }

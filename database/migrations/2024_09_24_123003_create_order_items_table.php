@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('total_price');
             $table->unsignedBigInteger('quantity');
-            $table->decimal('total_price',10,2);
         });
     }
 

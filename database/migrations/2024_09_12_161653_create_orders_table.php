@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('address');
             $table->unsignedBigInteger('payment_method_id');
             $table->unsignedBigInteger('payment_status_id');
+            $table->decimal('total_price',10,2);
             $table->timestamps();
         });
     }

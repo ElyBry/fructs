@@ -10,22 +10,22 @@ class OrderItems extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id',
-        'address',
+        'order_id',
         'product_id',
         'quantity',
         'total_price',
-        'payment_method_id',
-        'payment_status_id'
     ];
-    public function getUser($user_id)
-    {
-        return DB::table("users")
-            ->where("id", $user_id)
-            ->first();
-    }
+
     public function getProduct($product_id)
     {
-        return DB::table("products")->where("id", $product_id)->first();
+        return DB::table('products')
+            ->where('id', $product_id)
+            ->first();
+    }
+    public function getOrder($order_id)
+    {
+        return DB::table('orders')
+            ->where('id', $order_id)
+            ->first();
     }
 }
