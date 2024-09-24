@@ -45,4 +45,9 @@ class TypeProductsController extends BaseController
         $types->delete();
         return response()->json(null, 204);
     }
+    public function show() // Последний добавленный тип продуктов
+    {
+        $type = TypeProducts::orderBy('created_at', 'desc')->first();
+        return $type;
+    }
 }

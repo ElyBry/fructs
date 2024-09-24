@@ -12,15 +12,24 @@ class Product extends Model
     protected $fillable = [
         'title',
         'description',
-        'weight',
-        'count',
         'price',
-        'availability'
+        'weight',
+        'img',
+        'type_products_id',
+        'color_id',
+        'country_id',
+        'count',
     ];
     public function getCountry($countryId)
     {
         return DB::table("countries")
             ->where("id", $countryId)
+            ->first();
+    }
+    public function getTypeProducts($typeProductsId)
+    {
+        return DB::table("type_products")
+            ->where("id", $typeProductsId)
             ->first();
     }
 }

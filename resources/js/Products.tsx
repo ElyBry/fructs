@@ -38,6 +38,7 @@ const Products: React.FC = () => {
             });
             const newData = response.data;
             setLoading(false);
+            //console.log(newData);
             setProducts((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);
             return response;
