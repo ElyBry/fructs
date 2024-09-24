@@ -15,6 +15,11 @@ Route::group([
 ], function () {
     // Продукты
     Route::get('products', [ProductsController::class, 'index']);
+    Route::get('popularProduct', [ProductsController::class, 'getMostPopularProduct']);
+    Route::get('typeProducts', [ProductsController::class,'getAllTypeProducts']);
+    Route::get('colors', [ProductsController::class,'getAllColors']);
+    Route::get('newCategory', [ProductsController::class, 'getNewCategory']);
+    Route::get('newProduct', [ProductsController::class, 'getNewProduct']);
     Route::get('products/{product}', [ProductsController::class, 'show']);
     Route::group([
         'middleware' => [

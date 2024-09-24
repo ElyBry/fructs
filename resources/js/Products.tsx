@@ -22,9 +22,41 @@ const Products: React.FC = () => {
     const [selectedTypes, setSelectedTypes] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const controller = new AbortController();
+
+    const [newProduct, setNewProduct] = useState([])
+    const [newCategory, setNewCategory] = useState([]);
+    const [popularProduct, setPopularProduct] = useState([])
+    const [loadingTop, setLoadingTop] = useState(false);
+
+    const [allCategory, setAllCategory] = useState([]);
+    const [allColors, setAllColors] = useState([]);
+
+    const fetchTopInfo = async () => {
+        try {
+            setLoadingTop(true);
+            const responseNewProduct = await axios.get<any>('api/newProduct');
+            const responseNewCategory = await axios.get<any>('api/newCategory');
+            const responsePopularProduct = await axios.get<any>('api/popularProduct');
+            const responseAllCategory = await axios.get<any>('api/typeProducts');
+            const responseAllColors = await axios.get<any>('api/colors');
+            setNewProduct(responseNewProduct.data);
+            setNewCategory(responseNewCategory.data);
+            setPopularProduct(responsePopularProduct.data);
+            setAllCategory(responseAllCategory.data);
+            setAllColors(responseAllColors.data);
+            return true;
+        } catch (e) {
+            console.log('Ошибка получения данных',e);
+        } finally {
+            setLoadingTop(false);
+        }
+    };
+    useEffect(() => {
+        fetchTopInfo();
+    }, []);
     const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm) => {
         try {
-            //console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes,searchTerm,pageNumber,hasMore,loading });
+            //console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, pageNumber, hasMore,loading });
             setLoading(true);
             const response = await axios.get<any>('/api/products', {
                 signal: controller.signal,
@@ -38,7 +70,7 @@ const Products: React.FC = () => {
             });
             const newData = response.data;
             setLoading(false);
-            //console.log(newData);
+            console.log(newData.data);
             setProducts((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);
             return response;
@@ -54,11 +86,9 @@ const Products: React.FC = () => {
         const value = event.target.value;
         if (event.target.checked) {
             setSelectedTypes((prev) => [...prev, value]);
-
         } else {
             setSelectedTypes((prev) => prev.filter((type) => type !== value));
         }
-        console.log(selectedTypes);
     };
     const handleMinPriceChange = (event) => setMinPrice(event.target.value);
     const handleMaxPriceChange = (event) => setMaxPrice(event.target.value);
@@ -111,38 +141,75 @@ const Products: React.FC = () => {
             <div id={"infoProducts"}>
                 <div className={"content"}>
                     <div>
-                        <div className={"infoCard"}>
-                            <div>
-                                <h4>Самый Популярный Продукт(за месяц)</h4>
-                                <h1>Яблоко</h1>
-                                <h3>320р/ Килограмм</h3>
-                                <button>Добавить в корзину</button>
-                            </div>
-                            <div>
-                                <img src={"image/fruits/apple.png"}/>
-                            </div>
-                        </div>
-                        <div className={"infoCard"}>
-                            <div>
-                                <h4>Новая Категория</h4>
-                                <h1>Фрукты</h1>
-                                <button>Отфильтровать</button>
-                            </div>
-                            <div>
-                                <img src={"image/background-images/fruits-realistic-set.png"}/>
-                            </div>
-                        </div>
-                        <div className={"infoCard"}>
-                            <div>
-                                <h4>Новый Продукт</h4>
-                                <h1>Апельсин</h1>
-                                <h3>320р/ Килограмм</h3>
-                                <button>Подробнее</button>
-                            </div>
-                            <div>
-                                <img src={"image/fruits/orange.png"}/>
-                            </div>
-                        </div>
+                        {loadingTop ?
+                            <>
+                                <div className={"infoCard grey"}>
+                                    <div>
+                                        <h4>Самый Популярный Продукт(за месяц)</h4>
+                                        <h1>Яблоко</h1>
+                                        <h3>320р/ Килограмм</h3>
+                                        <button>Добавить в корзину</button>
+                                    </div>
+                                    <div>
+                                    </div>
+                                </div>
+                                <div className={"infoCard grey"}>
+                                    <div>
+                                        <h4>Новая Категория</h4>
+                                        <h1>Фрукты</h1>
+                                        <button>Отфильтровать</button>
+                                    </div>
+                                    <div>
+                                    </div>
+                                </div>
+                                <div className={"infoCard grey"}>
+                                    <div>
+                                        <h4>Новый Продукт</h4>
+                                        <h1>Апельсин</h1>
+                                        <h3>320р/ Килограмм</h3>
+                                        <button>Подробнее</button>
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                </div>
+                            </>
+                            :
+                            <>
+                                <div className={"infoCard"}>
+                                    <div>
+                                        <h4>Самый Популярный Продукт(за месяц)</h4>
+                                        <h1>{popularProduct["title"]}</h1>
+                                        <h3>{popularProduct["price"] + "р/ " + popularProduct["weight"]}</h3>
+                                        <button>Добавить в корзину</button>
+                                    </div>
+                                    <div>
+                                        <img src={popularProduct["img"]}/>
+                                    </div>
+                                </div>
+                                <div className={"infoCard"}>
+                                    <div>
+                                        <h4>Новая Категория</h4>
+                                        <h1>{newCategory["name"]}</h1>
+                                        <button>Отфильтровать</button>
+                                    </div>
+                                    <div>
+                                        <img src={newCategory["img"]}/>
+                                    </div>
+                                </div>
+                                <div className={"infoCard"}>
+                                    <div>
+                                        <h4>Новый Продукт</h4>
+                                        <h1>{newProduct["title"]}</h1>
+                                        <h3>{newProduct["price"] + "р/ " + newProduct["weight"]}</h3>
+                                        <button>Подробнее</button>
+                                    </div>
+                                    <div>
+                                        <img src={newProduct["img"]}/>
+                                    </div>
+                                </div>
+                            </>
+                        }
                     </div>
                 </div>
             </div>
@@ -150,10 +217,34 @@ const Products: React.FC = () => {
                 <div className={"content"}>
                     <div id={"filter"}>
                         <div className={"mainType"}>
-                            <label htmlFor={"all"}><input id={"all"} type={"checkbox"} name={"type"} value={"all"} onChange={handleTypeChange}/>Все</label>
-                            <label htmlFor={"fruits"}><input id={"fruits"} type={"checkbox"} name={"type"} value={"fruits"} onChange={handleTypeChange}/>Фрукты</label>
-                            <label htmlFor={"vegetables"}><input id={"vegetables"} type={"checkbox"} name={"type"} value={"vegetables"} onChange={handleTypeChange}/>Овощи</label>
-                            <label htmlFor={"berries"}><input id={"berries"} type={"checkbox"} name={"type"} value={"berries"} onChange={handleTypeChange}/>Ягоды</label>
+                            <label htmlFor={"all"}><input id={"all"} type={"checkbox"} name={"type"}
+                                                          value={"all"}
+                                                          onChange={handleTypeChange}/>Все</label>
+                            {loadingTop ?
+                                <>
+                                    <label htmlFor={"fruits"}><input id={"fruits"} type={"checkbox"} name={"type"}
+                                                                     value={"fruits"}
+                                                                     className={"grey"}
+                                                                     onChange={handleTypeChange}/>Фрукты</label>
+                                    <label htmlFor={"vegetables"}><input id={"vegetables"} type={"checkbox"}
+                                                                         name={"type"}
+                                                                         className={"grey"}
+                                                                         value={"vegetables"}
+                                                                         onChange={handleTypeChange}/>Овощи</label>
+                                    <label htmlFor={"berries"}><input id={"berries"} type={"checkbox"} name={"type"}
+                                                                      value={"berries"}
+                                                                      className={"grey"}
+                                                                      onChange={handleTypeChange}/>Ягоды</label>
+                                </>
+                                :
+                                allCategory.map((value: any[]) => {
+                                    return (<label key={value["id"]} htmlFor={"type" + value["id"]}><input id={"type" + value["id"]} type={"checkbox"}
+                                                                                                        name={"type"}
+                                                                                                        value={value["id"]}
+                                                                                                        onChange={handleTypeChange}/>{value["name"]}
+                                    </label>);
+                                })
+                            }
                         </div>
                         <div className={"tree"}>
                             <div className={"filter"}>
@@ -174,13 +265,19 @@ const Products: React.FC = () => {
                                         <h2>Страна:</h2>
                                         <div id={"countries"}></div>
                                         <h2>Цвет:</h2>
-                                        <div id={"colors"}></div>
+                                        <div id={"colors"}>
+                                            {
+                                                allColors.map((value: any[]) => (
+                                                    <div className={"blocks"} key={value["id"]}>{value["name"]}</div>
+                                                ))
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div className={"sort"}>
                                 <div className={"iconTree"}>
-                                    <span className="material-symbols-outlined">filter_list</span>
+                                <span className="material-symbols-outlined">filter_list</span>
                                     Сортировка
                                 </div>
                                 <div className={"contentTreeSort "}>
