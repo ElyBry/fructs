@@ -22,7 +22,8 @@ const Products: React.FC = () => {
     const [maxPrice, setMaxPrice] = useState('');
     const [selectedTypes, setSelectedTypes] = useState([]);
     const [selectedColors, setSelectedColors] = useState([]);
-    const [sort, setSort] = useState([]);
+    const [howSort, setSort] = useState([]);
+    const [ascendingSort, setAscendingSort] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const controller = new AbortController();
 
@@ -410,11 +411,47 @@ const Products: React.FC = () => {
                                 </div>
                                 <div className={`contentTreeSort ${isOpenSort ? "active" : ""}`}>
                                     <div className={"textTree"}>Сортировать по</div>
+                                    <h4>Направление:</h4>
                                     <div className={"blocksTree"}>
-                                        <button><span className="material-symbols-outlined">trending_up</span>Популярным</button>
-                                        <button><span className="material-symbols-outlined">update</span>Новизне</button>
-                                        <button><span className="material-symbols-outlined">favorite</span>Отзывам</button>
-                                        <button><span className="material-symbols-outlined">currency_ruble</span>Стоимости</button>
+                                        <div>
+                                            <input type={"radio"} defaultChecked={true} name={"direction"} id={"increaseCheck"}/>
+                                            <label htmlFor={"increaseCheck"}>
+                                                <span className={"material-symbols-outlined"}>arrow_upward</span>Возрастанию
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <input type={"radio"} name={"direction"} id={"decreaseCheck"}/>
+                                            <label htmlFor={"decreaseCheck"}>
+                                                <span className={"material-symbols-outlined"}>arrow_downward</span>Убыванию
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <h4>По:</h4>
+                                    <div className={"blocksTree"}>
+                                        <div>
+                                            <input type={"radio"} name={"sort"} id={"sortPopular"}/>
+                                            <label htmlFor={"sortPopular"}>
+                                                <span className={"material-symbols-outlined"}>trending_up</span>Популярным
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <input type={"radio"} name={"sort"} id={"sortNew"} defaultChecked={true}/>
+                                            <label htmlFor={"sortNew"}>
+                                                <span className={"material-symbols-outlined"}>update</span>Новизне
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <input type={"radio"} name={"sort"} id={"sortFeed"}/>
+                                            <label htmlFor={"sortFeed"}>
+                                                <span className={"material-symbols-outlined"}>favorite</span>Отзывам
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <input type={"radio"} name={"sort"} id={"sortCost"}/>
+                                            <label htmlFor={"sortCost"}>
+                                                <span className={"material-symbols-outlined"}>trending_up</span>Стоимости
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
