@@ -28,8 +28,11 @@ class ProductsController extends BaseController
         if ($request->has('types') && !empty($request->get('types'))) {
             $query->whereIntegerInRaw('type_products_id', $request->get('types'));
         }
-        if ($request->has('color_id') && !empty($request->get('color_id'))) {
-            $query->whereIntegerInRaw('color_products_id', $request->get('color_id'));
+        if ($request->has('color') && !empty($request->get('color'))) {
+            $query->whereIntegerInRaw('color_id', $request->get('color'));
+        }
+        if ($request->has('countries') && !empty($request->get('countries'))) {
+            $query->whereIntegerInRaw('country_id', $request->get('countries'));
         }
         $products = $query->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(12);
 
@@ -105,5 +108,12 @@ class ProductsController extends BaseController
     {
         $colors = DB::table("colors")->get();
         return $colors;
+    }
+    public function getCountry(Request $request)
+    {
+        $query = $request->input('country');
+        $countries = DB::table("countries")
+            ->where('name', 'like', $query . '%')->paginate(5);
+        return $countries;
     }
 }

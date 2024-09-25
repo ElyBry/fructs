@@ -136,99 +136,133 @@ header {
         }
     }
 }
-#main .content {
-    padding: $padding-page;
-    #filter {
-        padding: $padding-page 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        .mainType {
+
+#main {
+    width: 100%;
+
+    .content {
+        padding: $padding-page;
+
+        #filter {
+            padding: $padding-page 0;
             display: flex;
-            flex-direction: row;
+            justify-content: space-between;
             align-items: center;
-            .active {
-                background-color: green;
-                color: white;
-            }
-            label:not(:last-child) {
-                margin-right: $margin-text;
-            }
-            label {
-                cursor: pointer;
+
+            .mainType {
                 display: flex;
+                flex-direction: row;
                 align-items: center;
-                justify-content: center;
-                background-color: rgba(255, 248, 240, 0.8);
-                box-shadow: $box-shadow-elements;
-                padding: $padding-elements;
-                border-radius: $border-radius-elements;
+
+                input[type="checkbox"]:checked {
+                    + label {
+                        background-color: green !important;
+                        color: white !important;
+                    }
+                }
+
+                div:not(:last-child) {
+                    margin-right: $margin-text;
+                }
+
                 input {
                     display: none;
                 }
-            }
-        }
-        .tree {
-            display: flex;
-            .filter,
-            .sort, {
-                border-radius: $border-radius-elements;
-                padding: $padding-elements;
-                background-color: rgba(255, 248, 240, 0.8);
-                box-shadow: $box-shadow-elements;
-                cursor: pointer;
-                position: relative;
-                .iconTree {
+
+                label {
+                    cursor: pointer;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                }
-                .active {
-                    display: block;
-                    transform: translateY(7vh);
-                    .blocksTree {
-                        display: grid;
-                    }
-                }
-            }
-            .filter {
-                margin-right: $margin-text;
-            }
-        }
-        .contentTreeSort,
-        .contentTreeFilter {
-            display: none;
-            padding: $padding-elements;
-            background-color: rgb(255, 255, 255);
-            box-shadow: $box-shadow-elements;
-            z-index: 25;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            align-items: center;
-            top: 0;
-            right: 0;
-            border-radius: $border-radius-elements;
-            position: absolute;
-            transition: $transition-base all ease;
-            .textTree {
-                text-align: left;
-                font-weight: 600;
-            }
-            .blocksTree {
-                grid-template-columns: 40% 40%;
-                justify-content: center;
-                grid-gap: $margin-text;
-                button {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
+                    background-color: rgba(255, 248, 240, 0.8);
+                    box-shadow: $box-shadow-elements;
                     padding: $padding-elements;
                     border-radius: $border-radius-elements;
-                    background-color: rgba(255, 248, 240, 0.8);
+
                 }
             }
 
+            .tree {
+                display: flex;
+
+                .filter,
+                .sort, {
+                    position: relative;
+                    .iconTree {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: $border-radius-elements;
+                        padding: $padding-elements;
+                        background-color: rgba(255, 248, 240, 0.8);
+                        box-shadow: $box-shadow-elements;
+                        cursor: pointer;
+                    }
+
+                    .active {
+                        display: block;
+                        transform: translateY(7vh);
+
+                        .blocksTree {
+                            display: grid;
+                        }
+                    }
+                }
+
+                .filter {
+                    margin-right: $margin-text;
+                }
+            }
+
+            .contentTreeSort,
+            .contentTreeFilter {
+                display: none;
+                padding: $padding-elements;
+                background-color: rgb(255, 255, 255);
+                box-shadow: $box-shadow-elements;
+                z-index: 25;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                align-items: center;
+                top: 0;
+                right: 0;
+                border-radius: $border-radius-elements;
+                position: absolute;
+                transition: $transition-base all ease;
+
+                .textTree {
+                    text-align: left;
+                    font-weight: 600;
+                }
+
+                .blocksTree {
+                    grid-template-columns: 40% 40%;
+                    justify-content: center;
+                    grid-gap: $margin-text;
+
+                    button {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        padding: $padding-elements;
+                        border-radius: $border-radius-elements;
+                        background-color: rgba(255, 248, 240, 0.8);
+                    }
+                }
+                #colors div {
+
+
+                }
+                .costTree,
+                .colorsTree,
+                .countriesTree {
+                    display: none;
+                    &.open {
+                        display: block;
+                    }
+                }
+            }
         }
     }
 }

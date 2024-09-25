@@ -17,9 +17,12 @@ const Products: React.FC = () => {
 
     const [isSearch, setIsSearch] = useState(true);
     const inputRef = useRef(null);
+
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
     const [selectedTypes, setSelectedTypes] = useState([]);
+    const [selectedColors, setSelectedColors] = useState([]);
+    const [sort, setSort] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const controller = new AbortController();
 
@@ -29,7 +32,67 @@ const Products: React.FC = () => {
     const [loadingTop, setLoadingTop] = useState(false);
 
     const [allCategory, setAllCategory] = useState([]);
-    const [allColors, setAllColors] = useState([]);
+    const [allColors, setAllColors] = useState([]);;
+
+    const [isOpenFilter, setIsOpenFilter ] = useState(false);
+    const [isOpenSort, setIsOpenSort ] = useState(false);
+
+    const [isOpenColors, setIsOpenColors] = useState(false);
+    const [isOpenCountries, setIsOpenCountries] = useState(false);
+    const [isOpenCosts, setIsOpenCosts] = useState(false);
+
+    const [query, setQuery] = useState('');
+    const [countries, setCountries] = useState([]);
+    const [selectedCountries, setSelectedCountries] = useState([]);
+    const controllerCountries = new AbortController();
+    const [displayedCountries, setDisplayedCountries] = useState([]);
+    const [unselectedCountries, setUnselectedCountries] = useState([]);
+
+    const fetchCountries = async () => {
+        try {
+            if (query.length > 0 ) {
+                const response = await axios.get(`api/countries?country=${query}`,{
+                    signal: controllerCountries.signal
+                });
+                setCountries(response.data.data);
+            } else {
+                setCountries([]);
+            }
+            return '';
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    useEffect(() => {
+        fetchCountries();
+    }, [query]);
+    useEffect(() => {
+        return () => {
+            controller.abort();
+        };
+    }, [query]);
+    const openAnyItem = (type: string) => {
+        setIsOpenColors(false);
+        setIsOpenCountries(false);
+        setIsOpenCosts(false);
+        if (type == "Colors") {
+            setIsOpenColors(true)
+        } else if (type == "Countries") {
+            setIsOpenCountries(true);
+        } else {
+            setIsOpenCosts(true);
+        }
+    };
+
+    const openSortOrFilter = (type:string) => {
+        setIsOpenFilter(false);
+        setIsOpenSort(false);
+        if (type == "Sort") {
+            setIsOpenSort(!isOpenSort);
+        } else {
+            setIsOpenFilter(!isOpenFilter);
+        }
+    }
 
     const fetchTopInfo = async () => {
         try {
@@ -56,7 +119,7 @@ const Products: React.FC = () => {
     }, []);
     const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm) => {
         try {
-            //console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, pageNumber, hasMore,loading });
+            console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, selectedColors,selectedCountries, pageNumber, hasMore,loading });
             setLoading(true);
             const response = await axios.get<any>('/api/products', {
                 signal: controller.signal,
@@ -65,12 +128,14 @@ const Products: React.FC = () => {
                     name: searchTerm,
                     min_price: minPrice || undefined,
                     max_price: maxPrice || undefined,
+                    color: selectedColors.length > 0 ? selectedColors : undefined,
+                    countries: selectedCountries.length > 0 ? selectedCountries.map(country => country.id) : undefined,
                     types: selectedTypes.length > 0 ? selectedTypes : undefined
                 }
             });
             const newData = response.data;
             setLoading(false);
-            console.log(newData.data);
+            //console.log(newData.data);
             setProducts((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);
             return response;
@@ -82,20 +147,39 @@ const Products: React.FC = () => {
             }
         }
     };
-    const handleTypeChange = (event) => {
+    const handleAnyChange = (event, type:string, country = null) => {
         const value = event.target.value;
-        if (event.target.checked) {
-            setSelectedTypes((prev) => [...prev, value]);
-        } else {
-            setSelectedTypes((prev) => prev.filter((type) => type !== value));
+        if (type == "Category") {
+            if (event.target.checked) {
+                setSelectedTypes((prev) => [...prev, value]);
+            } else {
+                setSelectedTypes((prev) => prev.filter((type) => type !== value));
+            }
+        } else if (type == "Colors") {
+            if (event.target.checked) {
+                setSelectedColors((prev) => [...prev, value]);
+            } else {
+                setSelectedColors((prev) => prev.filter((type) => type !== value));
+            }
+        } else if (type == "Countries") {
+            const newSelectedCountries = event.target.checked
+                ? [...selectedCountries, country]
+                : selectedCountries.filter(selected => selected.id !== country.id);
+
+            setSelectedCountries(newSelectedCountries);
+
         }
     };
+    useEffect(() => {
+        setDisplayedCountries(selectedCountries);
+        setUnselectedCountries(countries.filter(country => !selectedCountries.some(selected => selected.id === country.id)));
+    }, [selectedCountries, countries]);
     const handleMinPriceChange = (event) => setMinPrice(event.target.value);
     const handleMaxPriceChange = (event) => setMaxPrice(event.target.value);
     const handleSearchChange = (event) => setSearchTerm(event.target.value);
     useEffect(() => {
         fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm);
-    }, [page,minPrice, maxPrice, selectedTypes, searchTerm]);
+    }, [page,minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm]);
     useEffect(() => {
         setProducts([]);
         setPage(1);
@@ -103,7 +187,7 @@ const Products: React.FC = () => {
         return () => {
             controller.abort();
         };
-    }, [minPrice, maxPrice, selectedTypes, searchTerm]);
+    }, [minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm]);
     useEffect(() => {
         const tableProducts:HTMLElement = document.querySelector('#root');
         const handleScroll = () => {
@@ -170,7 +254,6 @@ const Products: React.FC = () => {
                                         <button>Подробнее</button>
                                     </div>
                                     <div>
-
                                     </div>
                                 </div>
                             </>
@@ -217,44 +300,62 @@ const Products: React.FC = () => {
                 <div className={"content"}>
                     <div id={"filter"}>
                         <div className={"mainType"}>
-                            <label htmlFor={"all"}><input id={"all"} type={"checkbox"} name={"type"}
-                                                          value={"all"}
-                                                          onChange={handleTypeChange}/>Все</label>
                             {loadingTop ?
                                 <>
-                                    <label htmlFor={"fruits"}><input id={"fruits"} type={"checkbox"} name={"type"}
-                                                                     value={"fruits"}
-                                                                     className={"grey"}
-                                                                     onChange={handleTypeChange}/>Фрукты</label>
-                                    <label htmlFor={"vegetables"}><input id={"vegetables"} type={"checkbox"}
-                                                                         name={"type"}
-                                                                         className={"grey"}
-                                                                         value={"vegetables"}
-                                                                         onChange={handleTypeChange}/>Овощи</label>
-                                    <label htmlFor={"berries"}><input id={"berries"} type={"checkbox"} name={"type"}
-                                                                      value={"berries"}
-                                                                      className={"grey"}
-                                                                      onChange={handleTypeChange}/>Ягоды</label>
+                                    <div>
+                                        <input id={"fruits"} type={"checkbox"} name={"type"}
+                                               value={"fruits"}
+                                               disabled={true}/>
+                                        <label htmlFor={"fruits"} className={"grey"}>Фрукты</label>
+                                    </div>
+                                    <div>
+                                        <input id={"vegetables"} type={"checkbox"}
+                                               name={"type"}
+                                               className={"grey"}
+                                               value={"vegetables"}
+                                               disabled={true}/>
+                                        <label htmlFor={"vegetables"} className={"grey"}>Овощи</label>
+                                    </div>
+                                    <div>
+                                        <input id={"berries"} type={"checkbox"} name={"type"}
+                                               value={"berries"}
+                                               className={"grey"}
+                                               disabled={true}/>
+                                        <label htmlFor={"berries"} className={"grey"}>Ягоды</label>
+                                    </div>
                                 </>
                                 :
                                 allCategory.map((value: any[]) => {
-                                    return (<label key={value["id"]} htmlFor={"type" + value["id"]}><input id={"type" + value["id"]} type={"checkbox"}
-                                                                                                        name={"type"}
-                                                                                                        value={value["id"]}
-                                                                                                        onChange={handleTypeChange}/>{value["name"]}
-                                    </label>);
+                                    return (
+                                        <div key={value["id"]}>
+                                            <input
+                                                id={"type" + value["id"]} type={"checkbox"}
+                                                name={"type"}
+                                                value={value["id"]}
+                                                onChange={(e) => handleAnyChange(e,"Category")}/>
+                                            <label htmlFor={"type" + value["id"]}>{value["name"]}</label>
+                                        </div>
+                                    );
                                 })
                             }
                         </div>
                         <div className={"tree"}>
                             <div className={"filter"}>
-                                <div className={"iconTree"}>
+                                <div className={`iconTree ${isOpenFilter ? "open" : ""}`} onClick={() => openSortOrFilter("Filter")}>
                                     <span className="material-symbols-outlined">filter_alt</span>
                                     Фильтр
                                 </div>
-                                <div className={"contentTreeFilter active"}>
+                                <div className={`contentTreeFilter ${isOpenFilter ? "active" : ""}`}>
                                     <div className={"textTree"}>Добавить фильтр</div>
                                     <div className={"blocksTree"}>
+                                        <button onClick={() => openAnyItem("Colors")}><span className="material-symbols-outlined">palette</span>Цвета
+                                        </button>
+                                        <button onClick={() => openAnyItem("Countries")}><span className="material-symbols-outlined">globe</span>Страны
+                                        </button>
+                                        <button onClick={() => openAnyItem("Costs")}><span className="material-symbols-outlined">currency_ruble</span>Стоимость
+                                        </button>
+                                    </div>
+                                    <div className={`costTree ${isOpenCosts ? "open" : ""}`}>
                                         <h2>Цена:</h2>
                                         <label>От</label>
                                         <input type={"number"} name={"minPrice"} value={minPrice}
@@ -262,33 +363,58 @@ const Products: React.FC = () => {
                                         <label>До</label>
                                         <input type={"number"} name={"maxPrice"} value={maxPrice}
                                                onChange={handleMaxPriceChange}/>
-                                        <h2>Страна:</h2>
-                                        <div id={"countries"}></div>
+                                    </div>
+                                    <div className={`colorsTree ${isOpenColors ? "open" : ""}`}>
                                         <h2>Цвет:</h2>
                                         <div id={"colors"}>
                                             {
                                                 allColors.map((value: any[]) => (
-                                                    <div className={"blocks"} key={value["id"]}>{value["name"]}</div>
+                                                    <div key={value["id"]}>
+                                                        <input id={"check"+value["id"]} type={"checkbox"} value={value["id"]} onChange={(e) => handleAnyChange(e,"Colors")}/>
+                                                        <label htmlFor={"check" + value["id"]} className={"blocks"}
+                                                             >{value["name"]}</label>
+                                                    </div>
                                                 ))
                                             }
+                                        </div>
+                                    </div>
+                                    <div className={`countriesTree ${isOpenCountries ? "open" : ""}`}>
+                                        <h2>Страна:</h2>
+                                        <div id={"countries"}>
+                                            <input type={"text"} placeholder={"Введите первую букву страны..."} value={query} onChange={(e) => setQuery(e.target.value)}/>
+                                            <div>
+                                                {displayedCountries.map((country) => (
+                                                    <div key={country["id"]}>
+                                                        <input type={"checkbox"} id={"check_country" + country["id"]} defaultChecked={true}
+                                                               onChange={(e) => handleAnyChange(e, "Countries", country)}/>
+                                                        <label
+                                                            htmlFor={"check_country" + country["id"]}>{country["name"]} </label>
+                                                    </div>
+                                                ))}
+                                                {unselectedCountries.map((country) => (
+                                                    <div key={country["id"]}>
+                                                        <input type={"checkbox"} id={"check_country" + country["id"]}
+                                                               onChange={(e) => handleAnyChange(e, "Countries", country)}/>
+                                                        <label htmlFor={"check_country" + country["id"]} >{country["name"]} </label>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className={"sort"}>
-                                <div className={"iconTree"}>
-                                <span className="material-symbols-outlined">filter_list</span>
+                                <div className={`iconTree ${isOpenSort ? "open" : ""}`} onClick={() => openSortOrFilter("Sort")}>
+                                    <span className="material-symbols-outlined">filter_list</span>
                                     Сортировка
                                 </div>
-                                <div className={"contentTreeSort "}>
-                                    <div className={"textTree"}>Отсортировать по</div>
+                                <div className={`contentTreeSort ${isOpenSort ? "active" : ""}`}>
+                                    <div className={"textTree"}>Сортировать по</div>
                                     <div className={"blocksTree"}>
-                                        <button><span className="material-symbols-outlined">trending_up</span>
-                                            Популярным
-                                        </button>
+                                        <button><span className="material-symbols-outlined">trending_up</span>Популярным</button>
                                         <button><span className="material-symbols-outlined">update</span>Новизне</button>
-                                        <button><span className="material-symbols-outlined">favorite</span>Отзывам
-                                        </button>
+                                        <button><span className="material-symbols-outlined">favorite</span>Отзывам</button>
+                                        <button><span className="material-symbols-outlined">currency_ruble</span>Стоимости</button>
                                     </div>
                                 </div>
                             </div>

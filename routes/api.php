@@ -18,6 +18,7 @@ Route::group([
     Route::get('popularProduct', [ProductsController::class, 'getMostPopularProduct']);
     Route::get('typeProducts', [ProductsController::class,'getAllTypeProducts']);
     Route::get('colors', [ProductsController::class,'getAllColors']);
+    Route::get('countries', [ProductsController::class,'getCountry']);
     Route::get('newCategory', [ProductsController::class, 'getNewCategory']);
     Route::get('newProduct', [ProductsController::class, 'getNewProduct']);
     Route::get('products/{product}', [ProductsController::class, 'show']);
