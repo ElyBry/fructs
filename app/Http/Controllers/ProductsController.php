@@ -15,7 +15,10 @@ class ProductsController extends BaseController
 {
     public function index(Request $request)
     {
-        $query = Product::query();
+        $query = Product::query()
+            ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
+            ->groupBy('products.id')
+            ->selectRaw('products.id, title, img, price, weight, COUNT(feedback_products.product_id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating');
         if ($request->has('name') && $request->get('name') != '') {
             $query->where('title', 'like', '%' . $request->get('name') . '%');
         }
@@ -41,32 +44,23 @@ class ProductsController extends BaseController
         if ($request->has('howSort') && $request->get('howSort') != '') {
             $howSort = $request->get('howSort');
             if ($howSort == 'Popular') {
-                $products = DB::table('products')
-                    ->leftJoin('order_items', 'products.id', '=','order_items.product_id')
-                    ->selectRaw('products.id,title,img,price,weight')
-                    ->groupBy('products.id')
+                $query->leftJoin('order_items', 'products.id', '=','order_items.product_id')
                     ->orderByRaw('SUM(order_items.quantity)' . $direction);
             } else if ($howSort == 'New') {
-                $columnSort = 'created_at';
-                $products = $query->orderBy($columnSort, $direction)->orderBy('id', 'desc');
+                $query->orderBy('products.created_at', $direction)
+                    ->orderBy('products.updated_at', $direction);
             } else if ($howSort == 'Costs') {
-                $columnSort = 'price';
-                $products = $query->orderBy($columnSort, $direction)->orderBy('id', 'desc');
+                $query->orderBy('products.price', $direction);
             } else if ($howSort == 'Feedback') {
-                $products = DB::table('products')
-                    ->leftJoin('feedback_products', 'products.id', '=','feedback_products.product_id')
-                    ->selectRaw('products.id,title,img,price,weight,count(feedback_products.product_id) as count_feeds, round(SUM(feedback_products.rating)/count(feedback_products.product_id),2) as rating ')
-                    ->groupBy('products.id')
-                    ->orderBy('rating', $direction)
+                $query->orderBy('average_rating', $direction)
                     ->orderBy('count_feeds', $direction);
+
             }
         }
-        if (!isset($products)) {
-            return $this->sendError('Продукты не найдены');
-        } else {
-            return $products->paginate(12);
-        }
+        $products = $query->orderBy('products.id', 'desc')
+            ->paginate(12);
 
+        return $products;
     }
     public function show(Product $product)
     {

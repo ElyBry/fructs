@@ -137,8 +137,8 @@ const Products: React.FC = () => {
                 }
             });
             const newData = response.data;
+            console.log(newData.from,newData.current_page);
             setLoading(false);
-            console.log(newData);
             setProducts((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);
             return response;
@@ -180,9 +180,6 @@ const Products: React.FC = () => {
     const handleMaxPriceChange = (event) => setMaxPrice(event.target.value);
     const handleSearchChange = (event) => setSearchTerm(event.target.value);
     useEffect(() => {
-        fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm);
-    }, [page,minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
-    useEffect(() => {
         setProducts([]);
         setPage(1);
         setHasMore(true);
@@ -191,20 +188,23 @@ const Products: React.FC = () => {
         };
     }, [minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
     useEffect(() => {
+        fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm);
+    }, [page,minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
+    useEffect(() => {
         const tableProducts:HTMLElement = document.querySelector('#root');
+
         const handleScroll = () => {
             const scrollTop = tableProducts.scrollTop;
             const tableHeight = tableProducts.scrollHeight - tableProducts.clientHeight;
 
-            if ((scrollTop >= tableHeight * 0.75) && hasMore && !loading) {
+            if ((scrollTop >= tableHeight - window.innerHeight) && hasMore) {
                 setPage(prev => prev + 1);
             }
 
             // Для отладки
-            //console.log(scrollTop, tableHeight,window.innerHeight,document.documentElement.scrollTop);
+            //console.log(scrollTop, tableHeight - window.innerHeight, tableHeight,window.innerHeight,document.documentElement.scrollTop);
         };
         tableProducts.addEventListener('scroll', handleScroll);
-
         return () => {
             tableProducts.removeEventListener('scroll', handleScroll);
         };
@@ -462,7 +462,16 @@ const Products: React.FC = () => {
                         {products.map((product) => (
                             <div key={product.id} className={"products"}>
                                 <div className={"imgProducts"}>
+                                    <div className={"star"}>
+                                        <span className={"material-symbols-outlined"}>star_rate</span>
+                                        <div>
+                                            {product.average_rating}
+                                            {product.average_rating ? <hr/> : ""}
+                                            {product.count_feeds}
+                                        </div>
+                                    </div>
                                     <img src={product.img}/>
+                                    {product.id}
                                 </div>
                                 <div className={"textProducts"}>
                                     {product.title}

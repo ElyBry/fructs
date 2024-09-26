@@ -312,6 +312,19 @@ header {
             width: 100%;
             border-radius: $border-radius-elements $border-radius-elements 0 0;
             height: 35vh;
+            position: relative;
+            .star {
+                position: absolute;
+                top: $padding-elements;
+                left: $padding-elements;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                span {
+                    color: green;
+                }
+            }
             img {
                 border-radius: $border-radius-elements $border-radius-elements 0 0;
                 width: 100%;
