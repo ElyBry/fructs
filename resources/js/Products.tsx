@@ -25,7 +25,6 @@ const Products: React.FC = () => {
     const [howSort, setHowSort] = useState('New');
     const [ascendingSort, setAscendingSort] = useState('asc');
     const [searchTerm, setSearchTerm] = useState('');
-    const controller = new AbortController();
 
     const [newProduct, setNewProduct] = useState([])
     const [newCategory, setNewCategory] = useState([]);
@@ -69,7 +68,7 @@ const Products: React.FC = () => {
     }, [query]);
     useEffect(() => {
         return () => {
-            controller.abort();
+            controllerCountries.abort();
         };
     }, [query]);
     const openAnyItem = (type: string) => {
@@ -118,7 +117,7 @@ const Products: React.FC = () => {
     useEffect(() => {
         fetchTopInfo();
     }, []);
-    const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm) => {
+    const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm, controller: AbortController) => {
         try {
             console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, selectedColors, selectedCountries, ascendingSort, howSort,  pageNumber, hasMore,loading });
             setLoading(true);
@@ -183,13 +182,35 @@ const Products: React.FC = () => {
         setProducts([]);
         setPage(1);
         setHasMore(true);
-        return () => {
-            controller.abort();
-        };
     }, [minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
     useEffect(() => {
-        fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm);
-    }, [page,minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
+        const controller = new AbortController();
+        setLoading(true);
+
+        const fetchData = async () => {
+            try {
+                await fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm, controller)
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    console.log('Fetch aborted');
+                } else {
+                    // Обработка ошибок
+                }
+            } finally {
+                setLoading(false);
+            }
+            return true;
+        };
+
+        if (page == 1 || !loading) {
+            fetchData();
+        }
+
+        return () => {
+            controller.abort();
+        }
+    }, [page, minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
+
     useEffect(() => {
         const tableProducts:HTMLElement = document.querySelector('#root');
 
