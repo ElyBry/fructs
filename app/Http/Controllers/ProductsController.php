@@ -34,9 +34,39 @@ class ProductsController extends BaseController
         if ($request->has('countries') && !empty($request->get('countries'))) {
             $query->whereIntegerInRaw('country_id', $request->get('countries'));
         }
-        $products = $query->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(12);
+        $direction = 'desc';
+        if ($request->has('ascendingSort') && $request->get('ascendingSort') != '') {
+            $direction = $request->get('ascendingSort');
+        }
+        if ($request->has('howSort') && $request->get('howSort') != '') {
+            $howSort = $request->get('howSort');
+            if ($howSort == 'Popular') {
+                $products = DB::table('products')
+                    ->leftJoin('order_items', 'products.id', '=','order_items.product_id')
+                    ->selectRaw('products.id,title,img,price,weight')
+                    ->groupBy('products.id')
+                    ->orderByRaw('SUM(order_items.quantity)' . $direction);
+            } else if ($howSort == 'New') {
+                $columnSort = 'created_at';
+                $products = $query->orderBy($columnSort, $direction)->orderBy('id', 'desc');
+            } else if ($howSort == 'Costs') {
+                $columnSort = 'price';
+                $products = $query->orderBy($columnSort, $direction)->orderBy('id', 'desc');
+            } else if ($howSort == 'Feedback') {
+                $products = DB::table('products')
+                    ->leftJoin('feedback_products', 'products.id', '=','feedback_products.product_id')
+                    ->selectRaw('products.id,title,img,price,weight,count(feedback_products.product_id) as count_feeds, round(SUM(feedback_products.rating)/count(feedback_products.product_id),2) as rating ')
+                    ->groupBy('products.id')
+                    ->orderBy('rating', $direction)
+                    ->orderBy('count_feeds', $direction);
+            }
+        }
+        if (!isset($products)) {
+            return $this->sendError('Продукты не найдены');
+        } else {
+            return $products->paginate(12);
+        }
 
-        return $products;
     }
     public function show(Product $product)
     {

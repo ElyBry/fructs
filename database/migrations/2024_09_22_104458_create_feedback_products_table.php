@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('message');
             $table->integer('rating');
             $table->integer('product_id');
+            $table->boolean('is_approved')->default(false);
             $table->timestamps();
         });
     }

@@ -22,8 +22,8 @@ const Products: React.FC = () => {
     const [maxPrice, setMaxPrice] = useState('');
     const [selectedTypes, setSelectedTypes] = useState([]);
     const [selectedColors, setSelectedColors] = useState([]);
-    const [howSort, setSort] = useState([]);
-    const [ascendingSort, setAscendingSort] = useState([]);
+    const [howSort, setHowSort] = useState('New');
+    const [ascendingSort, setAscendingSort] = useState('asc');
     const [searchTerm, setSearchTerm] = useState('');
     const controller = new AbortController();
 
@@ -33,7 +33,7 @@ const Products: React.FC = () => {
     const [loadingTop, setLoadingTop] = useState(false);
 
     const [allCategory, setAllCategory] = useState([]);
-    const [allColors, setAllColors] = useState([]);;
+    const [allColors, setAllColors] = useState([]);
 
     const [isOpenFilter, setIsOpenFilter ] = useState(false);
     const [isOpenSort, setIsOpenSort ] = useState(false);
@@ -120,7 +120,7 @@ const Products: React.FC = () => {
     }, []);
     const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm) => {
         try {
-            console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, selectedColors,selectedCountries, pageNumber, hasMore,loading });
+            console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, selectedColors, selectedCountries, ascendingSort, howSort,  pageNumber, hasMore,loading });
             setLoading(true);
             const response = await axios.get<any>('/api/products', {
                 signal: controller.signal,
@@ -131,12 +131,14 @@ const Products: React.FC = () => {
                     max_price: maxPrice || undefined,
                     color: selectedColors.length > 0 ? selectedColors : undefined,
                     countries: selectedCountries.length > 0 ? selectedCountries.map(country => country.id) : undefined,
+                    ascendingSort: ascendingSort || undefined,
+                    howSort: howSort || undefined,
                     types: selectedTypes.length > 0 ? selectedTypes : undefined
                 }
             });
             const newData = response.data;
             setLoading(false);
-            //console.log(newData.data);
+            console.log(newData);
             setProducts((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);
             return response;
@@ -168,7 +170,6 @@ const Products: React.FC = () => {
                 : selectedCountries.filter(selected => selected.id !== country.id);
 
             setSelectedCountries(newSelectedCountries);
-
         }
     };
     useEffect(() => {
@@ -180,7 +181,7 @@ const Products: React.FC = () => {
     const handleSearchChange = (event) => setSearchTerm(event.target.value);
     useEffect(() => {
         fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm);
-    }, [page,minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm]);
+    }, [page,minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
     useEffect(() => {
         setProducts([]);
         setPage(1);
@@ -188,7 +189,7 @@ const Products: React.FC = () => {
         return () => {
             controller.abort();
         };
-    }, [minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm]);
+    }, [minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
     useEffect(() => {
         const tableProducts:HTMLElement = document.querySelector('#root');
         const handleScroll = () => {
@@ -411,16 +412,16 @@ const Products: React.FC = () => {
                                 </div>
                                 <div className={`contentTreeSort ${isOpenSort ? "active" : ""}`}>
                                     <div className={"textTree"}>Сортировать по</div>
-                                    <h4>Направление:</h4>
+                                    <h4>Направлению:</h4>
                                     <div className={"blocksTree"}>
                                         <div>
-                                            <input type={"radio"} defaultChecked={true} name={"direction"} id={"increaseCheck"}/>
+                                            <input type={"radio"} defaultChecked={true} name={"direction"} id={"increaseCheck"} onChange={() => setAscendingSort('asc')}/>
                                             <label htmlFor={"increaseCheck"}>
                                                 <span className={"material-symbols-outlined"}>arrow_upward</span>Возрастанию
                                             </label>
                                         </div>
                                         <div>
-                                            <input type={"radio"} name={"direction"} id={"decreaseCheck"}/>
+                                            <input type={"radio"} name={"direction"} id={"decreaseCheck"} onChange={() => setAscendingSort('desc')}/>
                                             <label htmlFor={"decreaseCheck"}>
                                                 <span className={"material-symbols-outlined"}>arrow_downward</span>Убыванию
                                             </label>
@@ -429,25 +430,25 @@ const Products: React.FC = () => {
                                     <h4>По:</h4>
                                     <div className={"blocksTree"}>
                                         <div>
-                                            <input type={"radio"} name={"sort"} id={"sortPopular"}/>
+                                            <input type={"radio"} name={"sort"} id={"sortPopular"} onChange={() => setHowSort("Popular")}/>
                                             <label htmlFor={"sortPopular"}>
                                                 <span className={"material-symbols-outlined"}>trending_up</span>Популярным
                                             </label>
                                         </div>
                                         <div>
-                                            <input type={"radio"} name={"sort"} id={"sortNew"} defaultChecked={true}/>
+                                            <input type={"radio"} name={"sort"} id={"sortNew"} defaultChecked={true} onChange={() => setHowSort("New")}/>
                                             <label htmlFor={"sortNew"}>
                                                 <span className={"material-symbols-outlined"}>update</span>Новизне
                                             </label>
                                         </div>
                                         <div>
-                                            <input type={"radio"} name={"sort"} id={"sortFeed"}/>
+                                            <input type={"radio"} name={"sort"} id={"sortFeed"} onChange={() => setHowSort("Feedback")}/>
                                             <label htmlFor={"sortFeed"}>
                                                 <span className={"material-symbols-outlined"}>favorite</span>Отзывам
                                             </label>
                                         </div>
                                         <div>
-                                            <input type={"radio"} name={"sort"} id={"sortCost"}/>
+                                            <input type={"radio"} name={"sort"} id={"sortCost"} onChange={() => setHowSort("Costs")}/>
                                             <label htmlFor={"sortCost"}>
                                                 <span className={"material-symbols-outlined"}>trending_up</span>Стоимости
                                             </label>
@@ -467,7 +468,7 @@ const Products: React.FC = () => {
                                     {product.title}
                                 </div>
                                 <div className={"priceProducts"}>
-                                {product.price}р /{product.weight}
+                                {product.price}р <br/> {product.weight}
                                 </div>
                                 <div className={"buttonsProducts"}>
                                     <button className={"addCart"}>Добавить в корзину</button>
@@ -479,7 +480,7 @@ const Products: React.FC = () => {
                             <div key={index} className={"products grey_card"}>
                                 <div className={"imgProducts grey"}></div>
                                 <div className={"textProducts grey"}>Продукт</div>
-                                <div className={"priceProducts grey"}>...р / 1 Килограмм</div>
+                                <div className={"priceProducts grey"}>...р <br/> 1 Килограмм</div>
                                 <div className={"buttonsProducts"}>
                                     <button className={"addCart grey"} disabled>Добавить в корзину</button>
                                     <button className={"aboutProducts grey"} disabled>Подробнее</button>

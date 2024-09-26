@@ -71,7 +71,8 @@ class ProductsTableSeeder extends Seeder
                     'color_id' => $product['color_id'],
                     'country_id' => rand(1, 50),
                     'count' => rand(0, 100),
-                    'weight' => $arrUnitsC[array_rand($arrUnitsC)] ." ". $arrUnits[array_rand($arrUnits)],
+                    'type_weight' => $arrUnits[array_rand($arrUnits)],
+                    'weight' => $arrUnitsC[array_rand($arrUnitsC)],
                 ]);
             }
         }

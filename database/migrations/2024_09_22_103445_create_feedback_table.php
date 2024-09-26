@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('user_name');
             $table->text('message');
             $table->float('rating');
+            $table->boolean('is_approved')->default(false);
             $table->timestamps();
         });
     }

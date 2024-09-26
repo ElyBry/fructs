@@ -14,6 +14,7 @@ class FeedBackProducts extends Model
         'user_name',
         'product_id',
         'message',
+        'is_approved',
         'rating'
     ];
     public function getUser($user_id)

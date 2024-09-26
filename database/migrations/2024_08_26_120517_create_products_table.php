@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->integer('price');
-            $table->string('weight');
+            $table->string('type_weight');
+            $table->integer('weight');
             $table->string('img');
             $table->string('type_products_id');
             $table->integer('color_id');

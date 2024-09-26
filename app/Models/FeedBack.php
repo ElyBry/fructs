@@ -13,6 +13,7 @@ class FeedBack extends Model
         'user_id',
         'user_name',
         'message',
+        'is_approved',
         'rating'
     ];
     public function getUser($user_id)
