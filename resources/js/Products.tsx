@@ -1,8 +1,10 @@
 import * as React from 'react';
 import {useEffect, useRef, useState} from 'react';
 import * as ReactDOM from 'react-dom/client';
+
 import Footer from "./components/_footer.js";
 import Header from "./components/_header.js";
+
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import axios from "axios";
@@ -17,6 +19,16 @@ const Products: React.FC = () => {
 
     const [isSearch, setIsSearch] = useState(true);
     const inputRef = useRef(null);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearchChange = (event) => setSearchTerm(event.target.value);
+
+    const toggleSearch = () => {
+        setIsSearch(!isSearch);
+        if (!isSearch) {
+            inputRef.current.focus();
+        }
+    }
 
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
@@ -24,7 +36,6 @@ const Products: React.FC = () => {
     const [selectedColors, setSelectedColors] = useState([]);
     const [howSort, setHowSort] = useState('New');
     const [ascendingSort, setAscendingSort] = useState('asc');
-    const [searchTerm, setSearchTerm] = useState('');
 
     const [newProduct, setNewProduct] = useState([])
     const [newCategory, setNewCategory] = useState([]);
@@ -117,10 +128,10 @@ const Products: React.FC = () => {
     useEffect(() => {
         fetchTopInfo();
     }, []);
+
     const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm, controller: AbortController) => {
         try {
             console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, selectedColors, selectedCountries, ascendingSort, howSort,  pageNumber, hasMore,loading });
-            setLoading(true);
             const response = await axios.get<any>('/api/products', {
                 signal: controller.signal,
                 params: {
@@ -136,11 +147,11 @@ const Products: React.FC = () => {
                 }
             });
             const newData = response.data;
-            console.log(newData.from,newData.current_page);
+            console.log(newData);
             setLoading(false);
             setProducts((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);
-            return response;
+            return true;
         } catch (error) {
             if (axios.isCancel(error)) {
                 console.log(error.message);
@@ -177,7 +188,6 @@ const Products: React.FC = () => {
     }, [selectedCountries, countries]);
     const handleMinPriceChange = (event) => setMinPrice(event.target.value);
     const handleMaxPriceChange = (event) => setMaxPrice(event.target.value);
-    const handleSearchChange = (event) => setSearchTerm(event.target.value);
     useEffect(() => {
         setProducts([]);
         setPage(1);
@@ -191,13 +201,7 @@ const Products: React.FC = () => {
             try {
                 await fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm, controller)
             } catch (error) {
-                if (error.name === 'AbortError') {
-                    console.log('Fetch aborted');
-                } else {
-                    // Обработка ошибок
-                }
-            } finally {
-                setLoading(false);
+                console.log(error);
             }
             return true;
         };
@@ -230,19 +234,15 @@ const Products: React.FC = () => {
             tableProducts.removeEventListener('scroll', handleScroll);
         };
     }, [hasMore, loading])
-    const toggleSearch = () => {
-        setIsSearch(!isSearch);
-        if (!isSearch) {
-            inputRef.current.focus();
-        }
-    }
     return (
         <>
             <Header/>
             <div id={"search"}>
                 <div id={"inputSearch"} className={isSearch ? "searching" : ""}>
-                    <input placeholder={"Поиск"} type={"search"} autoComplete={"off"} ref={inputRef} onChange={handleSearchChange}/>
-                    <button type={"submit"} className={"searchIcon"} onClick={toggleSearch}><span className="material-symbols-outlined">search</span></button>
+                    <input placeholder={"Поиск"} type={"search"} autoComplete={"off"} ref={inputRef}
+                           onChange={handleSearchChange}/>
+                    <button type={"submit"} className={"searchIcon"} onClick={toggleSearch}><span
+                        className="material-symbols-outlined">search</span></button>
                 </div>
             </div>
             <div id={"infoProducts"}>
@@ -364,18 +364,18 @@ const Products: React.FC = () => {
                         </div>
                         <div className={"tree"}>
                             <div className={"filter"}>
-                                <div className={`iconTree ${isOpenFilter ? "open" : ""}`} onClick={() => openSortOrFilter("Filter")}>
+                                <div className={`iconTree ${isOpenFilter ? "open" : ""} ${(selectedCountries.length + selectedColors.length  != 0) || maxPrice != '' || minPrice != '' ? "enabled" : ""}`} onClick={() => openSortOrFilter("Filter")}>
                                     <span className="material-symbols-outlined">filter_alt</span>
                                     Фильтр
                                 </div>
                                 <div className={`contentTreeFilter ${isOpenFilter ? "active" : ""}`}>
                                     <div className={"textTree"}>Добавить фильтр</div>
                                     <div className={"blocksTree"}>
-                                        <button onClick={() => openAnyItem("Colors")}><span className="material-symbols-outlined">palette</span>Цвета
+                                        <button onClick={() => openAnyItem("Colors")} className={(isOpenColors ? "open" : "") + (selectedColors.length > 0? " enabled" : "")}><span className="material-symbols-outlined">palette</span>Цвета
                                         </button>
-                                        <button onClick={() => openAnyItem("Countries")}><span className="material-symbols-outlined">globe</span>Страны
+                                        <button onClick={() => openAnyItem("Countries")} className={(isOpenCountries ? "open" : "") + (selectedCountries.length > 0? " enabled" : "")}><span className="material-symbols-outlined">globe</span>Страны
                                         </button>
-                                        <button onClick={() => openAnyItem("Costs")}><span className="material-symbols-outlined">currency_ruble</span>Стоимость
+                                        <button onClick={() => openAnyItem("Costs")} className={(isOpenCosts ? "open" : "") + (maxPrice != '' || minPrice != '' ? " enabled" : "")}><span className="material-symbols-outlined">currency_ruble</span>Стоимость
                                         </button>
                                     </div>
                                     <div className={`costTree ${isOpenCosts ? "open" : ""}`}>
@@ -427,11 +427,11 @@ const Products: React.FC = () => {
                                 </div>
                             </div>
                             <div className={"sort"}>
-                                <div className={`iconTree ${isOpenSort ? "open" : ""}`} onClick={() => openSortOrFilter("Sort")}>
+                                <div className={`iconTree ${isOpenSort ? "open" : ""} enabled`} onClick={() => openSortOrFilter("Sort")}>
                                     <span className="material-symbols-outlined">filter_list</span>
                                     Сортировка
                                 </div>
-                                <div className={`contentTreeSort ${isOpenSort ? "active" : ""}`}>
+                                <div className={`contentTreeSort ${isOpenSort ? "active" : ""} `}>
                                     <div className={"textTree"}>Сортировать по</div>
                                     <h4>Направлению:</h4>
                                     <div className={"blocksTree"}>
@@ -517,6 +517,7 @@ const Products: React.FC = () => {
                                 </div>
                             </div>
                         ))}
+                        {!loading && products.length == 0 && <h1>Нетю</h1>}
                     </div>
                 </div>
             </div>
