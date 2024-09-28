@@ -2,33 +2,25 @@ import * as React from 'react';
 import {useEffect, useRef, useState} from 'react';
 import * as ReactDOM from 'react-dom/client';
 
+import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
+import axios from "axios";
+
 import Footer from "./components/_footer.js";
 import Header from "./components/_header.js";
 
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import axios from "axios";
-const random = gsap.utils.random;
+import Search from "./components/Search/Search";
 
-gsap.registerPlugin(ScrollTrigger);
+import Countries from "./components/CountriesSearch/CountriesSearch";
+import { countriesList } from "./components/CountriesSearch/countriesAtom";
+
+import ProductsList from "./components/Products/ProductsList";
+
+import Cart from "./components/Cart/Cart";
+import {totalCostAtom, quantityAtom} from "./components/Cart/cartAtom";
+
 const Products: React.FC = () => {
-    const [products, setProducts] = useState([]);
-    const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
 
-    const [isSearch, setIsSearch] = useState(true);
-    const inputRef = useRef(null);
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const handleSearchChange = (event) => setSearchTerm(event.target.value);
-
-    const toggleSearch = () => {
-        setIsSearch(!isSearch);
-        if (!isSearch) {
-            inputRef.current.focus();
-        }
-    }
+    const selectedCountries = useRecoilValue(countriesList);
 
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
@@ -52,36 +44,9 @@ const Products: React.FC = () => {
     const [isOpenCountries, setIsOpenCountries] = useState(false);
     const [isOpenCosts, setIsOpenCosts] = useState(false);
 
-    const [query, setQuery] = useState('');
-    const [countries, setCountries] = useState([]);
-    const [selectedCountries, setSelectedCountries] = useState([]);
-    const controllerCountries = new AbortController();
-    const [displayedCountries, setDisplayedCountries] = useState([]);
-    const [unselectedCountries, setUnselectedCountries] = useState([]);
+    const handleMinPriceChange = (event) => setMinPrice(event.target.value);
+    const handleMaxPriceChange = (event) => setMaxPrice(event.target.value);
 
-    const fetchCountries = async () => {
-        try {
-            if (query.length > 0 ) {
-                const response = await axios.get(`api/countries?country=${query}`,{
-                    signal: controllerCountries.signal
-                });
-                setCountries(response.data.data);
-            } else {
-                setCountries([]);
-            }
-            return '';
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    useEffect(() => {
-        fetchCountries();
-    }, [query]);
-    useEffect(() => {
-        return () => {
-            controllerCountries.abort();
-        };
-    }, [query]);
     const openAnyItem = (type: string) => {
         setIsOpenColors(false);
         setIsOpenCountries(false);
@@ -94,7 +59,6 @@ const Products: React.FC = () => {
             setIsOpenCosts(true);
         }
     };
-
     const openSortOrFilter = (type:string) => {
         setIsOpenFilter(false);
         setIsOpenSort(false);
@@ -104,7 +68,6 @@ const Products: React.FC = () => {
             setIsOpenFilter(!isOpenFilter);
         }
     }
-
     const fetchTopInfo = async () => {
         try {
             setLoadingTop(true);
@@ -128,38 +91,6 @@ const Products: React.FC = () => {
     useEffect(() => {
         fetchTopInfo();
     }, []);
-
-    const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm, controller: AbortController) => {
-        try {
-            console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, selectedColors, selectedCountries, ascendingSort, howSort,  pageNumber, hasMore,loading });
-            const response = await axios.get<any>('/api/products', {
-                signal: controller.signal,
-                params: {
-                    page: pageNumber,
-                    name: searchTerm,
-                    min_price: minPrice || undefined,
-                    max_price: maxPrice || undefined,
-                    color: selectedColors.length > 0 ? selectedColors : undefined,
-                    countries: selectedCountries.length > 0 ? selectedCountries.map(country => country.id) : undefined,
-                    ascendingSort: ascendingSort || undefined,
-                    howSort: howSort || undefined,
-                    types: selectedTypes.length > 0 ? selectedTypes : undefined
-                }
-            });
-            const newData = response.data;
-            console.log(newData);
-            setLoading(false);
-            setProducts((prev) => [...prev, ...newData.data]);
-            setHasMore(newData.current_page < newData.last_page);
-            return true;
-        } catch (error) {
-            if (axios.isCancel(error)) {
-                console.log(error.message);
-            } else {
-                console.error("Ошибка получения данных: ", error);
-            }
-        }
-    };
     const handleAnyChange = (event, type:string, country = null) => {
         const value = event.target.value;
         if (type == "Category") {
@@ -174,77 +105,23 @@ const Products: React.FC = () => {
             } else {
                 setSelectedColors((prev) => prev.filter((type) => type !== value));
             }
-        } else if (type == "Countries") {
-            const newSelectedCountries = event.target.checked
-                ? [...selectedCountries, country]
-                : selectedCountries.filter(selected => selected.id !== country.id);
-
-            setSelectedCountries(newSelectedCountries);
         }
     };
-    useEffect(() => {
-        setDisplayedCountries(selectedCountries);
-        setUnselectedCountries(countries.filter(country => !selectedCountries.some(selected => selected.id === country.id)));
-    }, [selectedCountries, countries]);
-    const handleMinPriceChange = (event) => setMinPrice(event.target.value);
-    const handleMaxPriceChange = (event) => setMaxPrice(event.target.value);
-    useEffect(() => {
-        setProducts([]);
-        setPage(1);
-        setHasMore(true);
-    }, [minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
-    useEffect(() => {
-        const controller = new AbortController();
-        setLoading(true);
 
-        const fetchData = async () => {
-            try {
-                await fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm, controller)
-            } catch (error) {
-                console.log(error);
-            }
-            return true;
-        };
+    const totalCost = useRecoilValue(totalCostAtom);
+    const quantity = useRecoilValue(quantityAtom);
 
-        if (page == 1 || !loading) {
-            fetchData();
-        }
 
-        return () => {
-            controller.abort();
-        }
-    }, [page, minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
-
-    useEffect(() => {
-        const tableProducts:HTMLElement = document.querySelector('#root');
-
-        const handleScroll = () => {
-            const scrollTop = tableProducts.scrollTop;
-            const tableHeight = tableProducts.scrollHeight - tableProducts.clientHeight;
-
-            if ((scrollTop >= tableHeight - window.innerHeight) && hasMore) {
-                setPage(prev => prev + 1);
-            }
-
-            // Для отладки
-            //console.log(scrollTop, tableHeight - window.innerHeight, tableHeight,window.innerHeight,document.documentElement.scrollTop);
-        };
-        tableProducts.addEventListener('scroll', handleScroll);
-        return () => {
-            tableProducts.removeEventListener('scroll', handleScroll);
-        };
-    }, [hasMore, loading])
     return (
         <>
+            <button id={"openCart"}>
+                <span className="material-symbols-outlined">shopping_cart</span><br/>
+                {totalCost} р<br/>
+                {quantity} Продуктов
+            </button>
+            <Cart/>
             <Header/>
-            <div id={"search"}>
-                <div id={"inputSearch"} className={isSearch ? "searching" : ""}>
-                    <input placeholder={"Поиск"} type={"search"} autoComplete={"off"} ref={inputRef}
-                           onChange={handleSearchChange}/>
-                    <button type={"submit"} className={"searchIcon"} onClick={toggleSearch}><span
-                        className="material-symbols-outlined">search</span></button>
-                </div>
-            </div>
+            <Search/>
             <div id={"infoProducts"}>
                 <div className={"content"}>
                     <div>
@@ -403,26 +280,7 @@ const Products: React.FC = () => {
                                     </div>
                                     <div className={`countriesTree ${isOpenCountries ? "open" : ""}`}>
                                         <h2>Страна:</h2>
-                                        <div id={"countries"}>
-                                            <input type={"text"} placeholder={"Введите первую букву страны..."} value={query} onChange={(e) => setQuery(e.target.value)}/>
-                                            <div>
-                                                {displayedCountries.map((country) => (
-                                                    <div key={country["id"]}>
-                                                        <input type={"checkbox"} id={"check_country" + country["id"]} defaultChecked={true}
-                                                               onChange={(e) => handleAnyChange(e, "Countries", country)}/>
-                                                        <label
-                                                            htmlFor={"check_country" + country["id"]}>{country["name"]} </label>
-                                                    </div>
-                                                ))}
-                                                {unselectedCountries.map((country) => (
-                                                    <div key={country["id"]}>
-                                                        <input type={"checkbox"} id={"check_country" + country["id"]}
-                                                               onChange={(e) => handleAnyChange(e, "Countries", country)}/>
-                                                        <label htmlFor={"check_country" + country["id"]} >{country["name"]} </label>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
+                                        <Countries/>
                                     </div>
                                 </div>
                             </div>
@@ -479,46 +337,7 @@ const Products: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div id={"tableProducts"}>
-                        {products.map((product) => (
-                            <div key={product.id} className={"products"}>
-                                <div className={"imgProducts"}>
-                                    <div className={"star"}>
-                                        <span className={"material-symbols-outlined"}>star_rate</span>
-                                        <div>
-                                            {product.average_rating}
-                                            {product.average_rating ? <hr/> : ""}
-                                            {product.count_feeds}
-                                        </div>
-                                    </div>
-                                    <img src={product.img}/>
-                                    {product.id}
-                                </div>
-                                <div className={"textProducts"}>
-                                    {product.title}
-                                </div>
-                                <div className={"priceProducts"}>
-                                {product.price}р <br/> {product.weight}
-                                </div>
-                                <div className={"buttonsProducts"}>
-                                    <button className={"addCart"}>Добавить в корзину</button>
-                                    <button className={"aboutProducts"}>Подробнее</button>
-                                </div>
-                            </div>
-                        ))}
-                        {loading && [...Array(12)].map((_, index) => (
-                            <div key={index} className={"products grey_card"}>
-                                <div className={"imgProducts grey"}></div>
-                                <div className={"textProducts grey"}>Продукт</div>
-                                <div className={"priceProducts grey"}>...р <br/> 1 Килограмм</div>
-                                <div className={"buttonsProducts"}>
-                                    <button className={"addCart grey"} disabled>Добавить в корзину</button>
-                                    <button className={"aboutProducts grey"} disabled>Подробнее</button>
-                                </div>
-                            </div>
-                        ))}
-                        {!loading && products.length == 0 && <h1>Нетю</h1>}
-                    </div>
+                    <ProductsList maxPrice={maxPrice} minPrice={minPrice} ascendingSort={ascendingSort} howSort={howSort} selectedColors={selectedColors} selectedTypes={selectedTypes} />
                 </div>
             </div>
 
@@ -533,5 +352,9 @@ const Products: React.FC = () => {
 const rootElement: HTMLElement = document.getElementById('root');
 if (rootElement) {
     const root: ReactDOM.Root = ReactDOM.createRoot(rootElement);
-    root.render(<Products/>);
+    root.render(
+        <RecoilRoot>
+            <Products/>
+        </RecoilRoot>
+    );
 }

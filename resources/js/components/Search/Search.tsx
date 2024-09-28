@@ -1,10 +1,15 @@
 import * as React from 'react';
-import {useRef, useState} from "react";
+
+
+import {useRef} from "react";
+import { useRecoilState } from 'recoil';
+import { searchTermState, isSearchState } from "./searchAtom";
 
 const Search = () => {
-    const [isSearch, setIsSearch] = useState(true);
+    const [searchTerm, setSearchTerm] = useRecoilState(searchTermState);
+    const [isSearch, setIsSearch] = useRecoilState(isSearchState);
+
     const inputRef = useRef(null);
-    const [searchTerm, setSearchTerm] = useState('');
     const handleSearchChange = (event) => setSearchTerm(event.target.value);
     const toggleSearch = () => {
         setIsSearch(!isSearch);
