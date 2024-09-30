@@ -1,6 +1,6 @@
 import * as React from "react";
 
-const Product = ({ product }) => {
+const Product = ({ product, openAboutProduct, addItem }) => {
     return (
         <div className={"products"}>
             <div className={"imgProducts"}>
@@ -19,11 +19,11 @@ const Product = ({ product }) => {
                 {product.title}
             </div>
             <div className={"priceProducts"}>
-                {product.price}р <br/> {product.weight}
+                {product.price}р <br/> {`${product.weight} ${product.type_weight}`}
             </div>
             <div className={"buttonsProducts"}>
-                <button className={"addCart"}>Добавить в корзину</button>
-                <button className={"aboutProducts"}>Подробнее</button>
+                <button className={"addCart"}  onClick={(e) => addItem(e, product)}>Добавить в корзину</button>
+                <button className={"aboutProducts"} onClick={() => openAboutProduct(product)}>Подробнее</button>
             </div>
         </div>
     )

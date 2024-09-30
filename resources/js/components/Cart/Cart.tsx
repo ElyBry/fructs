@@ -4,14 +4,14 @@ import {cartAtom, totalCostAtom, quantityAtom} from "./cartAtom";
 import useCart from "./useCart"
 import {useEffect} from "react";
 
-const Cart = () => {
+const Cart = ({ isOpenCart }) => {
     const cart = useRecoilValue(cartAtom);
     const quantity = useRecoilValue(quantityAtom);
     const totalCost = useRecoilValue(totalCostAtom);
     const { addItem, removeItem, updateItemQuantity } = useCart();
 
     return (
-        <div id={"cart"}>
+        <div id={"cart"} className={isOpenCart && quantity > 0 ? "visible" : ""}>
             <div id="cart-products-wrapper">
                 <table id="cart-table">
                     <thead id="cart-table-header">
@@ -34,8 +34,8 @@ const Cart = () => {
                                            onChange={(e) => updateItemQuantity(item.id,e.target.value )}
                                     />
                                 </td>
-                                <td className={"cart-product-price"}>{item.price}р</td>
-                                <td className={"cart-updated-product-price"}>{totalCost}р</td>
+                                <td className={"cart-product-price"}>{item.price}р / {`${item.weight} ${item.type_weight}`}</td>
+                                <td className={"cart-updated-product-price"}>{item.price * item.quantity}р / {`${item.weight * item.quantity} ${item.type_weight}`} </td>
                                 <td>
                                     <button className={"remove"} onClick={() => removeItem(item.id)}>X</button>
                                 </td>

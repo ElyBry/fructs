@@ -1,15 +1,26 @@
 import * as React from "react";
+import {useEffect, useState} from "react";
 
 
 import Product from './Product';
 import {useRecoilState, useRecoilValue} from "recoil";
-import {productsAtom} from "./productsAtom";
-import {useEffect, useState} from "react";
+import {aboutProductAtom, openAboutProductAtom, productsAtom} from "./productsAtom";
 import axios from "axios";
 import {searchTermState} from "../Search/searchAtom";
 import {countriesList} from "../CountriesSearch/countriesAtom";
+import useCart from "../Cart/useCart"
 
 const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSort, ascendingSort}) => {
+    const [aboutProduct, setAboutProduct] = useRecoilState(aboutProductAtom)
+    const [isOpenAboutProduct, setIsOpenAboutProduct] = useRecoilState(openAboutProductAtom)
+
+    const { addItem } = useCart();
+
+    const openAboutProduct = (product) => {
+        setAboutProduct(product);
+        setIsOpenAboutProduct(!isOpenAboutProduct);
+    };
+
     const [products, setProducts] = useRecoilState(productsAtom)
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -35,14 +46,13 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
             });
             const newData = response.data;
             console.log(newData);
-            setLoading(false);
             setProducts((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);
-            return true;
         } catch (error) {
             if (error.name != "CanceledError") {
                 console.error("Ошибка получения данных: ", error);
             }
+            console.log(error);
         }
     };
 
@@ -57,12 +67,8 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
         setLoading(true);
 
         const fetchData = async () => {
-            try {
-                await fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm, controller)
-            } catch (error) {
-                console.log(error);
-            }
-            return true;
+            await fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm, controller);
+            setLoading(false);
         };
 
         if (page == 1 || !loading) {
@@ -81,7 +87,9 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
             const scrollTop = tableProducts.scrollTop;
             const tableHeight = tableProducts.scrollHeight - tableProducts.clientHeight;
 
-            if ((scrollTop >= tableHeight - window.innerHeight) && hasMore) {
+            if ((scrollTop >= tableHeight - window.innerHeight) && hasMore && !loading ) {
+                console.log(loading, page);
+                console.log(scrollTop, tableHeight - window.innerHeight, tableHeight,window.innerHeight,document.documentElement.scrollTop);
                 setPage(prev => prev + 1);
             }
 
@@ -97,7 +105,7 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
     return (
         <div id={"tableProducts"}>
             {products.length != 0 && products.map((product) => (
-                <Product product={product} key={product.id}/>
+                <Product product={product} key={product.id} openAboutProduct={openAboutProduct} addItem={addItem}/>
             ))}
             {loading && [...Array(12)].map((_, index) => (
                 <div key={index} className={"products grey_card"}>
@@ -110,7 +118,7 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
                     </div>
                 </div>
             ))}
-            {!loading && products.length == 0 && <h1>Нетю</h1>}
+            {!loading && products.length == 0 && <h1>Ничего не найдено</h1>}
         </div>
     )
 }

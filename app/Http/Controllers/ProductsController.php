@@ -19,7 +19,7 @@ class ProductsController extends BaseController
             ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
             ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
             ->groupBy('products.id')
-            ->selectRaw('countries.name, products.id, title, img, description, price, weight, COUNT(feedback_products.product_id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating');
+            ->selectRaw('type_weight, countries.name, products.id, title, img, description, price, weight, COUNT(feedback_products.product_id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating');
         if ($request->has('name') && $request->get('name') != '') {
             $query->where('title', 'like', '%' . $request->get('name') . '%');
         }

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import * as ReactDOM from 'react-dom/client';
 
-import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
+import {RecoilRoot, useRecoilValue} from "recoil";
 import axios from "axios";
 
 import Footer from "./components/_footer.js";
@@ -33,7 +33,10 @@ const Products: React.FC = () => {
     const [newProduct, setNewProduct] = useState([])
     const [newCategory, setNewCategory] = useState([]);
     const [popularProduct, setPopularProduct] = useState([])
+
     const [loadingTop, setLoadingTop] = useState(false);
+    const [loadingCategories, setLoadingCategories] = useState(false);
+    const [loadingColors, setLoadingColors] = useState(false);
 
     const [allCategory, setAllCategory] = useState([]);
     const [allColors, setAllColors] = useState([]);
@@ -72,21 +75,28 @@ const Products: React.FC = () => {
     const fetchTopInfo = async () => {
         try {
             setLoadingTop(true);
+            setLoadingCategories(true);
+            setLoadingColors(true);
+
             const responseNewProduct = await axios.get<any>('api/newProduct');
-            const responseNewCategory = await axios.get<any>('api/newCategory');
-            const responsePopularProduct = await axios.get<any>('api/popularProduct');
-            const responseAllCategory = await axios.get<any>('api/typeProducts');
-            const responseAllColors = await axios.get<any>('api/colors');
             setNewProduct(responseNewProduct.data);
-            setNewCategory(responseNewCategory.data);
+            const responsePopularProduct = await axios.get<any>('api/popularProduct');
             setPopularProduct(responsePopularProduct.data);
+            const responseNewCategory = await axios.get<any>('api/newCategory');
+            setNewCategory(responseNewCategory.data);
+            setLoadingTop(false);
+
+            const responseAllCategory = await axios.get<any>('api/typeProducts');
             setAllCategory(responseAllCategory.data);
+            setLoadingCategories(false);
+
+            const responseAllColors = await axios.get<any>('api/colors');
             setAllColors(responseAllColors.data);
+            setLoadingColors(false);
+
             return true;
         } catch (e) {
             console.log('Ошибка получения данных',e);
-        } finally {
-            setLoadingTop(false);
         }
     };
     useEffect(() => {
@@ -96,7 +106,6 @@ const Products: React.FC = () => {
         const value = event.target.value;
         if (type == "Category") {
             if (event.target.checked) {
-                console.log(selectedTypes.indexOf(value))
                 if (selectedTypes.indexOf(value) != -1) {
                     return;
                 }
@@ -133,14 +142,16 @@ const Products: React.FC = () => {
         setIsOpenAboutProduct(!isOpenAboutProduct);
     };
 
+    const [isOpenCart, setIsOpenCart] = useState(false);
+
     return (
         <>
-            <button id={"openCart"} className={quantity > 0 && "visible"}>
+            <button id={"openCart"} className={quantity > 0 ? "visible" : ""} onClick={() => setIsOpenCart(!isOpenCart)}>
                 <span className="material-symbols-outlined">shopping_cart</span><br/>
                 {totalCost} р<br/>
                 Кол-во: {quantity}
             </button>
-            <div id={"aboutProduct"} className={isOpenAboutProduct && "visible"}>
+            <div id={"aboutProduct"} className={isOpenAboutProduct ? "visible" : ""}>
                 <img src={aboutProduct["img"]} />
                 <h2 className="product-name">{aboutProduct["title"]}</h2>
                 <p className="description">{aboutProduct["description"]}</p>
@@ -149,10 +160,10 @@ const Products: React.FC = () => {
                 </div>
                 <div className="price">
                     <p><strong>Цена:</strong> {aboutProduct["price"]}р / {aboutProduct["weight"]}</p>
-                    <button className="buy-button" onClick={() => addItem(aboutProduct)}>Купить</button>
+                    <button className="buy-button" onClick={(e) => addItem(e, aboutProduct)}>Добавить в корзину</button>
                 </div>
             </div>
-            <Cart/>
+            <Cart isOpenCart={isOpenCart}/>
             <Header/>
             <Search/>
             <div id={"infoProducts"}>
@@ -196,8 +207,8 @@ const Products: React.FC = () => {
                                     <div>
                                         <h4>Самый Популярный Продукт(за месяц)</h4>
                                         <h1>{popularProduct["title"]}</h1>
-                                        <h3>{popularProduct["price"] + "р/ " + popularProduct["weight"]}</h3>
-                                        <button onClick={() => addItem(popularProduct)}>Добавить в корзину</button>
+                                        <h3>{popularProduct["price"] + "р/ "} {`${popularProduct["weight"]} ${popularProduct["type_weight"]}`}</h3>
+                                        <button onClick={(e) => addItem(e, popularProduct)}>Добавить в корзину</button>
                                     </div>
                                     <div>
                                         <img src={popularProduct["img"]}/>
@@ -217,7 +228,7 @@ const Products: React.FC = () => {
                                     <div>
                                         <h4>Новый Продукт</h4>
                                         <h1>{newProduct["title"]}</h1>
-                                        <h3>{newProduct["price"] + "р/ " + newProduct["weight"]}</h3>
+                                        <h3>{newProduct["price"] + "р/ "} {`${newProduct["weight"]} ${newProduct["type_weight"]}`}</h3>
                                         <button onClick={() => openAboutProduct(newProduct)}>Подробнее</button>
                                     </div>
                                     <div>
@@ -233,7 +244,7 @@ const Products: React.FC = () => {
                 <div className={"content"}>
                     <div id={"filter"}>
                         <div className={"mainType"}>
-                            {loadingTop ?
+                            {loadingCategories ?
                                 <>
                                     <div>
                                         <input id={"fruits"} type={"checkbox"} name={"type"}
@@ -300,7 +311,7 @@ const Products: React.FC = () => {
                                     <div className={`colorsTree ${isOpenColors ? "open" : ""}`}>
                                         <h2>Цвет:</h2>
                                         <div id={"colors"}>
-                                            {
+                                            { !loadingColors ?
                                                 allColors.map((value: any[]) => (
                                                     <div key={value["id"]}>
                                                         <input id={"check"+value["id"]} type={"checkbox"} value={value["id"]} onChange={(e) => handleAnyChange(e,"Colors")}/>
@@ -308,6 +319,7 @@ const Products: React.FC = () => {
                                                              >{value["name"]}</label>
                                                     </div>
                                                 ))
+                                                : <p>Загрузка...</p>
                                             }
                                         </div>
                                     </div>
