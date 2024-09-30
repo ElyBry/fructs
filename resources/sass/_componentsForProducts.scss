@@ -3,6 +3,7 @@
 @import "search";
 @import "products";
 @import "product";
+
 body {
     overflow: auto;
 }
@@ -273,10 +274,31 @@ header {
 }
 #openCart {
     position: fixed;
+    display: none;
     bottom: 3%;
     right: 3%;
     z-index: 1000;
     border-radius: $border-radius-elements;
     padding: $padding-elements;
     background-color: $secondary-color;
+}
+#aboutProduct {
+    display: none;
+    img {
+        width: 45vh;
+    }
+    .buy-button {
+        @include buttonsCart("add")
+    }
+}
+#cart {
+    display: none;
+    position: fixed;
+    right: 0;
+    width: 100%;
+    height: 100%;
+
+}
+.visible {
+    display: block !important;
 }

@@ -18,7 +18,7 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
     const selectedCountries = useRecoilValue(countriesList);
     const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm, controller: AbortController) => {
         try {
-            //console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, selectedColors, selectedCountries, ascendingSort, howSort,  pageNumber, hasMore,loading });
+            console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, selectedColors, selectedCountries, ascendingSort, howSort,  pageNumber, hasMore,loading });
             const response = await axios.get<any>('/api/products', {
                 signal: controller.signal,
                 params: {
@@ -34,7 +34,7 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
                 }
             });
             const newData = response.data;
-            //console.log(newData);
+            console.log(newData);
             setLoading(false);
             setProducts((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);

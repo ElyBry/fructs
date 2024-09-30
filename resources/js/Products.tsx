@@ -17,6 +17,7 @@ import ProductsList from "./components/Products/ProductsList";
 
 import Cart from "./components/Cart/Cart";
 import {totalCostAtom, quantityAtom} from "./components/Cart/cartAtom";
+import useCart from "./components/Cart/useCart";
 
 const Products: React.FC = () => {
 
@@ -91,34 +92,66 @@ const Products: React.FC = () => {
     useEffect(() => {
         fetchTopInfo();
     }, []);
-    const handleAnyChange = (event, type:string, country = null) => {
+    const handleAnyChange = (event, type:string) => {
         const value = event.target.value;
         if (type == "Category") {
             if (event.target.checked) {
+                console.log(selectedTypes.indexOf(value))
+                if (selectedTypes.indexOf(value) != -1) {
+                    return;
+                }
                 setSelectedTypes((prev) => [...prev, value]);
             } else {
-                setSelectedTypes((prev) => prev.filter((type) => type !== value));
+                setSelectedTypes((prev) => prev.filter((type) => type != value));
             }
         } else if (type == "Colors") {
             if (event.target.checked) {
                 setSelectedColors((prev) => [...prev, value]);
             } else {
-                setSelectedColors((prev) => prev.filter((type) => type !== value));
+                setSelectedColors((prev) => prev.filter((type) => type != value));
             }
         }
     };
 
+    const handleTopPick = (id) => {
+        const allCategories = document.querySelectorAll("input[name=type]");
+        allCategories.forEach((categories:HTMLInputElement) => categories.checked = false);
+        setSelectedTypes([]);
+        const category:HTMLInputElement = document.querySelector("#type" + id);
+        category.checked = true;
+        handleAnyChange({target: {value: id, checked: true}},"Category")
+    };
+
     const totalCost = useRecoilValue(totalCostAtom);
     const quantity = useRecoilValue(quantityAtom);
+    const { addItem, removeItem, updateItemQuantity } = useCart();
 
+    const [aboutProduct, setAboutProduct] = useState([]);
+    const [isOpenAboutProduct, setIsOpenAboutProduct] = useState(false);
+    const openAboutProduct = (product) => {
+        setAboutProduct(product);
+        setIsOpenAboutProduct(!isOpenAboutProduct);
+    };
 
     return (
         <>
-            <button id={"openCart"}>
+            <button id={"openCart"} className={quantity > 0 && "visible"}>
                 <span className="material-symbols-outlined">shopping_cart</span><br/>
                 {totalCost} р<br/>
-                {quantity} Продуктов
+                Кол-во: {quantity}
             </button>
+            <div id={"aboutProduct"} className={isOpenAboutProduct && "visible"}>
+                <img src={aboutProduct["img"]} />
+                <h2 className="product-name">{aboutProduct["title"]}</h2>
+                <p className="description">{aboutProduct["description"]}</p>
+                <div className="details">
+                    <p><strong>Страна:{aboutProduct["country"]}</strong></p>
+                </div>
+                <div className="price">
+                    <p><strong>Цена:</strong> {aboutProduct["price"]}р / {aboutProduct["weight"]}</p>
+                    <button className="buy-button" onClick={() => addItem(aboutProduct)}>Купить</button>
+                </div>
+            </div>
             <Cart/>
             <Header/>
             <Search/>
@@ -132,7 +165,7 @@ const Products: React.FC = () => {
                                         <h4>Самый Популярный Продукт(за месяц)</h4>
                                         <h1>Яблоко</h1>
                                         <h3>320р/ Килограмм</h3>
-                                        <button>Добавить в корзину</button>
+                                        <button disabled={true}>Добавить в корзину</button>
                                     </div>
                                     <div>
                                     </div>
@@ -141,7 +174,7 @@ const Products: React.FC = () => {
                                     <div>
                                         <h4>Новая Категория</h4>
                                         <h1>Фрукты</h1>
-                                        <button>Отфильтровать</button>
+                                        <button disabled={true}>Отфильтровать</button>
                                     </div>
                                     <div>
                                     </div>
@@ -151,7 +184,7 @@ const Products: React.FC = () => {
                                         <h4>Новый Продукт</h4>
                                         <h1>Апельсин</h1>
                                         <h3>320р/ Килограмм</h3>
-                                        <button>Подробнее</button>
+                                        <button disabled={true}>Подробнее</button>
                                     </div>
                                     <div>
                                     </div>
@@ -164,7 +197,7 @@ const Products: React.FC = () => {
                                         <h4>Самый Популярный Продукт(за месяц)</h4>
                                         <h1>{popularProduct["title"]}</h1>
                                         <h3>{popularProduct["price"] + "р/ " + popularProduct["weight"]}</h3>
-                                        <button>Добавить в корзину</button>
+                                        <button onClick={() => addItem(popularProduct)}>Добавить в корзину</button>
                                     </div>
                                     <div>
                                         <img src={popularProduct["img"]}/>
@@ -174,7 +207,7 @@ const Products: React.FC = () => {
                                     <div>
                                         <h4>Новая Категория</h4>
                                         <h1>{newCategory["name"]}</h1>
-                                        <button>Отфильтровать</button>
+                                        <button onClick={() => handleTopPick(newCategory["id"])}>Отфильтровать</button>
                                     </div>
                                     <div>
                                         <img src={newCategory["img"]}/>
@@ -185,7 +218,7 @@ const Products: React.FC = () => {
                                         <h4>Новый Продукт</h4>
                                         <h1>{newProduct["title"]}</h1>
                                         <h3>{newProduct["price"] + "р/ " + newProduct["weight"]}</h3>
-                                        <button>Подробнее</button>
+                                        <button onClick={() => openAboutProduct(newProduct)}>Подробнее</button>
                                     </div>
                                     <div>
                                         <img src={newProduct["img"]}/>

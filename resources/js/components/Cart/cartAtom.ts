@@ -1,5 +1,4 @@
 import {atom, selector} from "recoil";
-import cart from "./Cart";
 
 export const cartAtom = atom({
     key: 'cartList',
