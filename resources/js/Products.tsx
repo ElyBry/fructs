@@ -146,21 +146,29 @@ const Products: React.FC = () => {
 
     return (
         <>
-            <button id={"openCart"} className={quantity > 0 ? "visible" : ""} onClick={() => setIsOpenCart(!isOpenCart)}>
+            <button id={"openCart"} className={quantity > 0 ? "visible" : ""}
+                    onClick={() => setIsOpenCart(!isOpenCart)}>
                 <span className="material-symbols-outlined">shopping_cart</span><br/>
                 {totalCost} р<br/>
                 Кол-во: {quantity}
             </button>
-            <div id={"aboutProduct"} className={isOpenAboutProduct ? "visible" : ""}>
-                <img src={aboutProduct["img"]} />
-                <h2 className="product-name">{aboutProduct["title"]}</h2>
-                <p className="description">{aboutProduct["description"]}</p>
-                <div className="details">
-                    <p><strong>Страна:{aboutProduct["country"]}</strong></p>
-                </div>
-                <div className="price">
-                    <p><strong>Цена:</strong> {aboutProduct["price"]}р / {aboutProduct["weight"]}</p>
-                    <button className="buy-button" onClick={(e) => addItem(e, aboutProduct)}>Добавить в корзину</button>
+            <button id={"closeAbout"} className={isOpenAboutProduct ? "visible" : ""}
+                    onClick={() => setIsOpenAboutProduct(!isOpenAboutProduct)}>
+                <span className="material-symbols-outlined">arrow_back</span>
+            </button>
+            <div id={"aboutProductModule"} className={isOpenAboutProduct ? "visible" : ""}>
+                <div id={"aboutProduct"}>
+                    <img src={aboutProduct["img"]}/>
+                    <h2 className="product-name">{aboutProduct["title"]}</h2>
+                    <p className="description">{aboutProduct["description"]}</p>
+                    <div className="details">
+                        <p><strong>Страна:{aboutProduct["country"]}</strong></p>
+                    </div>
+                    <div className="price">
+                        <p><strong>Цена:</strong> {aboutProduct["price"]}р / {aboutProduct["weight"]}</p>
+                        <button className="buy-button" onClick={(e) => addItem(e, aboutProduct)}>Добавить в корзину
+                        </button>
+                    </div>
                 </div>
             </div>
             <Cart isOpenCart={isOpenCart}/>
@@ -204,6 +212,14 @@ const Products: React.FC = () => {
                             :
                             <>
                                 <div className={"infoCard"}>
+                                    <div className={"star"}>
+                                        <span className={"material-symbols-outlined"}>star_rate</span>
+                                        <div>
+                                            {popularProduct["average_rating"]}
+                                            {popularProduct["average_rating"] ? <hr/> : ""}
+                                            {popularProduct["count_feeds"]}
+                                        </div>
+                                    </div>
                                     <div>
                                         <h4>Самый Популярный Продукт(за месяц)</h4>
                                         <h1>{popularProduct["title"]}</h1>
@@ -225,6 +241,14 @@ const Products: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className={"infoCard"}>
+                                    <div className={"star"}>
+                                        <span className={"material-symbols-outlined"}>star_rate</span>
+                                        <div>
+                                            {newProduct["average_rating"]}
+                                            {newProduct["average_rating"] ? <hr/> : ""}
+                                            {newProduct["count_feeds"]}
+                                        </div>
+                                    </div>
                                     <div>
                                         <h4>Новый Продукт</h4>
                                         <h1>{newProduct["title"]}</h1>
@@ -276,7 +300,7 @@ const Products: React.FC = () => {
                                                 id={"type" + value["id"]} type={"checkbox"}
                                                 name={"type"}
                                                 value={value["id"]}
-                                                onChange={(e) => handleAnyChange(e,"Category")}/>
+                                                onChange={(e) => handleAnyChange(e, "Category")}/>
                                             <label htmlFor={"type" + value["id"]}>{value["name"]}</label>
                                         </div>
                                     );
@@ -285,18 +309,26 @@ const Products: React.FC = () => {
                         </div>
                         <div className={"tree"}>
                             <div className={"filter"}>
-                                <div className={`iconTree ${isOpenFilter ? "open" : ""} ${(selectedCountries.length + selectedColors.length  != 0) || maxPrice != '' || minPrice != '' ? "enabled" : ""}`} onClick={() => openSortOrFilter("Filter")}>
+                                <div
+                                    className={`iconTree ${isOpenFilter ? "open" : ""} ${(selectedCountries.length + selectedColors.length != 0) || maxPrice != '' || minPrice != '' ? "enabled" : ""}`}
+                                    onClick={() => openSortOrFilter("Filter")}>
                                     <span className="material-symbols-outlined">filter_alt</span>
                                     Фильтр
                                 </div>
                                 <div className={`contentTreeFilter ${isOpenFilter ? "active" : ""}`}>
                                     <div className={"textTree"}>Добавить фильтр</div>
                                     <div className={"blocksTree"}>
-                                        <button onClick={() => openAnyItem("Colors")} className={(isOpenColors ? "open" : "") + (selectedColors.length > 0? " enabled" : "")}><span className="material-symbols-outlined">palette</span>Цвета
+                                        <button onClick={() => openAnyItem("Colors")}
+                                                className={(isOpenColors ? "open" : "") + (selectedColors.length > 0 ? " enabled" : "")}>
+                                            <span className="material-symbols-outlined">palette</span>Цвета
                                         </button>
-                                        <button onClick={() => openAnyItem("Countries")} className={(isOpenCountries ? "open" : "") + (selectedCountries.length > 0? " enabled" : "")}><span className="material-symbols-outlined">globe</span>Страны
+                                        <button onClick={() => openAnyItem("Countries")}
+                                                className={(isOpenCountries ? "open" : "") + (selectedCountries.length > 0 ? " enabled" : "")}>
+                                            <span className="material-symbols-outlined">globe</span>Страны
                                         </button>
-                                        <button onClick={() => openAnyItem("Costs")} className={(isOpenCosts ? "open" : "") + (maxPrice != '' || minPrice != '' ? " enabled" : "")}><span className="material-symbols-outlined">currency_ruble</span>Стоимость
+                                        <button onClick={() => openAnyItem("Costs")}
+                                                className={(isOpenCosts ? "open" : "") + (maxPrice != '' || minPrice != '' ? " enabled" : "")}>
+                                            <span className="material-symbols-outlined">currency_ruble</span>Стоимость
                                         </button>
                                     </div>
                                     <div className={`costTree ${isOpenCosts ? "open" : ""}`}>
@@ -311,12 +343,14 @@ const Products: React.FC = () => {
                                     <div className={`colorsTree ${isOpenColors ? "open" : ""}`}>
                                         <h2>Цвет:</h2>
                                         <div id={"colors"}>
-                                            { !loadingColors ?
+                                            {!loadingColors ?
                                                 allColors.map((value: any[]) => (
                                                     <div key={value["id"]}>
-                                                        <input id={"check"+value["id"]} type={"checkbox"} value={value["id"]} onChange={(e) => handleAnyChange(e,"Colors")}/>
+                                                        <input id={"check" + value["id"]} type={"checkbox"}
+                                                               value={value["id"]}
+                                                               onChange={(e) => handleAnyChange(e, "Colors")}/>
                                                         <label htmlFor={"check" + value["id"]} className={"blocks"}
-                                                             >{value["name"]}</label>
+                                                        >{value["name"]}</label>
                                                     </div>
                                                 ))
                                                 : <p>Загрузка...</p>
@@ -330,7 +364,8 @@ const Products: React.FC = () => {
                                 </div>
                             </div>
                             <div className={"sort"}>
-                                <div className={`iconTree ${isOpenSort ? "open" : ""} enabled`} onClick={() => openSortOrFilter("Sort")}>
+                                <div className={`iconTree ${isOpenSort ? "open" : ""} enabled`}
+                                     onClick={() => openSortOrFilter("Sort")}>
                                     <span className="material-symbols-outlined">filter_list</span>
                                     Сортировка
                                 </div>
@@ -339,13 +374,15 @@ const Products: React.FC = () => {
                                     <h4>Направлению:</h4>
                                     <div className={"blocksTree"}>
                                         <div>
-                                            <input type={"radio"} defaultChecked={true} name={"direction"} id={"increaseCheck"} onChange={() => setAscendingSort('asc')}/>
+                                            <input type={"radio"} defaultChecked={true} name={"direction"}
+                                                   id={"increaseCheck"} onChange={() => setAscendingSort('asc')}/>
                                             <label htmlFor={"increaseCheck"}>
                                                 <span className={"material-symbols-outlined"}>arrow_upward</span>Возрастанию
                                             </label>
                                         </div>
                                         <div>
-                                            <input type={"radio"} name={"direction"} id={"decreaseCheck"} onChange={() => setAscendingSort('desc')}/>
+                                            <input type={"radio"} name={"direction"} id={"decreaseCheck"}
+                                                   onChange={() => setAscendingSort('desc')}/>
                                             <label htmlFor={"decreaseCheck"}>
                                                 <span className={"material-symbols-outlined"}>arrow_downward</span>Убыванию
                                             </label>
@@ -354,25 +391,29 @@ const Products: React.FC = () => {
                                     <h4>По:</h4>
                                     <div className={"blocksTree"}>
                                         <div>
-                                            <input type={"radio"} name={"sort"} id={"sortPopular"} onChange={() => setHowSort("Popular")}/>
+                                            <input type={"radio"} name={"sort"} id={"sortPopular"}
+                                                   onChange={() => setHowSort("Popular")}/>
                                             <label htmlFor={"sortPopular"}>
                                                 <span className={"material-symbols-outlined"}>trending_up</span>Популярным
                                             </label>
                                         </div>
                                         <div>
-                                            <input type={"radio"} name={"sort"} id={"sortNew"} defaultChecked={true} onChange={() => setHowSort("New")}/>
+                                            <input type={"radio"} name={"sort"} id={"sortNew"} defaultChecked={true}
+                                                   onChange={() => setHowSort("New")}/>
                                             <label htmlFor={"sortNew"}>
                                                 <span className={"material-symbols-outlined"}>update</span>Новизне
                                             </label>
                                         </div>
                                         <div>
-                                            <input type={"radio"} name={"sort"} id={"sortFeed"} onChange={() => setHowSort("Feedback")}/>
+                                            <input type={"radio"} name={"sort"} id={"sortFeed"}
+                                                   onChange={() => setHowSort("Feedback")}/>
                                             <label htmlFor={"sortFeed"}>
                                                 <span className={"material-symbols-outlined"}>favorite</span>Отзывам
                                             </label>
                                         </div>
                                         <div>
-                                            <input type={"radio"} name={"sort"} id={"sortCost"} onChange={() => setHowSort("Costs")}/>
+                                            <input type={"radio"} name={"sort"} id={"sortCost"}
+                                                   onChange={() => setHowSort("Costs")}/>
                                             <label htmlFor={"sortCost"}>
                                                 <span className={"material-symbols-outlined"}>trending_up</span>Стоимости
                                             </label>
@@ -382,7 +423,8 @@ const Products: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <ProductsList maxPrice={maxPrice} minPrice={minPrice} ascendingSort={ascendingSort} howSort={howSort} selectedColors={selectedColors} selectedTypes={selectedTypes} />
+                    <ProductsList maxPrice={maxPrice} minPrice={minPrice} ascendingSort={ascendingSort}
+                                  howSort={howSort} selectedColors={selectedColors} selectedTypes={selectedTypes}/>
                 </div>
             </div>
 

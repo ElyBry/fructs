@@ -272,32 +272,40 @@ header {
     @include loadSkeleton;
     box-shadow: unset !important;
 }
-#openCart {
+#openCart,
+#closeAbout{
     position: fixed;
     display: none;
     bottom: 3%;
     right: 3%;
-    z-index: 1000;
+    z-index: 10009;
     border-radius: $border-radius-elements;
     padding: $padding-elements;
     background-color: $secondary-color;
 }
-#aboutProduct {
+#aboutProductModule {
     display: none;
-    position: sticky;
-    top:0;
-    right:0;
-    bottom:0;
-    width: 100%;
-    height: 100vh;
+    position: fixed;
+    //transform: translateY(-100%);
+    bottom: 0;
+    right: 0;
+    top: 0;
     z-index: 10002;
     background-color: white;
-    img {
-        height: 30vh;
+    background-image: url("../../public/image/background-abstact/rm184-katie-58.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    #aboutProduct {
+        padding: $padding-page;
+
+        img {
+            height: 30vh;
+        }
+        .buy-button {
+            @include buttonsCart("add")
+        }
     }
-    .buy-button {
-        @include buttonsCart("add")
-    }
+
 }
 #cart {
     display: none;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 
 
 import Product from './Product';
@@ -48,6 +48,7 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
             console.log(newData);
             setProducts((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);
+            setLoading(false);
         } catch (error) {
             if (error.name != "CanceledError") {
                 console.error("Ошибка получения данных: ", error);
@@ -68,7 +69,6 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
 
         const fetchData = async () => {
             await fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm, controller);
-            setLoading(false);
         };
 
         if (page == 1 || !loading) {
@@ -80,32 +80,29 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
         }
     }, [page, minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
 
-    useEffect(() => {
-        const tableProducts:HTMLElement = document.querySelector('#root');
+    const observer = useRef<IntersectionObserver | null>(null);
+    const lastElementRef = useCallback(
+        (node) => {
+            if (loading) return;
+            if (observer.current) observer.current.disconnect();
 
-        const handleScroll = () => {
-            const scrollTop = tableProducts.scrollTop;
-            const tableHeight = tableProducts.scrollHeight - tableProducts.clientHeight;
+            observer.current = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && hasMore) {
+                    setPage((prevPage) => prevPage + 1);
+                }
+            });
 
-            if ((scrollTop >= tableHeight - window.innerHeight) && hasMore && !loading ) {
-                console.log(loading, page);
-                console.log(scrollTop, tableHeight - window.innerHeight, tableHeight,window.innerHeight,document.documentElement.scrollTop);
-                setPage(prev => prev + 1);
-            }
+            if (node) observer.current.observe(node);
+        },
+        [loading, hasMore]
+    );
 
-            // Для отладки
-            //console.log(scrollTop, tableHeight - window.innerHeight, tableHeight,window.innerHeight,document.documentElement.scrollTop);
-        };
-        tableProducts.addEventListener('scroll', handleScroll);
-        return () => {
-            tableProducts.removeEventListener('scroll', handleScroll);
-        };
-    }, [hasMore, loading])
+
 
     return (
         <div id={"tableProducts"}>
-            {products.length != 0 && products.map((product) => (
-                <Product product={product} key={product.id} openAboutProduct={openAboutProduct} addItem={addItem}/>
+            {products.length != 0 && products.map((product, index) => (
+                <Product product={product} key={product.id} openAboutProduct={openAboutProduct} addItem={addItem} refLast={products.length == index + 1 ? lastElementRef : null}/>
             ))}
             {loading && [...Array(12)].map((_, index) => (
                 <div key={index} className={"products grey_card"}>

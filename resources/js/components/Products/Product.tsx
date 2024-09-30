@@ -1,8 +1,8 @@
 import * as React from "react";
 
-const Product = ({ product, openAboutProduct, addItem }) => {
+const Product = ({ product, openAboutProduct, addItem, refLast }) => {
     return (
-        <div className={"products"}>
+        <div className={"products"} ref={refLast}>
             <div className={"imgProducts"}>
                 <div className={"star"}>
                     <span className={"material-symbols-outlined"}>star_rate</span>

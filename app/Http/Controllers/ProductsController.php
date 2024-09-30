@@ -19,7 +19,7 @@ class ProductsController extends BaseController
             ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
             ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
             ->groupBy('products.id')
-            ->selectRaw('type_weight, countries.name, products.id, title, img, description, price, weight, COUNT(feedback_products.product_id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating');
+            ->selectRaw('type_weight, countries.name as country, products.id, title, img, description, price, weight, COUNT(feedback_products.product_id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating');
         if ($request->has('name') && $request->get('name') != '') {
             $query->where('title', 'like', '%' . $request->get('name') . '%');
         }
@@ -109,7 +109,12 @@ class ProductsController extends BaseController
                 ->first();
         }
         $productId = $product->product_id;
-        $product =  Product::find($productId);
+        $product =  Product::Query()
+            ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
+            ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
+            ->groupBy('products.id')
+            ->selectRaw('type_weight, countries.name as country, products.id, title, img, description, price, weight, COUNT(feedback_products.product_id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating')
+            ->find($productId);
 
         return $product;
     }
@@ -120,7 +125,12 @@ class ProductsController extends BaseController
     }
     public function getNewProduct()
     {
-        $product = Product::orderBy('created_at', 'desc')->first();
+        $product = Product::Query()
+            ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
+            ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
+            ->groupBy('products.id')
+            ->selectRaw('type_weight, countries.name as country, products.id, title, img, description, price, weight, COUNT(feedback_products.product_id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating')
+            ->first();
         return $product;
     }
     public function getAllTypeProducts()
