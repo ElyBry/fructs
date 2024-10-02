@@ -26,7 +26,7 @@ class FeedBackSeeder extends Seeder
             ];
             DB::table('feedback')->insert($feedBacks);
         }
-        // FeedBackProducts
+        // FeedbackProducts
         for ($i = 1; $i <= rand(1000, 5000); $i++) {
             $feedBacks = [
                 [

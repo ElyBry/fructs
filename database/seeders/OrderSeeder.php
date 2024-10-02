@@ -31,7 +31,7 @@ class OrderSeeder extends Seeder
                 'total_price' => 0,
                 'payment_method_id' => $paymentMethodId,
                 'payment_status_id' => $paymentStatusId,
-                'created_at' => $faker->dateTime,
+                'created_at' => $faker->dateTimeBetween('-12 months', 'now'),
             ]);
 
             $totalPrice = 0;

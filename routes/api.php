@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ColorsController;
+use App\Http\Controllers\CountriesController;
 use App\Http\Controllers\FeedBackController;
 use App\Http\Controllers\FeedBackProductsController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\PromoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TypeProductsController;
 use App\Http\Controllers\UserController;
@@ -16,12 +19,19 @@ Route::group([
     // Продукты
     Route::get('products', [ProductsController::class, 'index']);
     Route::get('popularProduct', [ProductsController::class, 'getMostPopularProduct']);
-    Route::get('typeProducts', [ProductsController::class,'getAllTypeProducts']);
-    Route::get('colors', [ProductsController::class,'getAllColors']);
-    Route::get('countries', [ProductsController::class,'getCountry']);
-    Route::get('newCategory', [ProductsController::class, 'getNewCategory']);
     Route::get('newProduct', [ProductsController::class, 'getNewProduct']);
-    Route::get('products/{product}', [ProductsController::class, 'show']);
+    Route::get('productsOrderCount', [ProductsController::class, 'getProductOrderCount']);
+    // Тип
+    Route::get('typeProducts', [TypeProductsController::class,'getAllTypeProducts']);
+    Route::get('newCategory', [TypeProductsController::class, 'getNewTypeProducts']);
+    // Цвет
+    Route::get('colors', [ColorsController::class,'index']);
+    // Отзывы
+    Route::get('feedBackProducts', [FeedBackProductsController::class,'getFeedBackProducts']);
+    //Страны
+    Route::get('countries', [CountriesController::class,'index']);
+
+    // Для менеджера/ администратора
     Route::group([
         'middleware' => [
             'api',
@@ -33,6 +43,8 @@ Route::group([
         Route::put('{product}',[ProductsController::class, 'update']);
         Route::delete('{product}', [ProductsController::class, 'delete']);
     });
+
+    // Для администратора
     Route::group([
         'middleware' => [
             'api',
@@ -44,16 +56,21 @@ Route::group([
         Route::resource('users', UserController::class);
         Route::resource('products', ProductsController::class);
         Route::resource('typeProducts', TypeProductsController::class);
+        Route::resource('colors', ColorsController::class);
+        Route::resource('countries', CountriesController::class);
+        Route::resource('promo', PromoController::class);
         Route::resource('orders', OrderController::class);
         Route::resource('feedBacks', FeedBackController::class);
         Route::resource('feedBacksProducts', FeedBackProductsController::class);
     });
+    // Вход и регистрация без аутентификации
     Route::group([
         'prefix' => '/auth',
     ], function () {
         Route::post('register', [AuthController::class, 'register'])->withoutMiddleware('auth:api');
         Route::post('login', [AuthController::class, 'login'])->withoutMiddleware('auth:api');
     });
+    // При аутентификации
     Route::group([
         'middleware' => 'api',
         'prefix' => '/auth'

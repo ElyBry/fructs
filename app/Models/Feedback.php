@@ -6,13 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class FeedBackProducts extends Model
+class Feedback extends Model
 {
     use HasFactory;
     protected $fillable = [
         'user_id',
         'user_name',
-        'product_id',
         'message',
         'is_approved',
         'rating'
@@ -22,9 +21,5 @@ class FeedBackProducts extends Model
         return DB::table("users")
             ->where("id", $user_id)
             ->first();
-    }
-    public function getProduct($product_id)
-    {
-        return DB::table("products")->where("id", $product_id)->first();
     }
 }

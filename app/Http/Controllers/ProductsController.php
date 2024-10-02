@@ -5,7 +5,6 @@ use App\Http\Controllers\BaseController as BaseController;
 
 use App\Models\OrderItems;
 use App\Models\Product;
-use App\Models\TypeProducts;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +18,7 @@ class ProductsController extends BaseController
             ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
             ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
             ->groupBy('products.id')
-            ->selectRaw('type_weight, countries.name as country, products.id, title, img, description, price, weight, COUNT(feedback_products.product_id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating');
+            ->selectRaw('type_weight, countries.name as country, products.id, title, img, description, price, weight, COUNT(DISTINCT feedback_products.id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating');
         if ($request->has('name') && $request->get('name') != '') {
             $query->where('title', 'like', '%' . $request->get('name') . '%');
         }
@@ -38,6 +37,12 @@ class ProductsController extends BaseController
         if ($request->has('countries') && !empty($request->get('countries'))) {
             $query->whereIntegerInRaw('country_id', $request->get('countries'));
         }
+        if ($request->has('min_rate') && $request->get('min_rate') != '') {
+            $query->having('average_rating','>=',$request->get('min_rate'));
+        }
+        if ($request->has('max_rate') && $request->get('max_rate') != '') {
+            $query->having('average_rating','<=',$request->get('max_rate'));
+        }
         $direction = 'desc';
         if ($request->has('ascendingSort') && $request->get('ascendingSort') != '') {
             $direction = $request->get('ascendingSort');
@@ -46,7 +51,7 @@ class ProductsController extends BaseController
             $howSort = $request->get('howSort');
             if ($howSort == 'Popular') {
                 $query->leftJoin('order_items', 'products.id', '=','order_items.product_id')
-                    ->orderByRaw('SUM(order_items.quantity)' . $direction);
+                    ->orderByRaw('count(DISTINCT order_items.id)' . $direction);
             } else if ($howSort == 'New') {
                 $query->orderBy('products.created_at', $direction)
                     ->orderBy('products.updated_at', $direction);
@@ -62,9 +67,13 @@ class ProductsController extends BaseController
 
         return $products;
     }
-    public function show(Product $product)
+    public function getProductOrderCount(Request $request)
     {
-        return $product;
+        if (!$request->has('product_id')) return $this->sendError('Product_id не найден в запросе', 404);
+        $product_id = $request->get('product_id');
+        return DB::table('order_items')
+            ->where('product_id', $product_id)
+            ->count();
     }
     public function store(Request $request)
     {
@@ -72,7 +81,13 @@ class ProductsController extends BaseController
             'title' => 'required|unique:products|max:255',
             'description' => 'required',
             'price' => 'integer',
-            'available' => 'boolean'
+            'type_weight' => 'string',
+            'weight' => 'integer',
+            'img' => 'string',
+            'type_products_id' => 'integer',
+            'color_id' => 'integer',
+            'country_id' => 'integer',
+            'count' => 'number'
         ]);
         if($validator->fails()){
             return $this->sendError('Ошибка валидации', $validator->errors());
@@ -92,36 +107,47 @@ class ProductsController extends BaseController
     }
     public function getMostPopularProduct()
     {
-        $product = OrderItems::select('product_id', DB::raw('sum(quantity) as total_quantity'))
+        $product = Product::query()
+            ->select('products.id', 'products.title', 'products.img', 'products.description', 'products.price',
+                'products.weight',
+                'products.type_weight')
+            ->selectRaw('COUNT(DISTINCT feedback_products.id) AS count_feeds,
+                ROUND(AVG(feedback_products.rating), 2) AS average_rating,
+                count(DISTINCT order_items.id) as order_count')
+            ->join('order_items', 'products.id', '=', 'order_items.product_id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
-            ->whereBetween('created_at', [
-                Carbon::now()->subMonth()->startOfMonth(),
-                Carbon::now()->subMonth()->endOfMonth(),
-            ])
-            ->groupBy('order_items.product_id')
-            ->orderBy('total_quantity', 'desc')
-            ->first();
-        if (!$product) {
-            $product = OrderItems::select('product_id', DB::raw('sum(quantity) as total_quantity'))
-                ->join('orders', 'order_items.order_id', '=', 'orders.id')
-                ->groupBy('order_items.product_id')
-                ->orderBy('total_quantity', 'desc')
-                ->first();
-        }
-        $productId = $product->product_id;
-        $product =  Product::Query()
             ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
             ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
+            ->whereBetween('orders.created_at', [
+                Carbon::now()->subDays(30)->startOfDay(),
+                Carbon::now()->endOfDay(),
+            ])
             ->groupBy('products.id')
-            ->selectRaw('type_weight, countries.name as country, products.id, title, img, description, price, weight, COUNT(feedback_products.product_id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating')
-            ->find($productId);
-
+            ->orderBy('order_count', 'desc')
+            ->orderBy('average_rating', 'desc')
+            ->orderBy('count_feeds', 'desc')
+            ->having('average_rating', '>=', 4)
+            ->first();
+        if (!$product){
+            $product = Product::query()
+                ->select('products.id', 'products.title', 'products.img', 'products.description', 'products.price',
+                    'products.weight',
+                    'products.type_weight')
+                ->selectRaw('COUNT(DISTINCT feedback_products.id) AS count_feeds,
+                ROUND(AVG(feedback_products.rating), 2) AS average_rating,
+                count(DISTINCT order_items.id) as order_count')
+                ->join('order_items', 'products.id', '=', 'order_items.product_id')
+                ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
+                ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
+                ->groupBy('products.id')
+                ->orderBy('order_count', 'desc')
+                ->orderBy('average_rating', 'desc')
+                ->orderBy('count_feeds', 'desc')
+                ->having('average_rating', '>=', 4)
+                ->first();
+        }
         return $product;
-    }
-    public function getNewCategory()
-    {
-        $type = TypeProducts::orderBy('created_at', 'desc')->first();
-        return $type;
     }
     public function getNewProduct()
     {
@@ -133,21 +159,5 @@ class ProductsController extends BaseController
             ->first();
         return $product;
     }
-    public function getAllTypeProducts()
-    {
-        $typesProducts = TypeProducts::all();
-        return $typesProducts;
-    }
-    public function getAllColors()
-    {
-        $colors = DB::table("colors")->get();
-        return $colors;
-    }
-    public function getCountry(Request $request)
-    {
-        $query = $request->input('country');
-        $countries = DB::table("countries")
-            ->where('name', 'like', $query . '%')->paginate(5);
-        return $countries;
-    }
+
 }

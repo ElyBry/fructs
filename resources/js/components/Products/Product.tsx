@@ -1,6 +1,11 @@
 import * as React from "react";
+import {useInView} from "react-intersection-observer";
 
 const Product = ({ product, openAboutProduct, addItem, refLast }) => {
+    const [inViewRef, inView] = useInView({
+        threshold: 0.1
+    })
+
     return (
         <div className={"products"} ref={refLast}>
             <div className={"imgProducts"}>

@@ -22,7 +22,7 @@ class OrderController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
-            'adress' => 'required',
+            'address' => 'required',
             'product_id' => 'required',
             'quantity' => 'required',
             'total_price' => 'required',
@@ -38,6 +38,9 @@ class OrderController extends BaseController
     }
     public function edit(Request $request, $id)
     {
+        if (in_array($request['payment_status_id'],[0, 1])) {
+            return $this->sendError('Невозможно изменить заказ', 'Курьер уже в пути');
+        }
         $request->validate([
             'user_id' => 'required',
             'address' => 'required',
@@ -47,9 +50,6 @@ class OrderController extends BaseController
             'payment_method_id' => 'required',
             'payment_status_id' => 'required'
         ]);
-        if (in_array($request['payment_status_id'],[0, 1])) {
-            return $this->sendError('Невозможно изменить заказ', 'Курьер уже в пути');
-        }
         $input = $request->all();
         $order = Order::find($id);
         $order->update($input);

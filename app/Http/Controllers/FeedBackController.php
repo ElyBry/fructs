@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController as BaseController;
-use App\Models\FeedBack;
+use App\Models\Feedback;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,7 +11,7 @@ class FeedBackController extends BaseController
 {
     public function index()
     {
-        $query = FeedBack::query();
+        $query = Feedback::query();
 
         $feedbacks = $query->orderBy('created_at', 'desc')->paginate(10);
 
@@ -29,12 +29,17 @@ class FeedBackController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors());
         }
         $input = $request->all();
-        $feedBack = FeedBack::create($input);
+        $feedBack = Feedback::create($input);
         return response()->json([$feedBack, 200]);
     }
-    public function delete(FeedBack $feedBack)
+    public function delete(Feedback $feedBack)
     {
         $feedBack->delete();
         return response()->json(null, 204);
+    }
+    public function approve(Request $request, Feedback $feedBack)
+    {
+        $feedBack->update($request->all());
+        return $this->sendResponse($feedBack,'Успешно обновлено');
     }
 }

@@ -45,5 +45,14 @@ class TypeProductsController extends BaseController
         $types->delete();
         return response()->json(null, 204);
     }
-
+    public function getNewTypeProducts()
+    {
+        $type = TypeProducts::orderBy('created_at', 'desc')->first();
+        return $type;
+    }
+    public function getAllTypeProducts()
+    {
+        $typesProducts = TypeProducts::all();
+        return $typesProducts;
+    }
 }

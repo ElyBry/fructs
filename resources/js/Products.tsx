@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import * as ReactDOM from 'react-dom/client';
 
 import {RecoilRoot, useRecoilValue} from "recoil";
@@ -25,6 +25,8 @@ const Products: React.FC = () => {
 
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
+    const [minRate , setMinRate] = useState('');
+    const [maxRate, setMaxRate]  = useState('');
     const [selectedTypes, setSelectedTypes] = useState([]);
     const [selectedColors, setSelectedColors] = useState([]);
     const [howSort, setHowSort] = useState('New');
@@ -47,20 +49,27 @@ const Products: React.FC = () => {
     const [isOpenColors, setIsOpenColors] = useState(false);
     const [isOpenCountries, setIsOpenCountries] = useState(false);
     const [isOpenCosts, setIsOpenCosts] = useState(false);
+    const [isOpenRate, setIsOpenRate] = useState(false);
 
     const handleMinPriceChange = (event) => setMinPrice(event.target.value);
     const handleMaxPriceChange = (event) => setMaxPrice(event.target.value);
+
+    const handleMinRateChange = (event) => setMinRate(event.target.value);
+    const handleMaxRateChange = (event) => setMaxRate(event.target.value);
 
     const openAnyItem = (type: string) => {
         setIsOpenColors(false);
         setIsOpenCountries(false);
         setIsOpenCosts(false);
+        setIsOpenRate(false);
         if (type == "Colors") {
             setIsOpenColors(true)
         } else if (type == "Countries") {
             setIsOpenCountries(true);
-        } else {
+        } else if (type == 'Costs') {
             setIsOpenCosts(true);
+        } else if (type == 'Rate') {
+            setIsOpenRate(true);
         }
     };
     const openSortOrFilter = (type:string) => {
@@ -135,14 +144,69 @@ const Products: React.FC = () => {
     const quantity = useRecoilValue(quantityAtom);
     const { addItem, removeItem, updateItemQuantity } = useCart();
 
-    const [aboutProduct, setAboutProduct] = useState([]);
+    const [aboutProduct, setAboutProduct] = useState(null);
     const [isOpenAboutProduct, setIsOpenAboutProduct] = useState(false);
-    const openAboutProduct = (product) => {
-        setAboutProduct(product);
-        setIsOpenAboutProduct(!isOpenAboutProduct);
-    };
-
     const [isOpenCart, setIsOpenCart] = useState(false);
+
+    const [feedbacksProduct, setFeedbacksProduct] = useState([]);
+    const [loadingFeedbacksProduct, setLoadingFeedbacksProduct] = useState(false);
+    const [pageFeedbacksProduct, setPageFeedbacksProduct] = useState(null);
+    const [hasMoreFeedbacks, setHasMoreFeedbacks] = useState(false);
+
+    const fetchFeedbacksProduct = async (page, product, controller) => {
+        try {
+            const { signal } = controller;
+            const response = await axios.get(`/api/feedBackProducts?product_id=${product.id}&page=${page}`, { signal });
+            const newData = response.data;
+            setFeedbacksProduct((prev) => [...prev, ...newData.data]);
+            setHasMoreFeedbacks(newData.current_page < newData.last_page);
+            setLoadingFeedbacksProduct(false)
+        } catch (e) {
+            if (e.name != "CanceledError") {
+                console.error("Ошибка получения данных: ", e);
+            }
+        }
+    }
+    const openAboutProduct = (product) => {
+        if (!aboutProduct || product.id !== aboutProduct["id"]) {
+            setFeedbacksProduct([])
+            setPageFeedbacksProduct(1);
+            setHasMoreFeedbacks(true);
+            setAboutProduct(product);
+            setIsOpenAboutProduct(true);
+        }
+    };
+    useEffect(() => {
+        const controller = new AbortController();
+        setLoadingFeedbacksProduct(true);
+        const fetchData = async () => {
+            await fetchFeedbacksProduct(pageFeedbacksProduct, aboutProduct, controller);
+        };
+
+        if ((pageFeedbacksProduct == 1 || !loadingFeedbacksProduct) && aboutProduct) {
+            fetchData();
+        }
+
+        return () => {
+            controller.abort();
+        }
+    }, [pageFeedbacksProduct, aboutProduct]);
+
+    const observerFeedbacks = useRef<IntersectionObserver | null>(null);
+    const lastElementRef = useCallback(
+        (node) => {
+            if (loadingFeedbacksProduct) return;
+            if (observerFeedbacks.current) observerFeedbacks.current.disconnect();
+
+            observerFeedbacks.current = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && hasMoreFeedbacks) {
+                    setPageFeedbacksProduct((prevPage) => prevPage + 1);
+                }
+            });
+            if (node) observerFeedbacks.current.observe(node);
+        },
+        [loadingFeedbacksProduct, hasMoreFeedbacks]
+    );
 
     return (
         <>
@@ -158,17 +222,52 @@ const Products: React.FC = () => {
             </button>
             <div id={"aboutProductModule"} className={isOpenAboutProduct ? "visible" : ""}>
                 <div id={"aboutProduct"}>
-                    <img src={aboutProduct["img"]}/>
-                    <h2 className="product-name">{aboutProduct["title"]}</h2>
-                    <p className="description">{aboutProduct["description"]}</p>
-                    <div className="details">
-                        <p><strong>Страна:{aboutProduct["country"]}</strong></p>
-                    </div>
-                    <div className="price">
-                        <p><strong>Цена:</strong> {aboutProduct["price"]}р / {aboutProduct["weight"]}</p>
-                        <button className="buy-button" onClick={(e) => addItem(e, aboutProduct)}>Добавить в корзину
-                        </button>
-                    </div>
+                    {
+                        aboutProduct &&
+                        <>
+                            <img src={aboutProduct["img"]}/>
+                            <h2 className="product-name">{aboutProduct["title"]}</h2>
+                            <p className="description">{aboutProduct["description"]}</p>
+                            <div className="details">
+                                <p><strong>Страна: {aboutProduct["country"]}</strong></p>
+                            </div>
+                            {aboutProduct["id"]}
+                            <div className="price">
+                                <p><strong>Цена:</strong> {aboutProduct["price"]}р / {aboutProduct["weight"]} {aboutProduct["type_weight"]}</p>
+                                <button className="buy-button" onClick={(e) => addItem(e, aboutProduct)}>Добавить в
+                                    корзину
+                                </button>
+                            </div>
+                            <div className={"feedbacksProducts"}>
+                                <h2>К-во отзывов: {aboutProduct["count_feeds"]}</h2>
+                                <h2>Рейтинг: {aboutProduct["average_rating"]}</h2>
+                                <h1>Отзывы</h1>
+                                <div id={"feedbacks"}>
+                                    {feedbacksProduct && feedbacksProduct.map((feedback, index) => (
+                                        <div key={feedback.id}
+                                             ref={index + 1 == feedbacksProduct.length ? lastElementRef : null}>
+                                            <div className={"star"}>
+                                                <span className={"material-symbols-outlined"}>star_rate</span>
+                                                <div>
+                                                    {feedback["rating"]}
+                                                </div>
+                                            </div>
+                                            <div className={"username"}>
+                                                {feedback.id}<br/>
+                                                {feedback.user_name}
+                                            </div>
+                                            <div className={"message"}>
+                                                {feedback.message}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {loadingFeedbacksProduct && <p>Загрузка....</p>}
+                                    {!loadingFeedbacksProduct && feedbacksProduct.length == 0 &&
+                                        <p>Отзывов не найдено</p>}
+                                </div>
+                            </div>
+                        </>
+                    }
                 </div>
             </div>
             <Cart isOpenCart={isOpenCart}/>
@@ -176,36 +275,36 @@ const Products: React.FC = () => {
             <Search/>
             <div id={"infoProducts"}>
                 <div className={"content"}>
-                    <div>
+                    <div className={"cards"}>
                         {loadingTop ?
                             <>
                                 <div className={"infoCard grey"}>
-                                    <div>
-                                        <h4>Самый Популярный Продукт(за месяц)</h4>
+                                    <div className={"leftSide"}>
+                                        <h4>Хит Продаж(за месяц)</h4>
                                         <h1>Яблоко</h1>
                                         <h3>320р/ Килограмм</h3>
-                                        <button disabled={true}>Добавить в корзину</button>
+                                        <button disabled={true}>Подробнее</button>
                                     </div>
-                                    <div>
+                                    <div className={"rightSide"}>
                                     </div>
                                 </div>
                                 <div className={"infoCard grey"}>
-                                    <div>
+                                    <div className={"leftSide"}>
                                         <h4>Новая Категория</h4>
                                         <h1>Фрукты</h1>
                                         <button disabled={true}>Отфильтровать</button>
                                     </div>
-                                    <div>
+                                    <div className={"rightSide"}>
                                     </div>
                                 </div>
                                 <div className={"infoCard grey"}>
-                                    <div>
+                                    <div className={"leftSide"}>
                                         <h4>Новый Продукт</h4>
                                         <h1>Апельсин</h1>
                                         <h3>320р/ Килограмм</h3>
                                         <button disabled={true}>Подробнее</button>
                                     </div>
-                                    <div>
+                                    <div className={"rightSide"}>
                                     </div>
                                 </div>
                             </>
@@ -220,23 +319,23 @@ const Products: React.FC = () => {
                                             {popularProduct["count_feeds"]}
                                         </div>
                                     </div>
-                                    <div>
-                                        <h4>Самый Популярный Продукт(за месяц)</h4>
+                                    <div className={"leftSide"}>
+                                        <h4>Хит Продаж(за месяц)</h4>
                                         <h1>{popularProduct["title"]}</h1>
                                         <h3>{popularProduct["price"] + "р/ "} {`${popularProduct["weight"]} ${popularProduct["type_weight"]}`}</h3>
-                                        <button onClick={(e) => addItem(e, popularProduct)}>Добавить в корзину</button>
+                                        <button onClick={() => openAboutProduct(popularProduct)}>Подробнее</button>
                                     </div>
-                                    <div>
+                                    <div className={"rightSide"}>
                                         <img src={popularProduct["img"]}/>
                                     </div>
                                 </div>
                                 <div className={"infoCard"}>
-                                    <div>
+                                    <div className={"leftSide"}>
                                         <h4>Новая Категория</h4>
                                         <h1>{newCategory["name"]}</h1>
                                         <button onClick={() => handleTopPick(newCategory["id"])}>Отфильтровать</button>
                                     </div>
-                                    <div>
+                                    <div className={"rightSide"}>
                                         <img src={newCategory["img"]}/>
                                     </div>
                                 </div>
@@ -249,13 +348,13 @@ const Products: React.FC = () => {
                                             {newProduct["count_feeds"]}
                                         </div>
                                     </div>
-                                    <div>
+                                    <div className={"leftSide"}>
                                         <h4>Новый Продукт</h4>
                                         <h1>{newProduct["title"]}</h1>
                                         <h3>{newProduct["price"] + "р/ "} {`${newProduct["weight"]} ${newProduct["type_weight"]}`}</h3>
                                         <button onClick={() => openAboutProduct(newProduct)}>Подробнее</button>
                                     </div>
-                                    <div>
+                                    <div className={"rightSide"}>
                                         <img src={newProduct["img"]}/>
                                     </div>
                                 </div>
@@ -330,6 +429,10 @@ const Products: React.FC = () => {
                                                 className={(isOpenCosts ? "open" : "") + (maxPrice != '' || minPrice != '' ? " enabled" : "")}>
                                             <span className="material-symbols-outlined">currency_ruble</span>Стоимость
                                         </button>
+                                        <button onClick={() => openAnyItem("Rate")}
+                                                className={(isOpenRate ? "open" : "") + (minRate != '' || maxRate != '' ? " enabled" : "")}>
+                                            <span className="material-symbols-outlined">thumb_up</span>Рейтинг
+                                        </button>
                                     </div>
                                     <div className={`costTree ${isOpenCosts ? "open" : ""}`}>
                                         <h2>Цена:</h2>
@@ -339,6 +442,15 @@ const Products: React.FC = () => {
                                         <label>До</label>
                                         <input type={"number"} name={"maxPrice"} value={maxPrice}
                                                onChange={handleMaxPriceChange}/>
+                                    </div>
+                                    <div className={`rateTree ${isOpenRate ? "open" : ""}`}>
+                                        <h2>Рейтинг:</h2>
+                                        <label>От</label>
+                                        <input type={"number"} name={"minRate"} value={minRate} min="0" max="5"
+                                               onChange={handleMinRateChange}/>
+                                        <label>До</label>
+                                        <input type={"number"} name={"maxRate"} value={maxRate} min="0" max="5"
+                                               onChange={handleMaxRateChange}/>
                                     </div>
                                     <div className={`colorsTree ${isOpenColors ? "open" : ""}`}>
                                         <h2>Цвет:</h2>
@@ -424,7 +536,10 @@ const Products: React.FC = () => {
                         </div>
                     </div>
                     <ProductsList maxPrice={maxPrice} minPrice={minPrice} ascendingSort={ascendingSort}
-                                  howSort={howSort} selectedColors={selectedColors} selectedTypes={selectedTypes}/>
+                                  howSort={howSort} selectedColors={selectedColors} selectedTypes={selectedTypes}
+                                  openAboutProduct={openAboutProduct}
+                                  minRate={minRate} maxRate={maxRate}
+                    />
                 </div>
             </div>
 

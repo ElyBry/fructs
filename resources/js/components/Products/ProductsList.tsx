@@ -9,17 +9,13 @@ import axios from "axios";
 import {searchTermState} from "../Search/searchAtom";
 import {countriesList} from "../CountriesSearch/countriesAtom";
 import useCart from "../Cart/useCart"
+import {max} from "@popperjs/core/lib/utils/math";
 
-const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSort, ascendingSort}) => {
+const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSort, ascendingSort, openAboutProduct, minRate, maxRate}) => {
     const [aboutProduct, setAboutProduct] = useRecoilState(aboutProductAtom)
     const [isOpenAboutProduct, setIsOpenAboutProduct] = useRecoilState(openAboutProductAtom)
 
     const { addItem } = useCart();
-
-    const openAboutProduct = (product) => {
-        setAboutProduct(product);
-        setIsOpenAboutProduct(!isOpenAboutProduct);
-    };
 
     const [products, setProducts] = useRecoilState(productsAtom)
     const [page, setPage] = useState(1);
@@ -27,9 +23,9 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
     const [hasMore, setHasMore] = useState(true);
     const searchTerm = useRecoilValue(searchTermState);
     const selectedCountries = useRecoilValue(countriesList);
-    const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm, controller: AbortController) => {
+    const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm, controller: AbortController, minRate, maxRate) => {
         try {
-            console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, selectedColors, selectedCountries, ascendingSort, howSort,  pageNumber, hasMore,loading });
+            console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, selectedColors, selectedCountries, ascendingSort, howSort, pageNumber, hasMore,loading , minRate, maxRate });
             const response = await axios.get<any>('/api/products', {
                 signal: controller.signal,
                 params: {
@@ -37,6 +33,8 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
                     name: searchTerm,
                     min_price: minPrice || undefined,
                     max_price: maxPrice || undefined,
+                    min_rate: minRate || undefined,
+                    max_rate: maxRate || undefined,
                     color: selectedColors.length > 0 ? selectedColors : undefined,
                     countries: selectedCountries.length > 0 ? selectedCountries.map(country => country.id) : undefined,
                     ascendingSort: ascendingSort || undefined,
@@ -53,7 +51,6 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
             if (error.name != "CanceledError") {
                 console.error("Ошибка получения данных: ", error);
             }
-            console.log(error);
         }
     };
 
@@ -62,13 +59,14 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
         setProducts([]);
         setPage(1);
         setHasMore(true);
-    }, [minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
+    }, [minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort, minRate, maxRate]);
+
     useEffect(() => {
         const controller = new AbortController();
         setLoading(true);
 
         const fetchData = async () => {
-            await fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm, controller);
+            await fetchProducts(page, minPrice, maxPrice, selectedTypes, searchTerm, controller, minRate, maxRate);
         };
 
         if (page == 1 || !loading) {
@@ -78,7 +76,7 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
         return () => {
             controller.abort();
         }
-    }, [page, minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort]);
+    }, [page, minPrice, maxPrice, selectedTypes, selectedColors, selectedCountries, searchTerm, ascendingSort, howSort, minRate, maxRate]);
 
     const observer = useRef<IntersectionObserver | null>(null);
     const lastElementRef = useCallback(
@@ -96,8 +94,6 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
         },
         [loading, hasMore]
     );
-
-
 
     return (
         <div id={"tableProducts"}>

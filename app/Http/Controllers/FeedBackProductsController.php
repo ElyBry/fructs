@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController as BaseController;
-use App\Models\FeedBackProducts;
+use App\Models\FeedbackProducts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,7 +11,7 @@ class FeedBackProductsController extends BaseController
 {
     public function index()
     {
-        $query = FeedBackProducts::query();
+        $query = FeedbackProducts::query();
 
         $feedbacks = $query->orderBy('created_at', 'desc')->paginate(10);
 
@@ -30,12 +30,28 @@ class FeedBackProductsController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors());
         }
         $input = $request->all();
-        $feedBack = FeedBackProducts::create($input);
+        $feedBack = FeedbackProducts::create($input);
         return response()->json([$feedBack, 200]);
     }
-    public function delete(FeedBackProducts $feedBack)
+    public function delete(FeedbackProducts $feedBack)
     {
         $feedBack->delete();
         return response()->json(null, 204);
+    }
+    public function approve(Request $request, FeedbackProducts $feedBackProducts)
+    {
+        $feedBackProducts->update($request->all());
+        return $this->sendResponse($feedBackProducts,'Успешно обновлено');
+    }
+    public function getFeedBackProducts(Request $request)
+    {
+        $product_id = $request->input('product_id');
+        $feedBackProducts = FeedbackProducts::query()
+            ->orderBy('created_at', 'desc')
+            ->where('product_id', $product_id)
+            ->paginate(2);
+
+
+        return $feedBackProducts;
     }
 }

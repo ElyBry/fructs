@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
             ColorSeeder::class,
             TypeProductsSeeder::class,
             FeedBackSeeder::class,
-            OrderSeeder::class
+            OrderSeeder::class,
+            PromoSeeder::class,
         ]);
         $superAdmin = User::factory()->create([
             'name' => 'Test User',
