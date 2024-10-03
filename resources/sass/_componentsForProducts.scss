@@ -3,7 +3,7 @@
 @import "search";
 @import "products";
 @import "product";
-
+@import "cart";
 body {
     overflow: auto;
 }
@@ -53,7 +53,7 @@ header {
                     position: absolute;
                     top: $padding-elements;
                     right: $padding-elements;
-                    z-index: 10001;
+                    z-index: 4;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -289,21 +289,31 @@ header {
     @include loadSkeleton;
     box-shadow: unset !important;
 }
-#openCart,
-#closeAbout{
+#usableItems {
     position: fixed;
-    display: none;
     bottom: 3%;
     right: 3%;
     z-index: 10009;
+    display: flex;
+    gap: $margin-text;
+    align-items: center;
+    flex-direction: row-reverse;
+    justify-content: center;
+}
+#openCart,
+#close{
+    display: none;
     border-radius: $border-radius-elements;
     padding: $padding-elements;
     background-color: $secondary-color;
+    &.visible {
+        display: block !important;
+    }
 }
 #aboutProductModule {
-    display: none;
     position: fixed;
-    //transform: translateY(-100%);
+    transform: translateX(100%);
+    transition: 1s ease-in-out all;
     bottom: 0;
     right: 0;
     top: 0;
@@ -324,17 +334,170 @@ header {
         .buy-button {
             @include buttonsCart("add")
         }
+        #feedbacks {
+            margin-bottom: 12vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: $margin-text;
+            .feedback {
+                padding: $padding-elements;
+                border-radius: $border-radius;
+                background-color: $secondary-color;
+                position: relative;
+                .star {
+                    position: absolute;
+                    right: $padding-elements;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    span {
+                        color: green;
+                    }
+                }
+                .username {
+                    text-transform: uppercase;
+                }
+                .message {
+                    padding-left: $padding-elements;
+                }
+            }
+        }
+    }
+    &.visible {
+        transform: translateX(0%);
     }
 
 }
 #cart {
     display: none;
+    justify-content: center;
+    align-items: center;
     position: fixed;
-    right: 0;
+    inset:0;
     width: 100%;
     height: 100%;
+    z-index: 10001;
+    opacity: 0;
+    transition: 0.7s ease-in-out all;
+    #cartBlock {
+        width: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+        padding: $padding-page;
+        border-radius: $border-radius;
+        background-color: white;
+        table {
+            width: 100%;
+            .quantity input {
+                border: 0;
+                text-align: center;
+                width: min-content;
+            }
+        }
+        .infoOrder {
+            display: none;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+            margin-top: $margin-h1;
+            .result {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                gap: $margin-text;
+                width: 50%;
+            }
+            .promo {
+                display: flex;
+                gap: $margin-text;
+                input {
+                    padding: $padding-elements;
+                    transition: background .5s;
+                    text-transform: uppercase;
+                }
+                button {
+                    border-style: none;
+                    padding: $padding-elements;
+                    background: $secondary-color;
+                    color: black;
+                    transition: background .5s;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: $margin-text;
+                    span {
+                        color:red;
+                    }
+                }
+            }
+            .type {
+                div {
+                    display: flex;
+                    gap: $margin-text;
+                    margin-top: $margin-text;
+                    input {
+                        display: none;
+                        &:checked + label {
+                            background-color: green !important;
+                            color: white !important;
+                        }
+                    }
+                    label {
+                        padding: $padding-elements;
+                        background-color: $secondary-color;
+                        transition: $transition-base;
+                    }
+                }
+            }
+            .location {
+                margin-top: $margin-text;
+                display: grid;
+                grid-template-columns: 45% 45%;
+                grid-gap: $margin-text;
+                div {
+                    display: flex;
+                    align-items: center;
+                    gap: $margin-text;
+                    padding: $padding-elements;
+                    label {
 
-}
-.visible {
-    display: block !important;
+                    }
+                    input {
+
+                    }
+                }
+            }
+            .next,
+            .back,
+            .submit{
+                margin-top: $margin-h1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: $margin-text;
+                background-color: $secondary-color;
+                padding: $padding-elements;
+                border-radius: $border-radius;
+            }
+            &.active {
+                display: flex;
+            }
+            .buttons {
+                display: flex;
+                gap: $margin-h1;
+            }
+        }
+    }
+    &.visible {
+        display: flex;
+        opacity: 1;
+        background-color: $secondary-color;
+    }
 }

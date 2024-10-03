@@ -118,6 +118,7 @@ const Products: React.FC = () => {
                 if (selectedTypes.indexOf(value) != -1) {
                     return;
                 }
+                console.log(selectedTypes)
                 setSelectedTypes((prev) => [...prev, value]);
             } else {
                 setSelectedTypes((prev) => prev.filter((type) => type != value));
@@ -136,8 +137,9 @@ const Products: React.FC = () => {
         allCategories.forEach((categories:HTMLInputElement) => categories.checked = false);
         setSelectedTypes([]);
         const category:HTMLInputElement = document.querySelector("#type" + id);
-        category.checked = true;
-        handleAnyChange({target: {value: id, checked: true}},"Category")
+        category.checked = !category.defaultChecked;
+        category.defaultChecked = category.checked;
+        handleAnyChange({target: {value: id, checked: category.checked}},"Category")
     };
 
     const totalCost = useRecoilValue(totalCostAtom);
@@ -154,6 +156,12 @@ const Products: React.FC = () => {
     const [pageFeedbacksProduct, setPageFeedbacksProduct] = useState(null);
     const [hasMoreFeedbacks, setHasMoreFeedbacks] = useState(false);
 
+    useEffect(() => {
+        if (cart.length == 0) {
+            setIsOpenCart(false);
+        }
+    }, [cart]);
+
     const fetchFeedbacksProduct = async (page, product, controller) => {
         try {
             const { signal } = controller;
@@ -169,13 +177,16 @@ const Products: React.FC = () => {
         }
     }
     const openAboutProduct = (product) => {
-        if (!aboutProduct || product.id !== aboutProduct["id"]) {
-            setFeedbacksProduct([])
-            setPageFeedbacksProduct(1);
-            setHasMoreFeedbacks(true);
-            setAboutProduct(product);
+        if (aboutProduct && product.id == aboutProduct["id"]) {
             setIsOpenAboutProduct(true);
+            return;
         }
+        setFeedbacksProduct([])
+        setPageFeedbacksProduct(1);
+        setHasMoreFeedbacks(true);
+        setAboutProduct(product);
+        setIsOpenAboutProduct(true);
+
     };
     useEffect(() => {
         const controller = new AbortController();
@@ -210,16 +221,26 @@ const Products: React.FC = () => {
     );
     return (
         <>
-            <button id={"openCart"} className={quantity > 0 ? "visible" : ""}
-                    onClick={() => setIsOpenCart(!isOpenCart)}>
-                <span className="material-symbols-outlined">shopping_cart</span><br/>
-                {totalCost} р<br/>
-                Кол-во: {quantity}
-            </button>
-            <button id={"closeAbout"} className={isOpenAboutProduct ? "visible" : ""}
-                    onClick={() => setIsOpenAboutProduct(!isOpenAboutProduct)}>
-                <span className="material-symbols-outlined">arrow_back</span>
-            </button>
+            <div id={"usableItems"}>
+                <button id={"openCart"} className={quantity > 0 && !isOpenCart ? "visible" : ""}
+                        onClick={() => {
+                            setIsOpenCart(true);
+                            setIsOpenAboutProduct(false);
+                        }}
+                >
+                    <span className="material-symbols-outlined">shopping_cart</span><br/>
+                    {totalCost} р<br/>
+                    Кол-во: {quantity}
+                </button>
+                <button id={"close"} className={isOpenAboutProduct || isOpenCart ? "visible" : ""}
+                        onClick={() => {
+                            setIsOpenAboutProduct(false);
+                            setIsOpenCart(false);
+                        }}
+                >
+                    <span className="material-symbols-outlined">arrow_back</span>
+                </button>
+            </div>
             <div id={"aboutProductModule"} className={isOpenAboutProduct ? "visible" : ""}>
                 <div id={"aboutProduct"}>
                     {
@@ -229,13 +250,16 @@ const Products: React.FC = () => {
                             <h2 className="product-name">{aboutProduct["title"]}</h2>
                             <p className="description">{aboutProduct["description"]}</p>
                             <div className="details">
-                                <p><strong>Страна: {aboutProduct["country"]}</strong></p>
+                                <p>Страна: {aboutProduct["country"]}</p>
                             </div>
-                            {aboutProduct["id"]}
                             <div className="price">
-                                <p><strong>Цена:</strong> {aboutProduct["price"]}р / {aboutProduct["weight"]} {aboutProduct["type_weight"]}</p>
+                                <p>Цена: {aboutProduct["price"]}р / {aboutProduct["weight"]} {aboutProduct["type_weight"]}</p>
                                 <button className="buy-button"
-                                        onClick={() => addItem(aboutProduct)}>
+                                        onClick={() => {
+                                            addItem(aboutProduct)
+                                            setIsOpenAboutProduct(false);
+                                        }}
+                                >
                                     {cart.findIndex(item => item.id == aboutProduct.id) < 0 ? "Добавить в корзину" : "Удалить из коризны"}
                                 </button>
                             </div>
@@ -246,7 +270,9 @@ const Products: React.FC = () => {
                                 <div id={"feedbacks"}>
                                     {feedbacksProduct && feedbacksProduct.map((feedback, index) => (
                                         <div key={feedback.id}
-                                             ref={index + 1 == feedbacksProduct.length ? lastElementRef : null}>
+                                             ref={index + 1 == feedbacksProduct.length ? lastElementRef : null}
+                                             className={"feedback"}
+                                        >
                                             <div className={"star"}>
                                                 <span className={"material-symbols-outlined"}>star_rate</span>
                                                 <div>

@@ -8,13 +8,13 @@ export const totalCostAtom = selector<number>({
     key: 'totalCost',
     get: ({ get }) => {
         const cartItems = get(cartAtom);
-        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+        return cartItems.reduce((total, item) => total + item.price * parseInt(item.quantity), 0);
     }
 })
 export const quantityAtom = selector({
     key: 'quantity',
     get: ({ get }) => {
         const cartItems = get(cartAtom);
-        return cartItems.reduce((quantity, item) => quantity + item.quantity, 0);
+        return cartItems.reduce((quantity, item) => quantity + parseInt(item.quantity), 0);
     }
 })

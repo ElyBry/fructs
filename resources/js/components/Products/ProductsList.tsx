@@ -1,7 +1,6 @@
 import * as React from "react";
 import {useCallback, useEffect, useRef, useState} from "react";
 
-
 import Product from './Product';
 import {useRecoilState, useRecoilValue} from "recoil";
 import {aboutProductAtom, openAboutProductAtom, productsAtom} from "./productsAtom";
@@ -9,7 +8,6 @@ import axios from "axios";
 import {searchTermState} from "../Search/searchAtom";
 import {countriesList} from "../CountriesSearch/countriesAtom";
 import useCart from "../Cart/useCart"
-
 
 const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSort, ascendingSort, openAboutProduct, minRate, maxRate}) => {
     const [aboutProduct, setAboutProduct] = useRecoilState(aboutProductAtom)
@@ -94,6 +92,8 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
         },
         [loading, hasMore]
     );
+
+
 
     return (
         <div id={"tableProducts"}>
