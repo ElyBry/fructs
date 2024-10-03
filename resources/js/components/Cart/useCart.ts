@@ -17,14 +17,12 @@ const useCart = () => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }, [cartItems]);
 
-    const addItem = (e, newItem) => {
+    const addItem = (newItem) => {
         const isExist = cartItems.findIndex(item => item.id == newItem.id);
         if (isExist >= 0) {
-            e.target.innerText = "Добавить в корзину";
             return removeItem(newItem.id);
         } else {
             setCartItems((prevItems) => [...prevItems, { ...newItem, quantity: 1}]);
-            e.target.innerText = "Удалить из корзины";
         }
     };
 

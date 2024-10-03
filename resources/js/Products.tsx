@@ -16,7 +16,7 @@ import { countriesList } from "./components/CountriesSearch/countriesAtom";
 import ProductsList from "./components/Products/ProductsList";
 
 import Cart from "./components/Cart/Cart";
-import {totalCostAtom, quantityAtom} from "./components/Cart/cartAtom";
+import {cartAtom, totalCostAtom, quantityAtom} from "./components/Cart/cartAtom";
 import useCart from "./components/Cart/useCart";
 
 const Products: React.FC = () => {
@@ -143,6 +143,7 @@ const Products: React.FC = () => {
     const totalCost = useRecoilValue(totalCostAtom);
     const quantity = useRecoilValue(quantityAtom);
     const { addItem, removeItem, updateItemQuantity } = useCart();
+    const cart = useRecoilValue(cartAtom);
 
     const [aboutProduct, setAboutProduct] = useState(null);
     const [isOpenAboutProduct, setIsOpenAboutProduct] = useState(false);
@@ -207,7 +208,6 @@ const Products: React.FC = () => {
         },
         [loadingFeedbacksProduct, hasMoreFeedbacks]
     );
-
     return (
         <>
             <button id={"openCart"} className={quantity > 0 ? "visible" : ""}
@@ -234,8 +234,9 @@ const Products: React.FC = () => {
                             {aboutProduct["id"]}
                             <div className="price">
                                 <p><strong>Цена:</strong> {aboutProduct["price"]}р / {aboutProduct["weight"]} {aboutProduct["type_weight"]}</p>
-                                <button className="buy-button" onClick={(e) => addItem(e, aboutProduct)}>Добавить в
-                                    корзину
+                                <button className="buy-button"
+                                        onClick={() => addItem(aboutProduct)}>
+                                    {cart.findIndex(item => item.id == aboutProduct.id) < 0 ? "Добавить в корзину" : "Удалить из коризны"}
                                 </button>
                             </div>
                             <div className={"feedbacksProducts"}>

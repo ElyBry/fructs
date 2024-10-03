@@ -16,23 +16,23 @@ class TypeProductsSeeder extends Seeder
         $typeProducts = [
             [
                 'name' => 'Фрукты',
-                'img' => 'image/types_for_products/frukti.png'
+                'img' => 'image/types_for_products/frukti.webp'
             ],
             [
                 'name' => 'Овощи',
-                'img' => 'image/types_for_products/ovoshi.png'
+                'img' => 'image/types_for_products/ovoshi.webp'
             ],
             [
                 'name' => 'Ягоды',
-                'img' => 'image/types_for_products/yagodi.png'
+                'img' => 'image/types_for_products/yagodi.webp'
             ],
             [
                 'name' => 'Орехи',
-                'img' => 'image/types_for_products/orexi.png'
+                'img' => 'image/types_for_products/orexi.webp'
             ],
             [
                 'name' => 'Сладости и десерты',
-                'img' => 'image/types_for_products/sladost.png'
+                'img' => 'image/types_for_products/sladost.webp'
             ]
         ];
         DB::table('type_products')->insert($typeProducts);

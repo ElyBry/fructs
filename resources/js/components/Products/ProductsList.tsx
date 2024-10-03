@@ -9,7 +9,7 @@ import axios from "axios";
 import {searchTermState} from "../Search/searchAtom";
 import {countriesList} from "../CountriesSearch/countriesAtom";
 import useCart from "../Cart/useCart"
-import {max} from "@popperjs/core/lib/utils/math";
+
 
 const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSort, ascendingSort, openAboutProduct, minRate, maxRate}) => {
     const [aboutProduct, setAboutProduct] = useRecoilState(aboutProductAtom)

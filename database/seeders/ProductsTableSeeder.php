@@ -19,42 +19,42 @@ class ProductsTableSeeder extends Seeder
                 'description' => 'Сочное, сладкое и хрустящее фрукт.',
                 'color_id' => 2,
                 'type_products_id' => 3,
-                'img' => 'image/fruits_for_products/redApple.png'
+                'img' => 'image/fruits_for_products/redApple.webp'
             ],
             [
                 'title' => 'Банан',
                 'description' => 'Мягкий и сладкий фрукт, идеально подходит для завтрака.',
                 'color_id' => 3,
                 'type_products_id' => 1,
-                'img' => 'image/fruits_for_products/banana.png'
+                'img' => 'image/fruits_for_products/banana.webp'
             ],
             [
                 'title' => 'Морковь',
                 'description' => 'Хрустящий овощ, богатый витаминами.',
                 'color_id' => 5,
                 'type_products_id' => 2,
-                'img' => 'image/fruits_for_products/morkov.png'
+                'img' => 'image/fruits_for_products/morkov.webp'
             ],
             [
                 'title' => 'Помидор',
                 'description' => 'Сладкий овощ, который часто используется в салатах.',
                 'color_id' => 2,
                 'type_products_id' => 2,
-                'img' => 'image/fruits_for_products/tomato.png'
+                'img' => 'image/fruits_for_products/tomato.webp'
             ],
             [
                 'title' => 'Картофель',
                 'description' => 'Универсальный овощ, используемый в различных блюдах.',
                 'color_id' => 1,
                 'type_products_id' => 2,
-                'img' => 'image/fruits_for_products/potato.png'
+                'img' => 'image/fruits_for_products/potato.webp'
             ],
             [
                 'title' => 'Малина',
                 'description' => 'Ну очень вкусная',
                 'color_id' => 1,
                 'type_products_id' => 3,
-                'img' => 'image/fruits_for_products/malina.png'
+                'img' => 'image/fruits_for_products/malina.webp'
             ]
         ];
 
