@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Component, useState } from 'react';
 import * as ReactDOM from 'react-dom/client';
 
+import "../sass/_componentsForSignInUp.scss"
+
 const SignInUp = () => {
     const [User, setUser] = useState(null);
     const [Name, setName] = useState('');
@@ -201,8 +203,4 @@ const SignInUp = () => {
 }
 
 
-const rootElement = document.getElementById('root');
-if (rootElement) {
-    const root = ReactDOM.createRoot(rootElement);
-    root.render(<SignInUp/>);
-}
+export default SignInUp;

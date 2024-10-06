@@ -1,11 +1,13 @@
-// @ts-ignore
-import React, {useEffect, useRef} from 'react';
+import * as React from 'react'
+import {useEffect, useRef} from 'react';
 import * as ReactDOM from 'react-dom/client';
 import Footer from "./components/_footer.js";
 import Header from "./components/_header.js";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 const random = gsap.utils.random;
+
+import "../sass/_componentsForMain.scss"
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -374,9 +376,4 @@ const Main: React.FC = () => {
     )
 };
 
-
-const rootElement: HTMLElement = document.getElementById('root');
-if (rootElement) {
-    const root: ReactDOM.Root = ReactDOM.createRoot(rootElement);
-    root.render(<Main/>);
-}
+export default Main;

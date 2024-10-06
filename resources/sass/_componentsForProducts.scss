@@ -391,12 +391,19 @@ header {
         padding: $padding-page;
         border-radius: $border-radius;
         background-color: white;
-        table {
-            width: 100%;
-            .quantity input {
-                border: 0;
-                text-align: center;
-                width: min-content;
+        .secondStage {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            &.active {
+                display: grid !important;
+            }
+            .right {
+                width: 100%;
+                height: 100%;
+                #yMap {
+                    width: 100%;
+                    height: 100%;
+                }
             }
         }
         .infoOrder {
@@ -406,7 +413,65 @@ header {
             justify-content: space-between;
             width: 100%;
             height: 100%;
-            margin-top: $margin-h1;
+            .table {
+                max-height: 50vh;
+                overflow-y: auto;
+                width:100%;
+                text-align: left;
+                border-radius: $border-radius-elements;
+                background-color: $secondary-color;
+                box-shadow: $box-shadow-block;
+                margin-bottom: $margin-h1;
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    th, td {
+                        text-align: left;
+                        padding: $padding-elements;
+                    }
+                    thead {
+                        tr {
+                            box-shadow: $box-shadow-block;
+                            position: sticky;
+                            top: 0;
+                            z-index: 10;
+                        }
+                        th {
+                            background: $primary-color;
+                            padding: $padding-elements;
+                        }
+                    }
+                    tbody tr:hover {
+                        background-color: white;
+                    }
+                    input[type="number"] {
+                        width: 50px;
+                        padding: 5px;
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                    }
+
+                    button.remove {
+                        border: none;
+                        background-color: #e49c95;
+                        color: white;
+                        padding: 6px 10px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        transition: background-color 0.3s;
+                    }
+
+                    button.remove:hover {
+                        background-color: #c0392b;
+                    }
+                }
+            }
+            .tradingPoints {
+                display: none !important;
+                &.visible {
+                    display: flex !important;
+                }
+            }
             .result {
                 display: flex;
                 justify-content: flex-end;
@@ -438,6 +503,9 @@ header {
                 }
             }
             .type {
+                .typePick {
+                    flex-direction: column;
+                }
                 div {
                     display: flex;
                     gap: $margin-text;
@@ -454,13 +522,22 @@ header {
                         background-color: $secondary-color;
                         transition: $transition-base;
                     }
+                    .socials {
+                        display: none;
+                        &.visible {
+                            display: flex;
+                        }
+                    }
                 }
             }
             .location {
                 margin-top: $margin-text;
-                display: grid;
+                display: none;
                 grid-template-columns: 45% 45%;
                 grid-gap: $margin-text;
+                &.visible {
+                    display: grid;
+                }
                 div {
                     display: flex;
                     align-items: center;

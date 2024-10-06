@@ -1,8 +1,9 @@
 import {atom, selector} from "recoil";
+import {json} from "react-router-dom";
 
 export const cartAtom = atom({
     key: 'cartList',
-    default: [],
+    default: localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [],
 })
 export const totalCostAtom = selector<number>({
     key: 'totalCost',

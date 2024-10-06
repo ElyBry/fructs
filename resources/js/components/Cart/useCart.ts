@@ -2,16 +2,8 @@ import { useRecoilState } from 'recoil';
 import { cartAtom } from './cartAtom';
 import {useEffect} from "react";
 
-
 const useCart = () => {
     const [cartItems, setCartItems] = useRecoilState(cartAtom);
-
-    useEffect(() => {
-        const savedCart = localStorage.getItem('cartItems');
-        if (savedCart) {
-            setCartItems(JSON.parse(savedCart));
-        }
-    }, [setCartItems]);
 
     useEffect(() => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems));

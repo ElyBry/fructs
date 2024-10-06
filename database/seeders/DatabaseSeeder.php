@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Http\Controllers\TradingPointsController;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -24,6 +25,7 @@ class DatabaseSeeder extends Seeder
             FeedBackSeeder::class,
             OrderSeeder::class,
             PromoSeeder::class,
+            TradingPointsController::class,
         ]);
         $superAdmin = User::factory()->create([
             'name' => 'Test User',

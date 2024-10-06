@@ -30,14 +30,29 @@ class PromoController extends BaseController
         $promo = Promos::create($input);
         return response()->json([$promo, 200]);
     }
-    public function delete(Promos $feedBack)
+    public function delete(Promos $promo)
     {
-        $feedBack->delete();
+        $promo->delete();
         return response()->json(null, 204);
     }
     public function update(Request $request, Promos $promo)
     {
         $promo->update($request->all());
         return $this->sendResponse($promo,'Успешно обновлено');
+    }
+    public function verify(Request $request)
+    {
+        $name = $request->input('name');
+        $promos = Promos::query()
+            ->where("name", "=", strtoupper($name))
+            ->where('count', ">" , 0)
+            ->first();
+        if ($promos && $promos->count > 0) {
+            $promos->count -= 1;
+            $promos->save();
+
+            return $this->sendResponse($promos->discount, "Успешно введён промокод");
+        }
+        return $this->sendResponse(0, "Промокод не найден");
     }
 }

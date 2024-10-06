@@ -2,7 +2,9 @@ import * as React from 'react';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import * as ReactDOM from 'react-dom/client';
 
-import {RecoilRoot, useRecoilValue} from "recoil";
+import "../sass/_componentsForProducts.scss";
+
+import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
 import axios from "axios";
 
 import Footer from "./components/_footer.js";
@@ -145,7 +147,7 @@ const Products: React.FC = () => {
     const totalCost = useRecoilValue(totalCostAtom);
     const quantity = useRecoilValue(quantityAtom);
     const { addItem, removeItem, updateItemQuantity } = useCart();
-    const cart = useRecoilValue(cartAtom);
+    const [cart, setCart] = useRecoilState(cartAtom);
 
     const [aboutProduct, setAboutProduct] = useState(null);
     const [isOpenAboutProduct, setIsOpenAboutProduct] = useState(false);
@@ -155,6 +157,36 @@ const Products: React.FC = () => {
     const [loadingFeedbacksProduct, setLoadingFeedbacksProduct] = useState(false);
     const [pageFeedbacksProduct, setPageFeedbacksProduct] = useState(null);
     const [hasMoreFeedbacks, setHasMoreFeedbacks] = useState(false);
+
+    const updateCart = async () => {
+        const productsIds = cart.map(item => item.id);
+
+        try {
+            const response = await axios.get('/api/updateCart', {
+                params: {
+                    productsIds: productsIds
+                }
+            });
+            const data = response.data;
+            const updatedCart = cart.map(item => {
+                const updatedProduct = data.find(data => data.id === item.id);
+                return {
+                    ...item,
+                    price: updatedProduct ? updatedProduct.price : item.price,
+                    count: updatedProduct ? updatedProduct.count : item.count
+                }
+            })
+            setCart(updatedCart);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    useEffect(() => {
+        if (isOpenCart) {
+            updateCart();
+        }
+    }, [isOpenCart]);
 
     useEffect(() => {
         if (cart.length == 0) {
@@ -577,13 +609,5 @@ const Products: React.FC = () => {
     )
 };
 
+export default Products;
 
-const rootElement: HTMLElement = document.getElementById('root');
-if (rootElement) {
-    const root: ReactDOM.Root = ReactDOM.createRoot(rootElement);
-    root.render(
-        <RecoilRoot>
-            <Products/>
-        </RecoilRoot>
-    );
-}

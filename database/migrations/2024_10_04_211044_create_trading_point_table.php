@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('promos', function (Blueprint $table) {
+        Schema::create('trading_points', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->integer("discount")->default(0);
-            $table->integer('count');
+            $table->string("address");
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('promos');
+        Schema::dropIfExists('trading_points');
     }
 };

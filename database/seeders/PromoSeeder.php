@@ -17,6 +17,7 @@ class PromoSeeder extends Seeder
             Promos::create([
                 'name' => 'TestPromoAziz ' . $i,
                 'discount' => rand(0, 100),
+                'count' => rand(0, 10),
             ]);
         }
     }

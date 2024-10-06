@@ -18,7 +18,7 @@ class ProductsController extends BaseController
             ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
             ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
             ->groupBy('products.id')
-            ->selectRaw('type_weight, countries.name as country, products.id, title, img, description, price, weight, COUNT(DISTINCT feedback_products.id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating');
+            ->selectRaw('count, type_weight, countries.name as country, products.id, title, img, description, price, weight, COUNT(DISTINCT feedback_products.id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating');
         if ($request->has('name') && $request->get('name') != '') {
             $query->where('title', 'like', '%' . $request->get('name') . '%');
         }
@@ -109,7 +109,7 @@ class ProductsController extends BaseController
     {
         $product = Product::query()
             ->select('products.id', 'products.title', 'products.img', 'products.description', 'products.price',
-                'products.weight',
+                'products.weight','count',
                 'products.type_weight')
             ->selectRaw('COUNT(DISTINCT feedback_products.id) AS count_feeds,
                 ROUND(AVG(feedback_products.rating), 2) AS average_rating,
@@ -131,7 +131,7 @@ class ProductsController extends BaseController
         if (!$product){
             $product = Product::query()
                 ->select('products.id', 'products.title', 'products.img', 'products.description', 'products.price',
-                    'products.weight',
+                    'products.weight','count',
                     'products.type_weight')
                 ->selectRaw('COUNT(DISTINCT feedback_products.id) AS count_feeds,
                 ROUND(AVG(feedback_products.rating), 2) AS average_rating,
@@ -155,9 +155,26 @@ class ProductsController extends BaseController
             ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
             ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
             ->groupBy('products.id')
-            ->selectRaw('type_weight, countries.name as country, products.id, title, img, description, price, weight, COUNT(feedback_products.product_id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating')
+            ->selectRaw('count, type_weight, countries.name as country, products.id, title, img, description, price, weight, COUNT(feedback_products.product_id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating')
             ->first();
         return $product;
     }
 
+    public function updateCart(Request $request)
+    {
+        if ($request->has('productsIds')) {
+            $ids = $request->get('productsIds');
+            $products = Product::whereIn('id', $ids)->get(['id','price','count']);
+            $result = $products->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'price' => $product->price,
+                    'count' => $product->count,
+                ];
+            });
+
+            return $result;
+        }
+        return $this->sendError('Id не найдены', 400);
+    }
 }

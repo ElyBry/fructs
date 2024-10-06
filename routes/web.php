@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-
+Route::get('{reactRoutes}', function () {
+    return view('main'); // your start view
+})->where('reactRoutes', '^((?!api).)*$');
 
 Route::get('/login', function () {
     if (Auth::check()){
