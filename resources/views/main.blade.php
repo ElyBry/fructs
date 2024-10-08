@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Продукты</title>
     @viteReactRefresh
-    @vite(['resources/sass/app.scss', 'resources/js/App.tsx'])
+    @vite(['resources/js/App.tsx'])
 </head>
-<body class="antialiased"><div id="root"></div></body>
+<body><div id="root"></div></body>
 </html>

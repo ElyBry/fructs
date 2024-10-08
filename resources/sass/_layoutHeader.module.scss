@@ -1,4 +1,5 @@
 // содержит стили для хедера и футера, сетки и т.д
+@import "core";
 header {
     width: 100%;
     display: flex;
@@ -9,8 +10,11 @@ header {
     z-index: 10001;
     position: absolute;
     padding: 0 $padding-page;
+    a {
+        color: black;
+    }
 }
-#logo {
+.logo {
     position: relative;
     cursor: pointer;
     padding: $padding-headers;
@@ -19,11 +23,11 @@ header {
     align-items: center;
     font-size: $font-size-h1;
 }
-#logo img {
+.logo img {
     position: relative;
     width: 45px;
 }
-#hHead {
+.hHead {
     display: flex;
     gap: $margin-h1;
 }
@@ -39,9 +43,9 @@ header {
         border: 1px solid transparent;
     }
 }
-#burger {
+.burger {
     display: none;
 }
-#burger img {
+.burger img {
 
 }

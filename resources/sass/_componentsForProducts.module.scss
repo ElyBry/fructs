@@ -7,7 +7,7 @@
 body {
     overflow: auto;
 }
-#root {
+.root {
     justify-content: space-between;
     overflow-x: hidden;
     background-image: url("../../public/image/background-abstact/5652356.webp");
@@ -25,7 +25,7 @@ header {
         display: block;
     }
 }
-#infoProducts {
+.infoProducts {
     width: 100%;
     .content {
         width: 100%;
@@ -108,13 +108,13 @@ header {
     }
 }
 
-#main {
+.main {
     width: 100%;
 
     .content {
         padding: $padding-page;
 
-        #filter {
+        .filter {
             padding: $padding-page 0;
             display: flex;
             justify-content: space-between;
@@ -270,7 +270,7 @@ header {
                         border-radius: $border-radius-elements;
                         border: 1px solid green;
                     }
-                    #colors {
+                    .colors {
                         label {
                             margin-left: $margin-text;
                         }
@@ -289,7 +289,7 @@ header {
     @include loadSkeleton;
     box-shadow: unset !important;
 }
-#usableItems {
+.usableItems {
     position: fixed;
     bottom: 3%;
     right: 3%;
@@ -300,8 +300,8 @@ header {
     flex-direction: row-reverse;
     justify-content: center;
 }
-#openCart,
-#close{
+.openCart,
+.close{
     display: none;
     border-radius: $border-radius-elements;
     padding: $padding-elements;
@@ -310,7 +310,7 @@ header {
         display: block !important;
     }
 }
-#aboutProductModule {
+.aboutProductModule {
     position: fixed;
     transform: translateX(100%);
     transition: 1s ease-in-out all;
@@ -325,7 +325,7 @@ header {
     border-radius: $border-radius-elements 0 0 $border-radius-elements;
     background-size: cover;
     background-repeat: no-repeat;
-    #aboutProduct {
+    .aboutProduct {
         padding: $padding-elements;
 
         img {
@@ -334,7 +334,7 @@ header {
         .buy-button {
             @include buttonsCart("add")
         }
-        #feedbacks {
+        .feedbacks {
             margin-bottom: 12vh;
             display: flex;
             flex-direction: column;
@@ -371,7 +371,7 @@ header {
     }
 
 }
-#cart {
+.cart {
     display: none;
     justify-content: center;
     align-items: center;
@@ -382,7 +382,7 @@ header {
     z-index: 10001;
     opacity: 0;
     transition: 0.7s ease-in-out all;
-    #cartBlock {
+    .cartBlock {
         width: 80%;
         display: flex;
         justify-content: center;
@@ -400,7 +400,7 @@ header {
             .right {
                 width: 100%;
                 height: 100%;
-                #yMap {
+                .yMap {
                     width: 100%;
                     height: 100%;
                 }

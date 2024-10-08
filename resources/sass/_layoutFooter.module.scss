@@ -1,5 +1,7 @@
 // содержит стили для хедера и футера, сетки и т.д
-#bgFooter {
+@import "core";
+
+.bgFooter {
     width: 100%;
     background-color: $secondary-color;
     padding: $padding-page 0 0;

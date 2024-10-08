@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component, useState } from 'react';
 import * as ReactDOM from 'react-dom/client';
 
-import "../sass/_componentsForSignInUp.scss"
+import styles from "../sass/_componentsForSignInUp.module.scss"
 
 const SignInUp = () => {
     const [User, setUser] = useState(null);

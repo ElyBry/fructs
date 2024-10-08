@@ -3,6 +3,8 @@
         "lib": ["ES6","DOM"],
         "skipLibCheck": true,
         "removeComments": true,
-        "jsx": "react"
+        "jsx": "react",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true
     }
 }

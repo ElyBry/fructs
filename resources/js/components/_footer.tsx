@@ -1,12 +1,14 @@
 import * as React from 'react';
 
+import styles from "../../sass/_layoutFooter.module.scss"
+
 export default () => {
     const year = new Date().getFullYear();
     const numberPhone: String = '+7 (999) 999-99-99';
     const email: String = 'email@top.ru';
     return (
-        <div id={"bgFooter"}>
-            <div className={"content"}>
+        <div id={"bgFooter"} className={styles.bgFooter}>
+            <div className={styles.content}>
                 <footer>
                     <div>
                         <h2>Ссылки</h2>

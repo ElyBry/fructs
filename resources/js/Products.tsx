@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import * as ReactDOM from 'react-dom/client';
 
-import "../sass/_componentsForProducts.scss";
+import styles from "../sass/_componentsForProducts.module.scss";
 
 import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
 import axios from "axios";
@@ -252,9 +252,9 @@ const Products: React.FC = () => {
         [loadingFeedbacksProduct, hasMoreFeedbacks]
     );
     return (
-        <>
-            <div id={"usableItems"}>
-                <button id={"openCart"} className={quantity > 0 && !isOpenCart ? "visible" : ""}
+        <div className={styles.root}>
+            <div id={"usableItems"} className={styles.usableItems}>
+                <button id={"openCart"} className={`${styles.openCart} ${quantity > 0 && !isOpenCart ? styles.visible : ""}`}
                         onClick={() => {
                             setIsOpenCart(true);
                             setIsOpenAboutProduct(false);
@@ -264,7 +264,7 @@ const Products: React.FC = () => {
                     {totalCost} р<br/>
                     Кол-во: {quantity}
                 </button>
-                <button id={"close"} className={isOpenAboutProduct || isOpenCart ? "visible" : ""}
+                <button id={"close"} className={`${styles.close} ${isOpenAboutProduct || isOpenCart ? styles.visible : ""}`}
                         onClick={() => {
                             setIsOpenAboutProduct(false);
                             setIsOpenCart(false);
@@ -273,20 +273,20 @@ const Products: React.FC = () => {
                     <span className="material-symbols-outlined">arrow_back</span>
                 </button>
             </div>
-            <div id={"aboutProductModule"} className={isOpenAboutProduct ? "visible" : ""}>
-                <div id={"aboutProduct"}>
+            <div id={"aboutProductModule"} className={`${styles.aboutProductModule} ${isOpenAboutProduct ? styles.visible : ""}`}>
+                <div id={"aboutProduct"} className={styles.aboutProduct}>
                     {
                         aboutProduct &&
                         <>
                             <img src={aboutProduct["img"]}/>
-                            <h2 className="product-name">{aboutProduct["title"]}</h2>
-                            <p className="description">{aboutProduct["description"]}</p>
-                            <div className="details">
+                            <h2 className={styles.productName}>{aboutProduct["title"]}</h2>
+                            <p className={styles.description}>{aboutProduct["description"]}</p>
+                            <div className={styles.detailds}>
                                 <p>Страна: {aboutProduct["country"]}</p>
                             </div>
-                            <div className="price">
+                            <div className={styles.price}>
                                 <p>Цена: {aboutProduct["price"]}р / {aboutProduct["weight"]} {aboutProduct["type_weight"]}</p>
-                                <button className="buy-button"
+                                <button className={styles.buyButton}
                                         onClick={() => {
                                             addItem(aboutProduct)
                                             setIsOpenAboutProduct(false);
@@ -295,27 +295,27 @@ const Products: React.FC = () => {
                                     {cart.findIndex(item => item.id == aboutProduct.id) < 0 ? "Добавить в корзину" : "Удалить из коризны"}
                                 </button>
                             </div>
-                            <div className={"feedbacksProducts"}>
+                            <div className={styles.feedbacksProducts}>
                                 <h2>К-во отзывов: {aboutProduct["count_feeds"]}</h2>
                                 <h2>Рейтинг: {aboutProduct["average_rating"]}</h2>
                                 <h1>Отзывы</h1>
-                                <div id={"feedbacks"}>
+                                <div id={"feedbacks"} className={styles.feedbacks}>
                                     {feedbacksProduct && feedbacksProduct.map((feedback, index) => (
                                         <div key={feedback.id}
                                              ref={index + 1 == feedbacksProduct.length ? lastElementRef : null}
-                                             className={"feedback"}
+                                             className={styles.feedback}
                                         >
-                                            <div className={"star"}>
+                                            <div className={styles.star}>
                                                 <span className={"material-symbols-outlined"}>star_rate</span>
                                                 <div>
                                                     {feedback["rating"]}
                                                 </div>
                                             </div>
-                                            <div className={"username"}>
+                                            <div className={styles.username}>
                                                 {feedback.id}<br/>
                                                 {feedback.user_name}
                                             </div>
-                                            <div className={"message"}>
+                                            <div className={styles.message}>
                                                 {feedback.message}
                                             </div>
                                         </div>
@@ -332,45 +332,45 @@ const Products: React.FC = () => {
             <Cart isOpenCart={isOpenCart}/>
             <Header/>
             <Search/>
-            <div id={"infoProducts"}>
-                <div className={"content"}>
-                    <div className={"cards"}>
+            <div id={"infoProducts"} className={styles.infoProducts}>
+                <div className={styles.content}>
+                    <div className={styles.cards}>
                         {loadingTop ?
                             <>
-                                <div className={"infoCard grey"}>
-                                    <div className={"leftSide"}>
+                                <div className={`${styles.infoCard} ${styles.grey}`}>
+                                    <div className={styles.leftSide}>
                                         <h4>Хит Продаж(за месяц)</h4>
                                         <h1>Яблоко</h1>
                                         <h3>320р/ Килограмм</h3>
                                         <button disabled={true}>Подробнее</button>
                                     </div>
-                                    <div className={"rightSide"}>
+                                    <div className={styles.rightSide}>
                                     </div>
                                 </div>
-                                <div className={"infoCard grey"}>
-                                    <div className={"leftSide"}>
+                                <div className={`${styles.infoCard} ${styles.grey}`}>
+                                    <div className={styles.leftSide}>
                                         <h4>Новая Категория</h4>
                                         <h1>Фрукты</h1>
                                         <button disabled={true}>Отфильтровать</button>
                                     </div>
-                                    <div className={"rightSide"}>
+                                    <div className={styles.rightSide}>
                                     </div>
                                 </div>
-                                <div className={"infoCard grey"}>
-                                    <div className={"leftSide"}>
+                                <div className={`${styles.infoCard} ${styles.grey}`}>
+                                    <div className={styles.leftSide}>
                                         <h4>Новый Продукт</h4>
                                         <h1>Апельсин</h1>
                                         <h3>320р/ Килограмм</h3>
                                         <button disabled={true}>Подробнее</button>
                                     </div>
-                                    <div className={"rightSide"}>
+                                    <div className={styles.rightSide}>
                                     </div>
                                 </div>
                             </>
                             :
                             <>
-                                <div className={"infoCard"}>
-                                    <div className={"star"}>
+                                <div className={styles.infoCard}>
+                                    <div className={styles.star}>
                                         <span className={"material-symbols-outlined"}>star_rate</span>
                                         <div>
                                             {popularProduct["average_rating"]}
@@ -378,28 +378,28 @@ const Products: React.FC = () => {
                                             {popularProduct["count_feeds"]}
                                         </div>
                                     </div>
-                                    <div className={"leftSide"}>
+                                    <div className={styles.leftSide}>
                                         <h4>Хит Продаж(за месяц)</h4>
                                         <h1>{popularProduct["title"]}</h1>
                                         <h3>{popularProduct["price"] + "р/ "} {`${popularProduct["weight"]} ${popularProduct["type_weight"]}`}</h3>
                                         <button onClick={() => openAboutProduct(popularProduct)}>Подробнее</button>
                                     </div>
-                                    <div className={"rightSide"}>
+                                    <div className={styles.rightSide}>
                                         <img src={popularProduct["img"]}/>
                                     </div>
                                 </div>
-                                <div className={"infoCard"}>
-                                    <div className={"leftSide"}>
+                                <div className={styles.infoCard}>
+                                    <div className={styles.leftSide}>
                                         <h4>Новая Категория</h4>
                                         <h1>{newCategory["name"]}</h1>
                                         <button onClick={() => handleTopPick(newCategory["id"])}>Отфильтровать</button>
                                     </div>
-                                    <div className={"rightSide"}>
+                                    <div className={styles.rightSide}>
                                         <img src={newCategory["img"]}/>
                                     </div>
                                 </div>
-                                <div className={"infoCard"}>
-                                    <div className={"star"}>
+                                <div className={styles.infoCard}>
+                                    <div className={styles.star}>
                                         <span className={"material-symbols-outlined"}>star_rate</span>
                                         <div>
                                             {newProduct["average_rating"]}
@@ -407,13 +407,13 @@ const Products: React.FC = () => {
                                             {newProduct["count_feeds"]}
                                         </div>
                                     </div>
-                                    <div className={"leftSide"}>
+                                    <div className={styles.leftSide}>
                                         <h4>Новый Продукт</h4>
                                         <h1>{newProduct["title"]}</h1>
                                         <h3>{newProduct["price"] + "р/ "} {`${newProduct["weight"]} ${newProduct["type_weight"]}`}</h3>
                                         <button onClick={() => openAboutProduct(newProduct)}>Подробнее</button>
                                     </div>
-                                    <div className={"rightSide"}>
+                                    <div className={styles.rightSide}>
                                         <img src={newProduct["img"]}/>
                                     </div>
                                 </div>
@@ -605,7 +605,7 @@ const Products: React.FC = () => {
             <div className={"block"}>
                 <Footer/>
             </div>
-        </>
+        </div>
     )
 };
 

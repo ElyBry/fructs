@@ -1,18 +1,18 @@
 // стили для каждого компонента необходимого для этого проекта, включая кнопки, модальные окна и т.д.
 @import "app";
-#root {
+.root {
     justify-content: flex-start;
     height: 100%;
 }
-#body {
+.body {
     width: 100%;
     height: 100%;
 }
-#target {
+.target {
     width: 100%;
     height: 100vh;
 }
-#bgTarget {
+.bgTarget {
     background-image: url("../../public/image/background-images/fruitsWwhitebg.jpg");
     background-size: cover;
     background-attachment: fixed;
@@ -20,7 +20,7 @@
     height: 100vh;
     position: absolute;
 }
-#bgTargetS {
+.bgTargetS {
     background-image: url("../../public/image/background-images/green-apple.png");
     background-size: contain;
     background-repeat: no-repeat;
@@ -30,16 +30,16 @@
     width: 20vw;
     height: 20vw;
 }
-#targetBlock {
+.targetBlock {
     position: relative;
     margin-top: 50vh;
 }
-#stats {
+.stats {
     height: 60vh;
     background-color: $third-color;
     z-index: 1;
 }
-#statsBlock {
+.statsBlock {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -53,7 +53,7 @@
         width: 155px;
     }
 }
-#guaranteeBlock {
+.guaranteeBlock {
     h1 {
         text-align: center;
         margin-bottom: $margin-h1;
@@ -62,9 +62,7 @@
         position: relative;
         width: auto;
     }
-    .slider {
-    }
-    .slider-content {
+    .sliderContent {
         display: flex;
         gap: 105px;
         transform: translateX(20%);
@@ -76,7 +74,6 @@
             object-fit: cover;
             box-shadow: 2px 2px 15px 0 $secondary-color;
         }
-
     }
     .guaranteeText {
         min-width: 60%;
@@ -116,7 +113,7 @@
     }
 }
 
-#faqBlock {
+.faqBlock {
     .questAnswerFaq {
         display: flex;
         flex-direction: column;
@@ -127,12 +124,12 @@
             .answerFaq {
                 line-height: $line-height-base;
             }
-            .icon-plus {
+            .iconPlus {
                 transform: rotate(45deg);
             }
         }
         &:hover {
-            .icon-plus {
+            .iconPlus {
                 background-color: $primary-color;
                 color: white;
             }
@@ -154,7 +151,7 @@
             margin: $margin-text 0;
             font-weight: $font-weight-bold;
         }
-        .icon-plus {
+        .iconPlus {
             display: flex;
             width: $width-icon;
             height: $width-icon;
@@ -167,7 +164,7 @@
         }
     }
 }
-#bestBlock {
+.bestBlock {
     background-image: url("../../public/image/background-images/fruits-falling-realistic-composition.png");
     background-size: cover;
     background-attachment: fixed;
@@ -179,7 +176,7 @@
         align-items: center;
     }
 }
-#cartBlock {
+.cartBlock {
     position: relative;
     .fruit {
         width: 10vw;

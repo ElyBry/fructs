@@ -7,7 +7,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 const random = gsap.utils.random;
 
-import "../sass/_componentsForMain.scss"
+import styles from "../sass/_componentsForMain.module.scss";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -82,7 +82,6 @@ const Main: React.FC = () => {
                     scrollTrigger: {
                         trigger: "#cartBlock",
                         start: "top center",
-                        markers: true,
                         end: "top 30%",
                         scrub: 5,
                     },
@@ -95,7 +94,6 @@ const Main: React.FC = () => {
             scrollTrigger: {
                 trigger: "#cartBlock",
                 start: "top top",
-                markers: true,
                 scrub: 5,
             },
             x: 1500,
@@ -113,33 +111,33 @@ const Main: React.FC = () => {
         }
     }
     return (
-        <>
+        <div className={styles.root}>
             <Header/>
-            <div id={"target"}>
-                <div id={"bgTarget"}></div>
-                <div id={"bgTargetS"}></div>
-                <div className={"content"}>
-                    <div className={"block"} id={"targetBlock"}>
+            <div id={"target"} className={styles.target}>
+                <div id={"bgTarget"} className={styles.bgTarget}></div>
+                <div id={"bgTargetS"} className={styles.bgTargetS}></div>
+                <div className={styles.content}>
+                    <div className={`${styles.block} ${styles.targetBlock}`} id={"targetBlock"}>
                         <h1>Сочные овощи и фрукты - прямо от природы к вашему столу!</h1>
                         <h2>Свежесть, качество и удобство доставки по <span
-                            className={"highlight"}>Екатеринбургу</span></h2>
+                            className={styles.highlight}>Екатеринбургу</span></h2>
                     </div>
                 </div>
             </div>
-            <div className={"background"} id={"stats"}>
-                <div className={"content"}>
-                    <div id={"statsBlock"}>
-                        <div className={"statsText"}>
+            <div className={`${styles.background} ${styles.stats}`} id={"stats"}>
+                <div className={styles.content}>
+                    <div id={"statsBlock"} className={styles.statsBlock}>
+                        <div className={`${styles.statsText} statsText`}>
                             <img src={"../image/icons/elements/basket.svg"} alt={"Заказы"}/>
                             <h3>Совершено более</h3>
                             <h2>1000 доставок</h2>
                         </div>
-                        <div className={"statsText"}>
+                        <div className={`${styles.statsText} statsText`}>
                             <img src={"../image/icons/elements/clients.svg"} alt={"Клиенты"}/>
                             <h3>Около </h3>
                             <h2>30 постоянных клиентов</h2>
                         </div>
-                        <div className={"statsText"}>
+                        <div className={`${styles.statsText} statsText`}>
                             <img src={"../image/icons/elements/clock.svg"} alt={"Лет"}/>
                             <h3>Работаем для вас</h3>
                             <h2>Более 8 лет</h2>
@@ -147,13 +145,13 @@ const Main: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div className={"block"} id={"guaranteeBlock"}>
+            <div className={`${styles.guaranteeBlock} guaranteeBlock`} id={"guaranteeBlock"}>
                 <h1>Гарантии:</h1>
-                <div className={"guarantees"}>
+                <div className={styles.guarantees}>
                     <div className={"slider"}>
-                        <div className={"slider-content"}>
-                            <div className={"guaranteeText"}>
-                                <div className={"imgGuarantee"}>
+                        <div className={`${styles.sliderContent} slider-content`}>
+                            <div className={styles.guaranteeText}>
+                                <div className={styles.imgGuarantee}>
                                     <img src={"image/background-images/woman.jpg"}/>
                                 </div>
                                 <div>
@@ -165,8 +163,8 @@ const Main: React.FC = () => {
                                         фермерами.</h3>
                                 </div>
                             </div>
-                            <div className={"guaranteeText"}>
-                                <div className={"imgGuarantee"}>
+                            <div className={styles.guaranteeText}>
+                                <div className={styles.imgGuarantee}>
                                     <img src={"image/background-images/woman_refund.jpg"}/>
                                 </div>
                                 <div>
@@ -176,8 +174,8 @@ const Main: React.FC = () => {
                                         24 часов, и мы без проблем организуем возврат или обмен.</h3>
                                 </div>
                             </div>
-                            <div className={"guaranteeText"}>
-                                <div className={"imgGuarantee"}>
+                            <div className={styles.guaranteeText}>
+                                <div className={styles.imgGuarantee}>
                                     <img src={"image/background-images/courier-delivering.jpg"}/>
                                 </div>
                                 <div>
@@ -188,10 +186,9 @@ const Main: React.FC = () => {
                                         сюрприз
                                         в следующем заказе!</h3>
                                 </div>
-
                             </div>
-                            <div className={"guaranteeText"}>
-                                <div className={"imgGuarantee"}>
+                            <div className={styles.guaranteeText}>
+                                <div className={styles.imgGuarantee}>
                                     <img src={"image/background-images/meal_with_transparency.jpg"}/>
                                 </div>
                                 <div>
@@ -205,10 +202,10 @@ const Main: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div className={"block"} id={"superiorityBlock"}>
-                <div className={"content"}>
+            <div className={`${styles.block} ${styles.superiorityBlock}`} id={"superiorityBlock"}>
+                <div className={styles.content}>
                     <h1>Отличия от конкурентов</h1>
-                    <div className={"superiorityText"}>
+                    <div className={`${styles.superiorityText} superiorityText`}>
                         <h2><span>1.</span> Удобный интерфейс для доставки</h2>
                         <h2><span>2.</span> Быстрая доставка</h2>
                         <h2><span>3.</span> Выбираем удобное для вас время</h2>
@@ -217,162 +214,162 @@ const Main: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div className={"block"} id={"bestBlock"}>
-                <div className={"content"}>
-                    <h1>Только у нас <span className={"highlight"}>сладкие </span>и <span
-                        className={"highlight"}>насыщенные</span> фрукты и овощи в нелетнее время</h1>
+            <div className={`${styles.block} ${styles.bestBlock}`} id={"bestBlock"}>
+                <div className={styles.content}>
+                    <h1>Только у нас <span className={styles.highlight}>сладкие </span>и <span
+                        className={styles.highlight}>насыщенные</span> фрукты и овощи в нелетнее время</h1>
                 </div>
             </div>
-            <div className={"block"} id={"workBlock"}>
-                <div className={"content"}>
+            <div className={`${styles.block}`} id={"workBlock"}>
+                <div className={styles.content}>
                     <h1>Как мы работаем</h1>
-                    <div className={"workText"}>
-                        <div className={"workImg"}>
+                    <div className={styles.workText}>
+                        <div className={styles.workImg}>
                             <img src={"../image/icons/elements"}/>
                         </div>
                         <div>
                             Вы совершаете заказ на сайте
                         </div>
                     </div>
-                    <div className={"workText"}>
-                        <div className={"workImg"}>
+                    <div className={styles.workText}>
+                        <div className={styles.workImg}>
                             <img src={"../image/icons/elements"}/>
                         </div>
                         <div>
                             Курьер связывается с вами
                         </div>
                     </div>
-                    <div className={"workText"}>
-                        <div className={"workImg"}>
+                    <div className={styles.workText}>
+                        <div className={styles.workImg}>
                             <img src={"../image/icons/elements"}/>
                         </div>
                         <div>
-                            Вы назначаете удобное <span className={"highlight"}>для вас</span> время
+                            Вы назначаете удобное <span className={styles.highlight}>для вас</span> время
                         </div>
                     </div>
-                    <div className={"workText"}>
-                        <div className={"workImg"}>
+                    <div className={styles.workText}>
+                        <div className={styles.workImg}>
                             <img src={"../image/icons/elements"}/>
                         </div>
                         <div>
-                            Вы получаете заказ в <span className={"highlight"}>указанный срок</span>
+                            Вы получаете заказ в <span className={styles.highlight}>указанный срок</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className={"block"} id={"faqBlock"}>
-                <div className={"content"}>
+            <div className={`${styles.block} ${styles.faqBlock}`} id={"faqBlock"}>
+                <div className={styles.content}>
                     <h1>FAQ</h1>
-                    <div className={"questAnswerFaq"}>
-                        <div className={"headFaq"}>
-                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
-                            <div className={"questFaq"}>
+                    <div className={styles.questAnswerFaq}>
+                        <div className={styles.headFaq}>
+                            <div className={styles.iconPlus}><span className="material-symbols-outlined">add</span></div>
+                            <div className={styles.questFaq}>
                                 Как сделать заказ?
                             </div>
                         </div>
-                        <div className={"answerFaq"}>
+                        <div className={styles.answerFaq}>
                             Чтобы сделать заказ, просто выберите необходимые фрукты и овощи на нашем сайте, добавьте
                             их
                             в корзину и следуйте инструкциям на экране для оформления заказа
                         </div>
                     </div>
-                    <div className={"questAnswerFaq"}>
-                        <div className={"headFaq"}>
-                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
-                            <div className={"questFaq"}>
+                    <div className={styles.questAnswerFaq}>
+                        <div className={styles.headFaq}>
+                            <div className={styles.iconPlus}><span className="material-symbols-outlined">add</span></div>
+                            <div className={styles.questFaq}>
                                 Какой минимальный размер заказа?
                             </div>
                         </div>
-                        <div className={"answerFaq"}>
-                            Минимальный размер заказа составляет <span className={"highlight"}> 500 рублей</span>.
+                        <div className={styles.answerFaq}>
+                            Минимальный размер заказа составляет <span className={styles.highlight}> 500 рублей</span>.
                             Это
                             позволяет нам обеспечить хорошую стоимость доставки и свежесть продуктов.
                         </div>
                     </div>
-                    <div className={"questAnswerFaq"}>
-                        <div className={"headFaq"}>
-                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
-                            <div className={"questFaq"}>
+                    <div className={styles.questAnswerFaq}>
+                        <div className={styles.headFaq}>
+                            <div className={styles.iconPlus}><span className="material-symbols-outlined">add</span></div>
+                            <div className={styles.questFaq}>
                                 Как быстро доставляется заказ?
                             </div>
                         </div>
-                        <div className={"answerFaq"}>
-                            Мы доставляем заказы от <span className={"highlight"}> 10 минут</span> после их
+                        <div className={styles.answerFaq}>
+                            Мы доставляем заказы от <span className={styles.highlight}> 10 минут</span> после их
                             оформления,
                             в зависимости от загруженности и вашего местоположения.
                         </div>
                     </div>
-                    <div className={"questAnswerFaq"}>
-                        <div className={"headFaq"}>
-                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
-                            <div className={"questFaq"}>
+                    <div className={styles.questAnswerFaq}>
+                        <div className={styles.headFaq}>
+                            <div className={styles.iconPlus}><span className="material-symbols-outlined">add</span></div>
+                            <div className={styles.questFaq}>
                                 Могу ли я изменить время доставки?
                             </div>
                         </div>
-                        <div className={"answerFaq"}>
+                        <div className={styles.answerFaq}>
                             Да, вы можете изменить время доставки до момента, пока ваш заказ <span
-                            className={"highlight"}> не будет обработан</span>. Просто свяжитесь с нашим курьером.
+                            className={styles.highlight}> не будет обработан</span>. Просто свяжитесь с нашим курьером.
                         </div>
                     </div>
-                    <div className={"questAnswerFaq"}>
-                        <div className={"headFaq"}>
-                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
-                            <div className={"questFaq"}>
+                    <div className={styles.questAnswerFaq}>
+                        <div className={styles.headFaq}>
+                            <div className={styles.iconPlus}><span className="material-symbols-outlined">add</span></div>
+                            <div className={styles.questFaq}>
                                 Какие способы оплаты вы принимаете?
                             </div>
                         </div>
-                        <div className={"answerFaq"}>
-                            Мы принимаем <span className={"highlight"}> различные</span> способы оплаты
+                        <div className={styles.answerFaq}>
+                            Мы принимаем <span className={styles.highlight}> различные</span> способы оплаты
                         </div>
                     </div>
-                    <div className={"questAnswerFaq"}>
-                        <div className={"headFaq"}>
-                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
-                            <div className={"questFaq"}>
+                    <div className={styles.questAnswerFaq}>
+                        <div className={styles.headFaq}>
+                            <div className={styles.iconPlus}><span className="material-symbols-outlined">add</span></div>
+                            <div className={styles.questFaq}>
                                 Что делать, если что-то не так с заказом?
                             </div>
                         </div>
-                        <div className={"answerFaq"}>
+                        <div className={styles.answerFaq}>
                             Если с вашим заказом возникли проблемы, пожалуйста, свяжитесь с нашей службой поддержки,
                             и мы постараемся решить вашу проблему как можно скорее.
                         </div>
                     </div>
-                    <div className={"questAnswerFaq"}>
-                        <div className={"headFaq"}>
-                            <div className={"icon-plus"}><span className="material-symbols-outlined">add</span></div>
-                            <div className={"questFaq"}>
+                    <div className={styles.questAnswerFaq}>
+                        <div className={styles.headFaq}>
+                            <div className={styles.iconPlus}><span className="material-symbols-outlined">add</span></div>
+                            <div className={styles.questFaq}>
                                 Как я могу отменить заказ?
                             </div>
                         </div>
-                        <div className={"answerFaq"}>
+                        <div className={styles.answerFaq}>
                             Вы можете отменить заказ, если <span
-                            className={"highlight"}>доставка еще не началась</span>. В противном случае мы удержим
+                            className={styles.highlight}>доставка еще не началась</span>. В противном случае мы удержим
                             стоимость услуг курьера.
                         </div>
                     </div>
                 </div>
             </div>
-            <div className={"block"} id={"cartBlock"}>
-                <img className={"fruit"} src={"image/fruits/apple.png"}/>
-                <img className={"fruit"} src={"image/fruits/onion.png"}/>
-                <img className={"fruit"} src={"image/fruits/carrot.png"}/>
-                <img className={"fruit"} src={"image/fruits/eggplant.png"}/>
-                <img className={"fruit"} src={"image/fruits/garlic.png"}/>
-                <img className={"fruit"} src={"image/fruits/orange.png"}/>
-                <img className={"cart"} src={"image/fruits/cart.png"}/>
-                <div className={"content"}>
+            <div className={`${styles.block} ${styles.cartBlock}`} id={"cartBlock"}>
+                <img className={`${styles.fruit} fruit`} src={"image/fruits/apple.png"}/>
+                <img className={`${styles.fruit} fruit`} src={"image/fruits/onion.png"}/>
+                <img className={`${styles.fruit} fruit`} src={"image/fruits/carrot.png"}/>
+                <img className={`${styles.fruit} fruit`} src={"image/fruits/eggplant.png"}/>
+                <img className={`${styles.fruit} fruit`} src={"image/fruits/garlic.png"}/>
+                <img className={`${styles.fruit} fruit`} src={"image/fruits/orange.png"}/>
+                <img className={`${styles.cart} cart`} src={"image/fruits/cart.png"}/>
+                <div className={styles.content}>
                     <button>Заказать</button>
                 </div>
             </div>
-            <div className={"block"} id={"feedbackBlock"}>
-                <div className={"content"}>
+            <div className={`${styles.block} ${styles.feedbackBlock}`} id={"feedbackBlock"}>
+                <div className={styles.content}>
                     <h1>Отзывы:</h1>
                 </div>
             </div>
-            <div className={"block"}>
+            <div className={styles.block}>
                 <Footer/>
             </div>
-        </>
+        </div>
     )
 };
 
