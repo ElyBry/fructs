@@ -1,0 +1,208 @@
+@use "var";
+.cart {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    inset:0;
+    width: 100%;
+    height: 100%;
+    z-index: 10002;
+    opacity: 0;
+    transition: 0.7s ease-in-out all;
+    .cartBlock {
+        width: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+        padding: var.$padding-page;
+        border-radius: var.$border-radius;
+        background-color: white;
+        .secondStage {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            &.active {
+                display: grid !important;
+            }
+            .right {
+                width: 100%;
+                height: 100%;
+                .yMap {
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+        .infoOrder {
+            display: none;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+            .table {
+                max-height: 50vh;
+                overflow-y: auto;
+                width:100%;
+                text-align: left;
+                border-radius: var.$border-radius-elements;
+                background-color: var.$secondary-color;
+                box-shadow: var.$box-shadow-block;
+                margin-bottom: var.$margin-h1;
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    th, td {
+                        text-align: left;
+                        padding: var.$padding-elements;
+                    }
+                    thead {
+                        tr {
+                            box-shadow: var.$box-shadow-block;
+                            position: sticky;
+                            top: 0;
+                            z-index: 10;
+                        }
+                        th {
+                            background: var.$primary-color;
+                            padding: var.$padding-elements;
+                        }
+                    }
+                    tbody tr:hover {
+                        background-color: white;
+                    }
+                    input[type="number"] {
+                        width: 50px;
+                        padding: 5px;
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                    }
+
+                    button.remove {
+                        border: none;
+                        background-color: #e49c95;
+                        color: white;
+                        padding: 6px 10px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        transition: background-color 0.3s;
+                    }
+
+                    button.remove:hover {
+                        background-color: #c0392b;
+                    }
+                }
+            }
+            .tradingPoints {
+                display: none !important;
+                &.visible {
+                    display: flex !important;
+                }
+            }
+            .result {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                gap: var.$margin-text;
+                width: 50%;
+            }
+            .promo {
+                display: flex;
+                gap: var.$margin-text;
+                input {
+                    padding: var.$padding-elements;
+                    transition: background .5s;
+                    text-transform: uppercase;
+                }
+                button {
+                    border-style: none;
+                    padding: var.$padding-elements;
+                    background: var.$secondary-color;
+                    color: black;
+                    transition: background .5s;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: var.$margin-text;
+                    span {
+                        color:red;
+                    }
+                }
+            }
+            .type {
+                .typePick {
+                    flex-direction: column;
+                }
+                div {
+                    display: flex;
+                    gap: var.$margin-text;
+                    margin-top: var.$margin-text;
+                    input {
+                        display: none;
+                        &:checked + label {
+                            background-color: green !important;
+                            color: white !important;
+                        }
+                    }
+                    label {
+                        padding: var.$padding-elements;
+                        background-color: var.$secondary-color;
+                        transition: var.$transition-base;
+                    }
+                    .socials {
+                        display: none;
+                        &.visible {
+                            display: flex;
+                        }
+                    }
+                }
+            }
+            .location {
+                margin-top: var.$margin-text;
+                display: none;
+                grid-template-columns: 45% 45%;
+                grid-gap: var.$margin-text;
+                &.visible {
+                    display: grid;
+                }
+                div {
+                    display: flex;
+                    align-items: center;
+                    gap: var.$margin-text;
+                    padding: var.$padding-elements;
+                    label {
+
+                    }
+                    input {
+
+                    }
+                }
+            }
+            .next,
+            .back,
+            .submit{
+                margin-top: var.$margin-h1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: var.$margin-text;
+                background-color: var.$secondary-color;
+                padding: var.$padding-elements;
+                border-radius: var.$border-radius;
+            }
+            &.active {
+                display: flex;
+            }
+            .buttons {
+                display: flex;
+                gap: var.$margin-h1;
+            }
+        }
+    }
+    &.visible {
+        display: flex;
+        opacity: 1;
+        background-color: var.$secondary-color;
+    }
+}

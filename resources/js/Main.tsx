@@ -8,6 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 const random = gsap.utils.random;
 
 import styles from "../sass/_componentsForMain.module.scss";
+import {useLocation} from "react-router-dom";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -46,6 +47,7 @@ const Main: React.FC = () => {
             },
             x: () => -totalWidth + containerHeight,
         });
+
         document.querySelectorAll(".superiorityText h2").forEach((element) => {
             gsap.from(element, {
                 scrollTrigger: {
@@ -98,18 +100,33 @@ const Main: React.FC = () => {
             },
             x: 1500,
         })
-        document.querySelectorAll(".questAnswerFaq").forEach((element) => {
+
+    })
+
+    useEffect(() => {
+        const openFaq = (element: Element) => {
+            const classListElement = element.classList;
+            if (classListElement.contains("open")) {
+                classListElement.remove("open")
+            } else {
+                classListElement.add("open")
+            }
+        }
+
+        const questAnswer = document.querySelectorAll(".questAnswerFaq");
+
+        questAnswer.forEach((element) => {
             element.addEventListener('click', () => openFaq(element))
         });
-    })
-    const openFaq = (element: Element) => {
-        const classListElement = element.classList;
-        if (classListElement.contains("open")) {
-            classListElement.remove("open")
-        } else {
-            classListElement.add("open")
+
+        return () => {
+            questAnswer.forEach((element) => {
+                element.removeEventListener('click', () => openFaq(element));
+            })
         }
-    }
+    }, []);
+
+
     return (
         <div className={styles.root}>
             <Header/>
@@ -220,38 +237,38 @@ const Main: React.FC = () => {
                         className={styles.highlight}>насыщенные</span> фрукты и овощи в нелетнее время</h1>
                 </div>
             </div>
-            <div className={`${styles.block}`} id={"workBlock"}>
+            <div className={`${styles.block} ${styles.workBlock}`} id={"workBlock"}>
                 <div className={styles.content}>
                     <h1>Как мы работаем</h1>
-                    <div className={styles.workText}>
+                    <div className={styles.work}>
                         <div className={styles.workImg}>
-                            <img src={"../image/icons/elements"}/>
+                            <img src={"../image/icons/elements/basket.svg"}/>
                         </div>
-                        <div>
+                        <div className={styles.workText}>
                             Вы совершаете заказ на сайте
                         </div>
                     </div>
-                    <div className={styles.workText}>
+                    <div className={styles.work}>
                         <div className={styles.workImg}>
-                            <img src={"../image/icons/elements"}/>
+                            <img src={"../image/icons/elements/"}/>
                         </div>
-                        <div>
+                        <div className={styles.workText}>
                             Курьер связывается с вами
                         </div>
                     </div>
-                    <div className={styles.workText}>
+                    <div className={styles.work}>
                         <div className={styles.workImg}>
                             <img src={"../image/icons/elements"}/>
                         </div>
-                        <div>
+                        <div className={styles.workText}>
                             Вы назначаете удобное <span className={styles.highlight}>для вас</span> время
                         </div>
                     </div>
-                    <div className={styles.workText}>
+                    <div className={styles.work}>
                         <div className={styles.workImg}>
                             <img src={"../image/icons/elements"}/>
                         </div>
-                        <div>
+                        <div className={styles.workText}>
                             Вы получаете заказ в <span className={styles.highlight}>указанный срок</span>
                         </div>
                     </div>

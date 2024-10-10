@@ -1,8 +1,10 @@
-#search {
+@use "var" as *;
+.search {
     padding: $padding-page;
     position: relative;
     inset:0;
-    #inputSearch {
+    z-index: 99999;
+    .inputSearch {
         display: flex;
         align-items: center;
         justify-content: center;

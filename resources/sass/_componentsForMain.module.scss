@@ -1,8 +1,13 @@
 // стили для каждого компонента необходимого для этого проекта, включая кнопки, модальные окна и т.д.
-@import "app";
+@use "var";
+@use "app";
+@use "mixin";
 .root {
     justify-content: flex-start;
     height: 100%;
+}
+.content {
+    @include mixin.content;
 }
 .body {
     width: 100%;
@@ -36,7 +41,7 @@
 }
 .stats {
     height: 60vh;
-    background-color: $third-color;
+    background-color: var.$third-color;
     z-index: 1;
 }
 .statsBlock {
@@ -56,7 +61,7 @@
 .guaranteeBlock {
     h1 {
         text-align: center;
-        margin-bottom: $margin-h1;
+        margin-bottom: var.$margin-h1;
     }
     .guarantees {
         position: relative;
@@ -72,22 +77,22 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            box-shadow: 2px 2px 15px 0 $secondary-color;
+            box-shadow: 2px 2px 15px 0 var.$secondary-color;
         }
     }
     .guaranteeText {
         min-width: 60%;
         height: 80vh;
-        border-radius: 0 $border-radius $border-radius 0;
+        border-radius: 0 var.$border-radius var.$border-radius 0;
         display: grid;
         grid-template-columns: 50% 50%;
-        box-shadow: 2px 2px 10px 0 $primary-color;
+        box-shadow: 2px 2px 10px 0 var.$primary-color;
         h2 {
             text-align: center;
         }
         h3 {
-            margin-top: $margin-text;
-            padding: $padding-elements;
+            margin-top: var.$margin-text;
+            padding: var.$padding-elements;
         }
     }
 }
@@ -96,16 +101,16 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: $padding-elements;
+        padding: var.$padding-elements;
         border-radius: 30px;
-        background-color: $primary-color;
+        background-color: var.$primary-color;
         span {
             display: flex;
-            padding: $padding-elements;
+            padding: var.$padding-elements;
             border-radius: 50%;
-            width: $padding-elements;
-            height: $padding-elements;
-            background-color: $secondary-color;
+            width: var.$padding-elements;
+            height: var.$padding-elements;
+            background-color: var.$secondary-color;
             flex-direction: row;
             justify-content: center;
             align-items: center;
@@ -118,11 +123,11 @@
         display: flex;
         flex-direction: column;
         cursor: pointer;
-        margin: $margin-text 0;
-        border-bottom: 1px solid $note-color;
+        margin: var.$margin-text 0;
+        border-bottom: 1px solid var.$note-color;
         &.open {
             .answerFaq {
-                line-height: $line-height-base;
+                line-height: var.$line-height-base;
             }
             .iconPlus {
                 transform: rotate(45deg);
@@ -130,7 +135,7 @@
         }
         &:hover {
             .iconPlus {
-                background-color: $primary-color;
+                background-color: var.$primary-color;
                 color: white;
             }
 
@@ -138,7 +143,7 @@
         .answerFaq {
             overflow: hidden;
             line-height: 0;
-            transition: $transition-base;
+            transition: var.$transition-base;
             margin-block-start: 0.5lh;
         }
         .headFaq {
@@ -148,19 +153,19 @@
             align-items: center;
         }
         .questFaq {
-            margin: $margin-text 0;
-            font-weight: $font-weight-bold;
+            margin: var.$margin-text 0;
+            font-weight: var.$font-weight-bold;
         }
         .iconPlus {
             display: flex;
-            width: $width-icon;
-            height: $width-icon;
+            width: var.$width-icon;
+            height: var.$width-icon;
             align-items: center;
             justify-content: center;
             background-color: white;
             border-radius: 50%;
-            border: 1px solid $secondary-color;
-            transition: $transition-base;
+            border: 1px solid var.$secondary-color;
+            transition: var.$transition-base;
         }
     }
 }
@@ -176,6 +181,19 @@
         align-items: center;
     }
 }
+
+.workBlock {
+
+    .work {
+        .workImg {
+
+        }
+        .workText {
+
+        }
+    }
+}
+
 .cartBlock {
     position: relative;
     .fruit {

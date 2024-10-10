@@ -1,0 +1,46 @@
+$primary-color: #ff9a00;
+$secondary-color: rgba(255, 248, 240, 0.8);
+$third-color: #ffdc00;
+$note-color: #8597a3;
+
+$font-weight-base: 500;
+$font-weight-bold: 700;
+$font-size-h1: 38px;
+$font-size-note: 14px;
+$font-size-base: 18px;
+
+$margin-text: 16px;
+$margin-h1: 36px;
+$margin-top-block: 15%;
+$margin-header: 7%;
+
+$padding-page: 55px;
+$padding: 30px;
+$padding-headers: 10px;
+$padding-elements: 15px;
+
+$perspective: 300px;
+
+$border-radius: 30px;
+$border-radius-elements: 20px;
+
+$line-height-base: 1.2;
+$line-height-h1: 0.8;
+
+$width-icon: 35px;
+
+
+
+$invalid-color: red;
+$input-padding: 1.5rem;
+
+$transition-load: .4s all ease;
+$transition-base: .3s;
+$transition-block-move: .35s all linear;
+$transition-block-move-another: .6s all linear;
+
+$box-shadow-elements: 1px 1px 3px 0 rgba(#333, 0.2);
+$box-shadow-block: 2px 2px 10px 0 rgba(#333, 0.2);
+
+$time-animations-loading: 1.5s;
+$animation-loading: loadingSkeleton;

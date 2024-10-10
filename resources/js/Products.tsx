@@ -422,10 +422,10 @@ const Products: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div id={"main"}>
-                <div className={"content"}>
-                    <div id={"filter"}>
-                        <div className={"mainType"}>
+            <div id={"main"} className={styles.main}>
+                <div className={styles.content}>
+                    <div id={"filter"} className={styles.filterBlock}>
+                        <div className={styles.mainType}>
                             {loadingCategories ?
                                 <>
                                     <div>
@@ -465,35 +465,35 @@ const Products: React.FC = () => {
                                 })
                             }
                         </div>
-                        <div className={"tree"}>
-                            <div className={"filter"}>
+                        <div className={styles.tree}>
+                            <div className={styles.filter}>
                                 <div
-                                    className={`iconTree ${isOpenFilter ? "open" : ""} ${(selectedCountries.length + selectedColors.length != 0) || maxPrice != '' || minPrice != '' ? "enabled" : ""}`}
+                                    className={`${styles.iconTree} ${isOpenFilter ? styles.open : ""} ${(selectedCountries.length + selectedColors.length != 0) || maxPrice != '' || minPrice != '' ? styles.enabled : ""}`}
                                     onClick={() => openSortOrFilter("Filter")}>
                                     <span className="material-symbols-outlined">filter_alt</span>
                                     Фильтр
                                 </div>
-                                <div className={`contentTreeFilter ${isOpenFilter ? "active" : ""}`}>
-                                    <div className={"textTree"}>Добавить фильтр</div>
-                                    <div className={"blocksTree"}>
+                                <div className={`${styles.contentTreeFilter} ${isOpenFilter ? styles.active : ""}`}>
+                                    <div className={styles.textTree}>Добавить фильтр</div>
+                                    <div className={styles.blocksTree}>
                                         <button onClick={() => openAnyItem("Colors")}
-                                                className={(isOpenColors ? "open" : "") + (selectedColors.length > 0 ? " enabled" : "")}>
+                                                className={`${isOpenColors ? styles.open : ""} ${selectedColors.length > 0 ? styles.enabled : ""}`}>
                                             <span className="material-symbols-outlined">palette</span>Цвета
                                         </button>
                                         <button onClick={() => openAnyItem("Countries")}
-                                                className={(isOpenCountries ? "open" : "") + (selectedCountries.length > 0 ? " enabled" : "")}>
+                                                className={`${isOpenCountries ? styles.open : ""} ${selectedCountries.length > 0 ? styles.enabled : ""}`}>
                                             <span className="material-symbols-outlined">globe</span>Страны
                                         </button>
                                         <button onClick={() => openAnyItem("Costs")}
-                                                className={(isOpenCosts ? "open" : "") + (maxPrice != '' || minPrice != '' ? " enabled" : "")}>
+                                                className={`${isOpenCosts ? styles.open : ""} ${maxPrice != '' || minPrice != '' ? styles.enabled : ""}`}>
                                             <span className="material-symbols-outlined">currency_ruble</span>Стоимость
                                         </button>
                                         <button onClick={() => openAnyItem("Rate")}
-                                                className={(isOpenRate ? "open" : "") + (minRate != '' || maxRate != '' ? " enabled" : "")}>
+                                                className={`${isOpenRate ? styles.open : ""} ${minRate != '' || maxRate != '' ? styles.enabled : ""}`}>
                                             <span className="material-symbols-outlined">thumb_up</span>Рейтинг
                                         </button>
                                     </div>
-                                    <div className={`costTree ${isOpenCosts ? "open" : ""}`}>
+                                    <div className={`${styles.costTree} ${isOpenCosts ? styles.open : ""}`}>
                                         <h2>Цена:</h2>
                                         <label>От</label>
                                         <input type={"number"} name={"minPrice"} value={minPrice}
@@ -502,7 +502,7 @@ const Products: React.FC = () => {
                                         <input type={"number"} name={"maxPrice"} value={maxPrice}
                                                onChange={handleMaxPriceChange}/>
                                     </div>
-                                    <div className={`rateTree ${isOpenRate ? "open" : ""}`}>
+                                    <div className={`${styles.rateTree} ${isOpenRate ? styles.open : ""}`}>
                                         <h2>Рейтинг:</h2>
                                         <label>От</label>
                                         <input type={"number"} name={"minRate"} value={minRate} min="0" max="5"
@@ -511,16 +511,16 @@ const Products: React.FC = () => {
                                         <input type={"number"} name={"maxRate"} value={maxRate} min="0" max="5"
                                                onChange={handleMaxRateChange}/>
                                     </div>
-                                    <div className={`colorsTree ${isOpenColors ? "open" : ""}`}>
+                                    <div className={`${styles.colorsTree} ${isOpenColors ? styles.open : ""}`}>
                                         <h2>Цвет:</h2>
-                                        <div id={"colors"}>
+                                        <div id={"colors"} className={styles.colors}>
                                             {!loadingColors ?
                                                 allColors.map((value: any[]) => (
                                                     <div key={value["id"]}>
                                                         <input id={"check" + value["id"]} type={"checkbox"}
                                                                value={value["id"]}
                                                                onChange={(e) => handleAnyChange(e, "Colors")}/>
-                                                        <label htmlFor={"check" + value["id"]} className={"blocks"}
+                                                        <label htmlFor={"check" + value["id"]} className={styles.blocks}
                                                         >{value["name"]}</label>
                                                     </div>
                                                 ))
@@ -528,22 +528,22 @@ const Products: React.FC = () => {
                                             }
                                         </div>
                                     </div>
-                                    <div className={`countriesTree ${isOpenCountries ? "open" : ""}`}>
+                                    <div className={`${styles.countriesTree} ${isOpenCountries ? styles.open : ""}`}>
                                         <h2>Страна:</h2>
                                         <Countries/>
                                     </div>
                                 </div>
                             </div>
-                            <div className={"sort"}>
-                                <div className={`iconTree ${isOpenSort ? "open" : ""} enabled`}
+                            <div className={styles.sort}>
+                                <div className={`${styles.iconTree} ${isOpenSort ? styles.open : ""} ${styles.enabled}`}
                                      onClick={() => openSortOrFilter("Sort")}>
                                     <span className="material-symbols-outlined">filter_list</span>
                                     Сортировка
                                 </div>
-                                <div className={`contentTreeSort ${isOpenSort ? "active" : ""} `}>
-                                    <div className={"textTree"}>Сортировать по</div>
+                                <div className={`${styles.contentTreeSort} ${isOpenSort ? styles.active : ""} `}>
+                                    <div className={styles.textTree}>Сортировать по</div>
                                     <h4>Направлению:</h4>
-                                    <div className={"blocksTree"}>
+                                    <div className={styles.blocksTree}>
                                         <div>
                                             <input type={"radio"} defaultChecked={true} name={"direction"}
                                                    id={"increaseCheck"} onChange={() => setAscendingSort('asc')}/>
@@ -560,7 +560,7 @@ const Products: React.FC = () => {
                                         </div>
                                     </div>
                                     <h4>По:</h4>
-                                    <div className={"blocksTree"}>
+                                    <div className={styles.blocksTree}>
                                         <div>
                                             <input type={"radio"} name={"sort"} id={"sortPopular"}
                                                    onChange={() => setHowSort("Popular")}/>
@@ -602,7 +602,7 @@ const Products: React.FC = () => {
                 </div>
             </div>
 
-            <div className={"block"}>
+            <div className={styles.block}>
                 <Footer/>
             </div>
         </div>

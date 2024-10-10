@@ -1,22 +1,28 @@
-@import "app";
-@import "animations";
-@import "search";
-@import "products";
-@import "product";
-@import "cart";
-body {
-    overflow: auto;
-}
+@use "var";
+@use "mixin";
+@use "animations";
 .root {
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(243, 243, 243, 0.1);
+    position: relative;
+    background-size: cover;
     justify-content: space-between;
     overflow-x: hidden;
+    overflow-y: scroll;
     background-image: url("../../public/image/background-abstact/5652356.webp");
     background-repeat: repeat;
 }
 header {
     position: relative;
 }
-
+.content {
+    @include mixin.content;
+}
 .show {
     .filter {
         display: block;
@@ -41,18 +47,18 @@ header {
                 grid-row: span 2;
             }
             .infoCard {
-                padding: $padding;
-                border-radius: $border-radius;
+                padding: var.$padding;
+                border-radius: var.$border-radius;
                 background-color: rgb(255, 248, 240,0.8);
-                box-shadow: $box-shadow-elements;
+                box-shadow: var.$box-shadow-elements;
                 display: flex;
                 justify-content: space-between;
                 align-items: stretch;
                 position: relative;
                 .star {
                     position: absolute;
-                    top: $padding-elements;
-                    right: $padding-elements;
+                    top: var.$padding-elements;
+                    right: var.$padding-elements;
                     z-index: 4;
                     display: flex;
                     align-items: center;
@@ -68,22 +74,22 @@ header {
                     align-items: flex-start;
                     justify-content: space-between;
                     h4 {
-                        color: $note-color;
+                        color: var.$note-color;
                     }
 
                     h1 {
                     }
 
                     h3 {
-                        margin-top: $margin-h1;
-                        border-radius: $border-radius;
+                        margin-top: var.$margin-h1;
+                        border-radius: var.$border-radius;
                         text-wrap: nowrap;
                         background-color: rgba(0, 0, 0, 0.03);
-                        padding: $padding-elements;
+                        padding: var.$padding-elements;
                     }
 
                     button {
-                        margin-top: $margin-h1;
+                        margin-top: var.$margin-h1;
                         text-transform: uppercase;
                         border-bottom: 2px solid black;
                     }
@@ -112,10 +118,10 @@ header {
     width: 100%;
 
     .content {
-        padding: $padding-page;
+        padding: var.$padding-page;
 
-        .filter {
-            padding: $padding-page 0;
+        .filterBlock {
+            padding: var.$padding-page 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -132,7 +138,7 @@ header {
                     }
                 }
                 div:not(:last-child) {
-                    margin-right: $margin-text;
+                    margin-right: var.$margin-text;
                 }
                 input {
                     display: none;
@@ -142,10 +148,10 @@ header {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    background-color: $secondary-color;
-                    box-shadow: $box-shadow-elements;
-                    padding: $padding-elements;
-                    border-radius: $border-radius-elements;
+                    background-color: var.$secondary-color;
+                    box-shadow: var.$box-shadow-elements;
+                    padding: var.$padding-elements;
+                    border-radius: var.$border-radius-elements;
                 }
             }
 
@@ -163,12 +169,12 @@ header {
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        border-radius: $border-radius-elements;
-                        padding: $padding-elements;
-                        background-color: $secondary-color;
-                        box-shadow: $box-shadow-elements;
+                        border-radius: var.$border-radius-elements;
+                        padding: var.$padding-elements;
+                        background-color: var.$secondary-color;
+                        box-shadow: var.$box-shadow-elements;
                         cursor: pointer;
-                        transition: $transition-base all;
+                        transition: var.$transition-base all;
                         &.open {
                             filter: brightness(0.95);
                         }
@@ -185,25 +191,25 @@ header {
                 }
 
                 .filter {
-                    margin-right: $margin-text;
+                    margin-right: var.$margin-text;
                 }
             }
 
             .contentTreeSort,
             .contentTreeFilter {
                 display: none;
-                padding: $padding-elements;
+                padding: var.$padding-elements;
                 background-color: rgb(255, 255, 255);
-                box-shadow: $box-shadow-elements;
+                box-shadow: var.$box-shadow-elements;
                 z-index: 25;
                 flex-wrap: wrap;
                 justify-content: flex-start;
                 align-items: center;
                 top: 0;
                 right: 0;
-                border-radius: $border-radius-elements;
+                border-radius: var.$border-radius-elements;
                 position: absolute;
-                transition: $transition-base all ease;
+                transition: var.$transition-base all ease;
 
                 .textTree {
                     text-align: left;
@@ -213,17 +219,17 @@ header {
                 .blocksTree {
                     grid-template-columns: 40% 40%;
                     justify-content: center;
-                    grid-gap: $margin-text;
+                    grid-gap: var.$margin-text;
 
                     button {
                         display: flex;
                         flex-direction: column;
                         justify-content: center;
                         align-items: center;
-                        padding: $padding-elements;
-                        border-radius: $border-radius-elements;
-                        background-color: $secondary-color;
-                        transition: $transition-base;
+                        padding: var.$padding-elements;
+                        border-radius: var.$border-radius-elements;
+                        background-color: var.$secondary-color;
+                        transition: var.$transition-base;
                         &.open {
                             filter: brightness(0.95);
                         }
@@ -237,16 +243,16 @@ header {
                         flex-direction: column;
                         justify-content: center;
                         align-items: center;
-                        padding: $padding-elements;
+                        padding: var.$padding-elements;
                         width: 100%;
                         label {
                             display: flex;
                             flex-direction: column;
                             justify-content: center;
                             align-items: center;
-                            padding: $padding-elements;
-                            border-radius: $border-radius-elements;
-                            background-color: $secondary-color;
+                            padding: var.$padding-elements;
+                            border-radius: var.$border-radius-elements;
+                            background-color: var.$secondary-color;
                         }
                         input {
                             display: none;
@@ -267,12 +273,12 @@ header {
                     display: none;
                     input {
                         padding: 5px 15px;
-                        border-radius: $border-radius-elements;
+                        border-radius: var.$border-radius-elements;
                         border: 1px solid green;
                     }
                     .colors {
                         label {
-                            margin-left: $margin-text;
+                            margin-left: var.$margin-text;
                         }
                     }
                     &.open {
@@ -286,7 +292,7 @@ header {
 }
 .grey {
     color: transparent !important;
-    @include loadSkeleton;
+    @include animations.loadSkeleton;
     box-shadow: unset !important;
 }
 .usableItems {
@@ -295,7 +301,7 @@ header {
     right: 3%;
     z-index: 10009;
     display: flex;
-    gap: $margin-text;
+    gap: var.$margin-text;
     align-items: center;
     flex-direction: row-reverse;
     justify-content: center;
@@ -303,9 +309,9 @@ header {
 .openCart,
 .close{
     display: none;
-    border-radius: $border-radius-elements;
-    padding: $padding-elements;
-    background-color: $secondary-color;
+    border-radius: var.$border-radius-elements;
+    padding: var.$padding-elements;
+    background-color: var.$secondary-color;
     &.visible {
         display: block !important;
     }
@@ -322,17 +328,17 @@ header {
     height: 100%;
     z-index: 10002;
     background-color: white;
-    border-radius: $border-radius-elements 0 0 $border-radius-elements;
+    border-radius: var.$border-radius-elements 0 0 var.$border-radius-elements;
     background-size: cover;
     background-repeat: no-repeat;
     .aboutProduct {
-        padding: $padding-elements;
+        padding: var.$padding-elements;
 
         img {
             height: 30vh;
         }
         .buy-button {
-            @include buttonsCart("add")
+            @include mixin.buttonsCart("add")
         }
         .feedbacks {
             margin-bottom: 12vh;
@@ -340,15 +346,15 @@ header {
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: $margin-text;
+            gap: var.$margin-text;
             .feedback {
-                padding: $padding-elements;
-                border-radius: $border-radius;
-                background-color: $secondary-color;
+                padding: var.$padding-elements;
+                border-radius: var.$border-radius;
+                background-color: var.$secondary-color;
                 position: relative;
                 .star {
                     position: absolute;
-                    right: $padding-elements;
+                    right: var.$padding-elements;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -361,7 +367,7 @@ header {
                     text-transform: uppercase;
                 }
                 .message {
-                    padding-left: $padding-elements;
+                    padding-left: var.$padding-elements;
                 }
             }
         }
@@ -371,210 +377,4 @@ header {
     }
 
 }
-.cart {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    inset:0;
-    width: 100%;
-    height: 100%;
-    z-index: 10001;
-    opacity: 0;
-    transition: 0.7s ease-in-out all;
-    .cartBlock {
-        width: 80%;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        flex-direction: column;
-        padding: $padding-page;
-        border-radius: $border-radius;
-        background-color: white;
-        .secondStage {
-            display: none;
-            grid-template-columns: 1fr 1fr;
-            &.active {
-                display: grid !important;
-            }
-            .right {
-                width: 100%;
-                height: 100%;
-                .yMap {
-                    width: 100%;
-                    height: 100%;
-                }
-            }
-        }
-        .infoOrder {
-            display: none;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: space-between;
-            width: 100%;
-            height: 100%;
-            .table {
-                max-height: 50vh;
-                overflow-y: auto;
-                width:100%;
-                text-align: left;
-                border-radius: $border-radius-elements;
-                background-color: $secondary-color;
-                box-shadow: $box-shadow-block;
-                margin-bottom: $margin-h1;
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    th, td {
-                        text-align: left;
-                        padding: $padding-elements;
-                    }
-                    thead {
-                        tr {
-                            box-shadow: $box-shadow-block;
-                            position: sticky;
-                            top: 0;
-                            z-index: 10;
-                        }
-                        th {
-                            background: $primary-color;
-                            padding: $padding-elements;
-                        }
-                    }
-                    tbody tr:hover {
-                        background-color: white;
-                    }
-                    input[type="number"] {
-                        width: 50px;
-                        padding: 5px;
-                        border: 1px solid #ccc;
-                        border-radius: 8px;
-                    }
 
-                    button.remove {
-                        border: none;
-                        background-color: #e49c95;
-                        color: white;
-                        padding: 6px 10px;
-                        border-radius: 4px;
-                        cursor: pointer;
-                        transition: background-color 0.3s;
-                    }
-
-                    button.remove:hover {
-                        background-color: #c0392b;
-                    }
-                }
-            }
-            .tradingPoints {
-                display: none !important;
-                &.visible {
-                    display: flex !important;
-                }
-            }
-            .result {
-                display: flex;
-                justify-content: flex-end;
-                align-items: center;
-                gap: $margin-text;
-                width: 50%;
-            }
-            .promo {
-                display: flex;
-                gap: $margin-text;
-                input {
-                    padding: $padding-elements;
-                    transition: background .5s;
-                    text-transform: uppercase;
-                }
-                button {
-                    border-style: none;
-                    padding: $padding-elements;
-                    background: $secondary-color;
-                    color: black;
-                    transition: background .5s;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    gap: $margin-text;
-                    span {
-                        color:red;
-                    }
-                }
-            }
-            .type {
-                .typePick {
-                    flex-direction: column;
-                }
-                div {
-                    display: flex;
-                    gap: $margin-text;
-                    margin-top: $margin-text;
-                    input {
-                        display: none;
-                        &:checked + label {
-                            background-color: green !important;
-                            color: white !important;
-                        }
-                    }
-                    label {
-                        padding: $padding-elements;
-                        background-color: $secondary-color;
-                        transition: $transition-base;
-                    }
-                    .socials {
-                        display: none;
-                        &.visible {
-                            display: flex;
-                        }
-                    }
-                }
-            }
-            .location {
-                margin-top: $margin-text;
-                display: none;
-                grid-template-columns: 45% 45%;
-                grid-gap: $margin-text;
-                &.visible {
-                    display: grid;
-                }
-                div {
-                    display: flex;
-                    align-items: center;
-                    gap: $margin-text;
-                    padding: $padding-elements;
-                    label {
-
-                    }
-                    input {
-
-                    }
-                }
-            }
-            .next,
-            .back,
-            .submit{
-                margin-top: $margin-h1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: $margin-text;
-                background-color: $secondary-color;
-                padding: $padding-elements;
-                border-radius: $border-radius;
-            }
-            &.active {
-                display: flex;
-            }
-            .buttons {
-                display: flex;
-                gap: $margin-h1;
-            }
-        }
-    }
-    &.visible {
-        display: flex;
-        opacity: 1;
-        background-color: $secondary-color;
-    }
-}

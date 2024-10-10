@@ -6,6 +6,8 @@ import {useEffect, useState} from "react";
 import YandexMap from "../Map/YandexMap";
 import axios from "axios";
 
+import styles from "../../../sass/_cart.module.scss";
+
 const Cart = ({ isOpenCart }) => {
     const cart = useRecoilValue(cartAtom);
     const quantity = useRecoilValue(quantityAtom);
@@ -87,36 +89,36 @@ const Cart = ({ isOpenCart }) => {
     }
 
     return (
-        <div id={"cart"} className={isOpenCart && quantity > 0 ? "visible" : ""}>
-            <div id="cartBlock">
-                <div className={`infoOrder zeroStage ${stage == 0 ? "active" : ""}`}>
-                    <div className={"table"}>
+        <div id={"cart"} className={`${styles.cart} ${isOpenCart && quantity > 0 ? styles.visible : ""}`}>
+            <div id="cartBlock" className={styles.cartBlock}>
+                <div className={`${styles.infoOrder} ${styles.zeroStage} ${stage == 0 ? styles.active : ""}`}>
+                    <div className={styles.table}>
                         <table>
                             <thead>
                             <tr>
-                                <th className={"name"}>Название</th>
-                                <th className={"quantity"}>Количество</th>
-                                <th className={"price"}>Цена</th>
-                                <th className={"res"}>Итого:</th>
-                                <th className={"remove"}></th>
+                                <th className={styles.name}>Название</th>
+                                <th className={styles.quantity}>Количество</th>
+                                <th className={styles.price}>Цена</th>
+                                <th className={styles.res}>Итого:</th>
+                                <th className={styles.remove}></th>
                             </tr>
                             </thead>
                             <tbody>
                             {cart.map((item) =>
                                 <tr key={item.id}>
                                     <td>{item.title}</td>
-                                    <td className={"quantity"}>
+                                    <td className={styles.quantity}>
                                         <input name={"quantity"}
                                                type={"number"}
                                                value={item.quantity}
                                                onChange={(e) => updateItemQuantity(item.id, e.target.value)}
                                         />
                                     </td>
-                                    <td className={"price"}>{item.price}р / {`${item.weight} ${item.type_weight}`}</td>
-                                    <td className={"price"}>{item.price * item.quantity}р
+                                    <td className={styles.price}>{item.price}р / {`${item.weight} ${item.type_weight}`}</td>
+                                    <td className={styles.price}>{item.price * item.quantity}р
                                         / {`${item.weight * item.quantity} ${item.type_weight}`} </td>
                                     <td>
-                                        <button className={"remove"} onClick={() => removeItem(item.id)}><span
+                                        <button className={styles.remove} onClick={() => removeItem(item.id)}><span
                                             className="material-symbols-outlined">delete</span>Удалить
                                         </button>
                                     </td>
@@ -125,14 +127,14 @@ const Cart = ({ isOpenCart }) => {
                             </tbody>
                         </table>
                     </div>
-                    <div className={"result"}>
+                    <div className={styles.result}>
                         {discountPercent != 0 &&
                             <>
                                 <div>
                                     Без скидки: {totalCost}р
                                 </div>
                                 <div>
-                                    Скидка: <span id={"discount"}>{discountPercent}%</span><br/>
+                                    Скидка: <span id={"discount"} className={styles.discount}>{discountPercent}%</span><br/>
                                     В рублях: {totalCost - Math.round(totalCost * (1 - discountPercent * 0.01))}р
                                 </div>
                             </>
@@ -141,7 +143,7 @@ const Cart = ({ isOpenCart }) => {
                             К оплате: {Math.round(totalCost * (1 - discountPercent * 0.01))}р
                         </div>
                     </div>
-                    <div className={"promo"}>
+                    <div className={styles.promo}>
                         <input type={"text"} name={"promo"} placeholder={"ПРОМОКОД"}
                                onChange={(e) => setPromo(e.target.value)}/>
                         <button onClick={() => verifyPromo()}>Применить промокод<span
@@ -149,22 +151,22 @@ const Cart = ({ isOpenCart }) => {
                     </div>
                     <h3>{loadingPromo ? "Поиск промокода..." : errorPromo}</h3>
                     {isLogged ?
-                        <button className={"next"} onClick={() => {
+                        <button className={styles.next} onClick={() => {
                             setStage(stage + 1);
                             fetchTradingPoints();
                         }}>Начать оформление заказа<span
                             className="material-symbols-outlined">arrow_forward</span>
                         </button>
                         :
-                        <button className={"next"} onClick={() => {
+                        <button className={styles.next} onClick={() => {
 
                         }}>
                             Авторизоваться/ Зарегистрироваться
                         </button>
                     }
                 </div>
-                <div className={`infoOrder firstStage ${stage == 1 ? "active" : ""}`}>
-                    <div className={"type"}>
+                <div className={`${styles.infoOrder} ${styles.firstStage} ${stage == 1 ? styles.active : ""}`}>
+                    <div className={styles.type}>
                         <h1>Тип платежа?</h1>
                         <div>
                             <input type={"radio"} id={"cash"} name={"typePay"} defaultChecked={true}/>
@@ -173,21 +175,21 @@ const Cart = ({ isOpenCart }) => {
                             <label htmlFor={"cashless"}><span className="material-symbols-outlined">credit_card</span>Безналичными</label>
                         </div>
                     </div>
-                    <div className={"buttons"}>
-                        <button className={"back"} onClick={() => setStage(stage - 1)}>
+                    <div className={styles.buttons}>
+                        <button className={styles.back} onClick={() => setStage(stage - 1)}>
                         <span className="material-symbols-outlined">arrow_back</span>Назад
                         </button>
-                        <button className={"next"} onClick={() => setStage(stage + 1)}>Продолжить оформление заказа<span
+                        <button className={styles.next} onClick={() => setStage(stage + 1)}>Продолжить оформление заказа<span
                             className="material-symbols-outlined">arrow_forward</span>
                         </button>
                     </div>
                 </div>
-                <div className={`infoOrder secondStage ${stage == 2 ? "active" : ""}`}>
-                    <div className={"left"}>
+                <div className={`${styles.infoOrder} ${styles.secondStage} ${stage == 2 ? styles.active : ""}`}>
+                    <div className={styles.left}>
                         <h1>Как доставить заказ?</h1>
                         <h2>Доставка по всему Екатеринбургу</h2>
                         <div className={"type"}>
-                            <div className={"howDeliverBlock"}>
+                            <div className={styles.howDeliverBlock}>
                                 <input type={"radio"} id={"pickup"} name={"howDeliver"} defaultChecked={true}
                                        onChange={(e) => setHowDeliver(e.target.id)}/>
                                 <label htmlFor={"pickup"}>Самовывоз</label>
@@ -195,7 +197,7 @@ const Cart = ({ isOpenCart }) => {
                                        onChange={(e) => setHowDeliver(e.target.id)}/>
                                 <label htmlFor={"delivery"}>Курьер</label>
                             </div>
-                            <div className={`tradingPoints ${howDeliver == "pickup" ? "visible" : ""}`}>
+                            <div className={`${styles.tradingPoints} ${howDeliver == "pickup" ? styles.visible : ""}`}>
                                 {tradingPoint.length > 0
                                     &&
                                     tradingPoint.map((point) => (
@@ -211,10 +213,10 @@ const Cart = ({ isOpenCart }) => {
                                 {tradingPoint.length <= 0 && !loadingTradingPoints && <h2>Точек продаж не найдено</h2>}
                             </div>
                         </div>
-                        <div className={"type"}>
+                        <div className={styles.type}>
                             <h1>Как с вами связаться?</h1>
                             <h2>Курьер свяжется с вами в ближайшее время</h2>
-                            <div className={"typePick"}>
+                            <div className={styles.typePick}>
                                 <div>
                                     <input type={"radio"} id={"call"} name={"howConnect"} defaultChecked={true}
                                            onChange={(e) => setHowConnect(e.target.id)}/>
@@ -223,7 +225,7 @@ const Cart = ({ isOpenCart }) => {
                                            onChange={(e) => setHowConnect(e.target.id)}/>
                                     <label htmlFor={"soc"}>Написать в:</label>
                                 </div>
-                                <div className={`socials ${howConnect == "soc" ? "visible" : ""}`}>
+                                <div className={`${styles.socials} ${howConnect == "soc" ? styles.visible : ""}`}>
                                     <input type={"radio"} id={"whatsapp"} name={"howSoc"}
                                            onChange={(e) => setHowSocial(e.target.id)}/>
                                     <label htmlFor={"whatsapp"}>Ватсап</label>
@@ -236,7 +238,7 @@ const Cart = ({ isOpenCart }) => {
                                 </div>
                             </div>
                         </div>
-                        <div className={`location ${howDeliver != "pickup" ? "visible" : ""}`}>
+                        <div className={`${styles.location} ${howDeliver != "pickup" ? styles.visible : ""}`}>
                             <div>
                                 <label>Адрес</label>
                                 <input type={"text"} name={"address"}
@@ -278,32 +280,32 @@ const Cart = ({ isOpenCart }) => {
                                        }}/>
                             </div>
                         </div>
-                        <div className={"buttons"}>
-                            <button className={"back"} onClick={() => setStage(stage - 1)}>
+                        <div className={styles.buttons}>
+                            <button className={styles.back} onClick={() => setStage(stage - 1)}>
                                 <span className="material-symbols-outlined">arrow_back</span>Назад
                             </button>
-                            <button className={"submit"} onClick={() => setStage(stage + 1)}>Далее<span
+                            <button className={styles.submit} onClick={() => setStage(stage + 1)}>Далее<span
                                 className="material-symbols-outlined">arrow_forward</span>
                             </button>
                         </div>
                     </div>
-                    <div className={"right"}>
+                    <div className={styles.right}>
                         {"<YandexMap/>"}
                     </div>
                 </div>
-                <div className={`infoOrder thirdStage ${stage == 3 ? "active" : ""}`}>
+                <div className={`${styles.infoOrder} ${styles.thirdStage} ${stage == 3 ? styles.active : ""}`}>
                     <h1>Пожалуйста, проверьте ваши данные</h1>
 
-                    <div className={"buttons"}>
-                        <button className={"back"} onClick={() => setStage(stage - 1)}>
+                    <div className={styles.buttons}>
+                        <button className={styles.back} onClick={() => setStage(stage - 1)}>
                             <span className="material-symbols-outlined">arrow_back</span>Назад
                         </button>
-                        <button className={"submit"} onClick={() => setStage(stage + 1)}>Заказать<span
+                        <button className={styles.submit} onClick={() => setStage(stage + 1)}>Заказать<span
                             className="material-symbols-outlined">arrow_forward</span>
                         </button>
                     </div>
                 </div>
-                <div className={`infoOrder lastStage ${stage == 4 ? "active" : ""}`}>
+                <div className={`${styles.infoOrder} ${styles.lastStage} ${stage == 4 ? styles.active : ""}`}>
                     <h1>Благодарим за заказ</h1>
                     <h2>В ближайшее время с вами свяжется курьер для уточнения деталей заказа</h2>
                 </div>

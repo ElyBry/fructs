@@ -1,10 +1,13 @@
 // содержит стили для хедера и футера, сетки и т.д
-@import "core";
-
+@use "var";
+@use "mixin";
 .bgFooter {
     width: 100%;
-    background-color: $secondary-color;
-    padding: $padding-page 0 0;
+    background-color: var.$secondary-color;
+    padding: var.$padding-page 0 0;
+}
+.content {
+    @include mixin.content;
 }
 footer {
     width: 100%;
@@ -12,7 +15,7 @@ footer {
     align-items: flex-start;
     justify-content: flex-start;
     flex-wrap: wrap;
-    gap: $margin-h1;
+    gap: var.$margin-h1;
 }
 footer div {
     display: flex;
@@ -20,7 +23,7 @@ footer div {
     flex-wrap: wrap;
     align-content: center;
     justify-content: center;
-    gap: $margin-text;
+    gap: var.$margin-text;
 }
 footer div h2 {
     margin-top: 0;

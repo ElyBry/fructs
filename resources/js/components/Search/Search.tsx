@@ -1,9 +1,10 @@
 import * as React from 'react';
 
-
 import {useRef} from "react";
 import { useRecoilState } from 'recoil';
 import { searchTermState, isSearchState } from "./searchAtom";
+
+import styles from "../../../sass/_search.module.scss";
 
 const Search = () => {
     const [searchTerm, setSearchTerm] = useRecoilState(searchTermState);
@@ -19,11 +20,11 @@ const Search = () => {
     }
 
     return (
-        <div id={"search"}>
-            <div id={"inputSearch"} className={isSearch ? "searching" : ""}>
+        <div id={"search"} className={styles.search}>
+            <div id={"inputSearch"} className={`${styles.inputSearch} ${isSearch ? styles.searching : ""}`}>
                 <input placeholder={"Поиск"} type={"search"} autoComplete={"off"} ref={inputRef}
                        onChange={handleSearchChange}/>
-                <button type={"submit"} className={"searchIcon"} onClick={toggleSearch}><span
+                <button type={"submit"} className={styles.searchIcon} onClick={toggleSearch}><span
                     className="material-symbols-outlined">search</span></button>
             </div>
         </div>
