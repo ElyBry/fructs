@@ -13,7 +13,10 @@ class FeedBackController extends BaseController
     {
         $query = Feedback::query();
 
-        $feedbacks = $query->orderBy('created_at', 'desc')->paginate(10);
+        $feedbacks = $query
+            ->orderBy('created_at', 'desc')
+            ->where('is_approved', true)
+            ->paginate(5);
 
         return $feedbacks;
     }
@@ -41,5 +44,16 @@ class FeedBackController extends BaseController
     {
         $feedBack->update($request->all());
         return $this->sendResponse($feedBack,'Успешно обновлено');
+    }
+
+    public function getFeedBack()
+    {
+        $feedBack = Feedback::query()
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(5);
+
+
+        return $feedBack;
     }
 }

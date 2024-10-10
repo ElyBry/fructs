@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import * as ReactDOM from 'react-dom/client';
 import Footer from "./components/_footer.js";
 import Header from "./components/_header.js";
@@ -8,11 +8,23 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 const random = gsap.utils.random;
 
 import styles from "../sass/_componentsForMain.module.scss";
-import {useLocation} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
+import axios from "axios";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Main: React.FC = () => {
+    useEffect(() => {
+        gsap.to("#bgTargetS", {
+            yPercent: -150,
+            ease: "sine",
+            scrollTrigger: {
+                trigger: "#bgTargetS",
+                scrub: 3,
+            }
+        });
+    })
+
     useEffect(() => {
         gsap.from(".statsText:nth-child(odd)", {
             scrollTrigger: {
@@ -23,14 +35,9 @@ const Main: React.FC = () => {
             },
             yPercent: 150
         })
-        gsap.to("#bgTargetS", {
-            yPercent: -150,
-            ease: "sine",
-            scrollTrigger: {
-                trigger: "#bgTargetS",
-                scrub: 3
-            }
-        });
+    }, []);
+
+    useEffect(() => {
         const scrollContainer = document.querySelector('.slider');
         const horizontalScroll = document.querySelector('.slider-content');
 
@@ -47,8 +54,10 @@ const Main: React.FC = () => {
             },
             x: () => -totalWidth + containerHeight,
         });
+    }, [])
 
-        document.querySelectorAll(".superiorityText h2").forEach((element) => {
+    useEffect(() => {
+        document.querySelectorAll("#superiorityBlock h2").forEach((element) => {
             gsap.from(element, {
                 scrollTrigger: {
                     trigger: element,
@@ -59,6 +68,9 @@ const Main: React.FC = () => {
                 x: -1200
             })
         });
+    }, []);
+
+    useEffect(() => {
         gsap.fromTo("#bestBlock h1",
             {
                 opacity: 0,
@@ -75,46 +87,54 @@ const Main: React.FC = () => {
                     scrub: 5,
                 }
             })
+    }, []);
+
+    useEffect(() => {
         document.querySelectorAll("#cartBlock .fruit").forEach((el,index) => {
             const offsetX = index * 250
             gsap.fromTo(el, {
                     x: offsetX,
+                    y: -550
                 },
                 {
                     scrollTrigger: {
                         trigger: "#cartBlock",
-                        start: "top center",
-                        end: "top 30%",
+                        start: "top 80%",
+                        end: "top 45%",
                         scrub: 5,
                     },
-                    x: random(250,500),
+                    x: 0,
                     rotate: random(-180,180),
-                    y: window.innerHeight * 0.2
+                    y: 0
                 })
         })
+    }, []);
+
+    useEffect(() => {
         gsap.to("#cartBlock",{
             scrollTrigger: {
                 trigger: "#cartBlock",
-                start: "top top",
+                start: "top 45%",
+                end: "top 30%",
                 scrub: 5,
             },
-            x: 1500,
+            x: 0,
         })
+    }, []);
 
-    })
+
 
     useEffect(() => {
         const openFaq = (element: Element) => {
             const classListElement = element.classList;
-            if (classListElement.contains("open")) {
-                classListElement.remove("open")
+            if (classListElement.contains(styles.open)) {
+                classListElement.remove(styles.open)
             } else {
-                classListElement.add("open")
+                classListElement.add(styles.open)
             }
         }
 
-        const questAnswer = document.querySelectorAll(".questAnswerFaq");
-
+        const questAnswer = document.querySelectorAll("." + styles.questAnswerFaq.toString());
         questAnswer.forEach((element) => {
             element.addEventListener('click', () => openFaq(element))
         });
@@ -126,6 +146,38 @@ const Main: React.FC = () => {
         }
     }, []);
 
+    const [loadingFeedbacks, setLoadingFeedbacks] = useState(true);
+    const [feedbacks, setFeedbacks] = useState([]);
+    const [hasMore, setHasMore] = useState(true);
+    const [page, setPage] = useState(1);
+    const fetchFeedbacks = async(page) => {
+        setLoadingFeedbacks(true);
+        const response = await axios.get(`api/feedback`, {
+            params: {
+                page: page
+            }
+        });
+        setFeedbacks((prev) => [...prev, ...response.data.data]);
+        setHasMore(response.data.current_page < response.data.last_page);
+        setLoadingFeedbacks(false);
+    }
+
+    useEffect(() => {
+        setFeedbacks([])
+    }, []);
+
+    useEffect(() => {
+        setLoadingFeedbacks(true);
+
+        const fetchData = async () => {
+            await fetchFeedbacks(page);
+        };
+
+        if (page == 1 || !loadingFeedbacks) {
+            fetchData();
+        }
+
+    }, [page])
 
     return (
         <div className={styles.root}>
@@ -240,36 +292,38 @@ const Main: React.FC = () => {
             <div className={`${styles.block} ${styles.workBlock}`} id={"workBlock"}>
                 <div className={styles.content}>
                     <h1>Как мы работаем</h1>
-                    <div className={styles.work}>
-                        <div className={styles.workImg}>
-                            <img src={"../image/icons/elements/basket.svg"}/>
+                    <div className={styles.workMain}>
+                        <div className={styles.work}>
+                            <div className={styles.workImg}>
+                                <img src={"../image/icons/elements/shopping.svg"}/>
+                            </div>
+                            <div className={styles.workText}>
+                                Вы совершаете заказ на сайте
+                            </div>
                         </div>
-                        <div className={styles.workText}>
-                            Вы совершаете заказ на сайте
+                        <div className={styles.work}>
+                            <div className={styles.workImg}>
+                                <img src={"../image/icons/elements/chat.svg"}/>
+                            </div>
+                            <div className={styles.workText}>
+                                Курьер связывается с вами
+                            </div>
                         </div>
-                    </div>
-                    <div className={styles.work}>
-                        <div className={styles.workImg}>
-                            <img src={"../image/icons/elements/"}/>
+                        <div className={styles.work}>
+                            <div className={styles.workImg}>
+                                <img src={"../image/icons/elements/clock-lines.svg"}/>
+                            </div>
+                            <div className={styles.workText}>
+                                Вы назначаете удобное <span className={styles.highlight}>для вас</span> время
+                            </div>
                         </div>
-                        <div className={styles.workText}>
-                            Курьер связывается с вами
-                        </div>
-                    </div>
-                    <div className={styles.work}>
-                        <div className={styles.workImg}>
-                            <img src={"../image/icons/elements"}/>
-                        </div>
-                        <div className={styles.workText}>
-                            Вы назначаете удобное <span className={styles.highlight}>для вас</span> время
-                        </div>
-                    </div>
-                    <div className={styles.work}>
-                        <div className={styles.workImg}>
-                            <img src={"../image/icons/elements"}/>
-                        </div>
-                        <div className={styles.workText}>
-                            Вы получаете заказ в <span className={styles.highlight}>указанный срок</span>
+                        <div className={styles.work}>
+                            <div className={styles.workImg}>
+                                <img src={"../image/icons/elements/delivery.svg"}/>
+                            </div>
+                            <div className={styles.workText}>
+                                Вы получаете заказ в <span className={styles.highlight}>указанный срок</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -279,7 +333,8 @@ const Main: React.FC = () => {
                     <h1>FAQ</h1>
                     <div className={styles.questAnswerFaq}>
                         <div className={styles.headFaq}>
-                            <div className={styles.iconPlus}><span className="material-symbols-outlined">add</span></div>
+                            <div className={styles.iconPlus}><span className="material-symbols-outlined">add</span>
+                            </div>
                             <div className={styles.questFaq}>
                                 Как сделать заказ?
                             </div>
@@ -292,7 +347,8 @@ const Main: React.FC = () => {
                     </div>
                     <div className={styles.questAnswerFaq}>
                         <div className={styles.headFaq}>
-                            <div className={styles.iconPlus}><span className="material-symbols-outlined">add</span></div>
+                            <div className={styles.iconPlus}><span className="material-symbols-outlined">add</span>
+                            </div>
                             <div className={styles.questFaq}>
                                 Какой минимальный размер заказа?
                             </div>
@@ -367,20 +423,44 @@ const Main: React.FC = () => {
                 </div>
             </div>
             <div className={`${styles.block} ${styles.cartBlock}`} id={"cartBlock"}>
-                <img className={`${styles.fruit} fruit`} src={"image/fruits/apple.png"}/>
-                <img className={`${styles.fruit} fruit`} src={"image/fruits/onion.png"}/>
-                <img className={`${styles.fruit} fruit`} src={"image/fruits/carrot.png"}/>
-                <img className={`${styles.fruit} fruit`} src={"image/fruits/eggplant.png"}/>
-                <img className={`${styles.fruit} fruit`} src={"image/fruits/garlic.png"}/>
-                <img className={`${styles.fruit} fruit`} src={"image/fruits/orange.png"}/>
-                <img className={`${styles.cart} cart`} src={"image/fruits/cart.png"}/>
-                <div className={styles.content}>
-                    <button>Заказать</button>
+                <div className={styles.left}>
+                    <Link to={'/products'}>Заказать</Link>
+                </div>
+                <div className={styles.right}>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/apple.png"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/onion.png"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/carrot.png"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/eggplant.png"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/garlic.png"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/orange.png"}/>
+                    <img className={`${styles.cart} cart`} src={"image/fruits/cart.png"}/>
                 </div>
             </div>
             <div className={`${styles.block} ${styles.feedbackBlock}`} id={"feedbackBlock"}>
                 <div className={styles.content}>
                     <h1>Отзывы:</h1>
+                    {feedbacks && feedbacks.map((feedback) => (
+                        <div className={styles.feedback} key={feedback.id}>
+                            <div className={styles.userName}>
+                                {feedback.user_name}
+                            </div>
+                            <div className={styles.message}>
+                                {feedback.message}
+                            </div>
+                            <div className={styles.star}>
+                                <span className={"material-symbols-outlined"}>star_rate</span>
+                                <div>
+                                    {feedback.rating}
+                                </div>
+                            </div>
+                            <div className={styles.date}>
+                                {feedback.created_at.slice(0, 10)}
+                            </div>
+                        </div>
+                    ))}
+                    {loadingFeedbacks && <h2>Загрузка...</h2>}
+                    {!loadingFeedbacks && hasMore && <button onClick={() => setPage(page + 1)}>Загрузить ещё</button>}
+                    {!loadingFeedbacks && feedbacks && feedbacks.length == 0 && <h2>Не найдено</h2>}
                 </div>
             </div>
             <div className={styles.block}>

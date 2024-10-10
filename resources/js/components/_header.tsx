@@ -10,7 +10,7 @@ export default () => {
 
     useEffect(() => {
         if (location.hash) {
-            lastHash.current = location.hash.slice(1); // safe hash for further use after navigation
+            lastHash.current = location.hash.slice(1);
         }
 
         if (lastHash.current && document.getElementById(lastHash.current)) {

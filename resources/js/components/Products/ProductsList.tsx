@@ -9,6 +9,9 @@ import {searchTermState} from "../Search/searchAtom";
 import {countriesList} from "../CountriesSearch/countriesAtom";
 import useCart from "../Cart/useCart"
 
+import stylesProducts from "../../../sass/_products.module.scss";
+import stylesProduct from "../../../sass/_product.module.scss";
+
 const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSort, ascendingSort, openAboutProduct, minRate, maxRate}) => {
     const [aboutProduct, setAboutProduct] = useRecoilState(aboutProductAtom)
     const [isOpenAboutProduct, setIsOpenAboutProduct] = useRecoilState(openAboutProductAtom)
@@ -23,7 +26,7 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
     const selectedCountries = useRecoilValue(countriesList);
     const fetchProducts = async (pageNumber, minPrice, maxPrice, selectedTypes, searchTerm, controller: AbortController, minRate, maxRate) => {
         try {
-            console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, selectedColors, selectedCountries, ascendingSort, howSort, pageNumber, hasMore,loading , minRate, maxRate });
+            //console.log('Загрузка продуктов с учетом:', { minPrice, maxPrice, selectedTypes, searchTerm, selectedColors, selectedCountries, ascendingSort, howSort, pageNumber, hasMore,loading , minRate, maxRate });
             const response = await axios.get<any>('/api/products', {
                 signal: controller.signal,
                 params: {
@@ -41,7 +44,7 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
                 }
             });
             const newData = response.data;
-            console.log(newData);
+            //console.log(newData);
             setProducts((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);
             setLoading(false);
@@ -96,18 +99,18 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
 
 
     return (
-        <div id={"tableProducts"}>
+        <div id={"tableProducts"} className={stylesProducts.tableProducts}>
             {products.length != 0 && products.map((product, index) => (
                 <Product product={product} key={product.id} openAboutProduct={openAboutProduct} addItem={addItem} refLast={products.length == index + 1 ? lastElementRef : null}/>
             ))}
             {loading && [...Array(12)].map((_, index) => (
-                <div key={index} className={"products grey_card"}>
-                    <div className={"imgProducts grey"}></div>
-                    <div className={"textProducts grey"}>Продукт</div>
-                    <div className={"priceProducts grey"}>...р <br/> 1 Килограмм</div>
-                    <div className={"buttonsProducts"}>
-                        <button className={"addCart grey"} disabled>Добавить в корзину</button>
-                        <button className={"aboutProducts grey"} disabled>Подробнее</button>
+                <div key={index} className={`${stylesProduct.products} ${stylesProducts.grey_card}`}>
+                    <div className={`${stylesProduct.imgProducts} ${stylesProducts.grey}`}></div>
+                    <div className={`${stylesProduct.textProducts} ${stylesProducts.grey}`}>Продукт</div>
+                    <div className={`${stylesProduct.priceProducts} ${stylesProducts.grey}`}>...р <br/> 1 Килограмм</div>
+                    <div className={stylesProduct.buttonsProducts}>
+                        <button className={`${stylesProduct.addCart} ${stylesProducts.grey}`} disabled>Добавить в корзину</button>
+                        <button className={`${stylesProduct.aboutProducts} ${stylesProducts.grey}`} disabled>Подробнее</button>
                     </div>
                 </div>
             ))}

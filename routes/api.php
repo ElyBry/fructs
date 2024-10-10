@@ -28,7 +28,10 @@ Route::group([
     // Цвет
     Route::get('colors', [ColorsController::class,'index']);
     // Отзывы
+        // О продуктах
     Route::get('feedBackProducts', [FeedBackProductsController::class,'getFeedBackProducts']);
+        // О приложении
+    Route::get('feedback', [FeedBackController::class,'getFeedBack']);
     // Страны
     Route::get('countries', [CountriesController::class,'index']);
     // Корзина

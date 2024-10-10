@@ -1,6 +1,7 @@
 // стили для каждого компонента необходимого для этого проекта, включая кнопки, модальные окна и т.д.
 @use "app";
-#root {
+@use "mixin";
+.root {
     inset: 0;
     width: 100vw;
     height: 100vh;
@@ -14,7 +15,7 @@
     background-repeat: no-repeat;
     background-size: cover;
 }
-#main_div {
+.mainDiv {
     display: flex;
     width: 60%;
     height: 60%;
@@ -24,22 +25,22 @@
     position: relative;
     box-shadow: app.$box-shadow-block;
 }
-#main_sign_in,
-#main_create_acc{
+.mainSignIn,
+.mainCreateAcc{
     display: flex;
     position: relative;
     width: 100%;
     height: 100%;
     transition: app.$transition-block-move;
 }
-#main_create_acc {
+.mainCreateAcc {
     display: none;
 }
-#create_acc {
+.createAcc {
     border-radius: app.$border-radius 0 0 app.$border-radius ;
     text-align: center;
 }
-.second_block {
+.secondBlock {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -51,23 +52,25 @@
     padding: app.$padding;
     color: white;
     width: 40%;
+    .note {
+        color: white;
+    }
+    h1 {
+        margin-bottom: app.$margin-h1;
+    }
 }
-.second_block h1 {
-    margin-bottom: app.$margin-h1;
-    @include font-size(app.$font-size-h1);
-}
-#logo {
+.logo {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     position: absolute;
     z-index: 100;
-}
-#logo img {
-    width: 45px;
-    position: relative;
-    top: 20px;
-    left: 20px;
+    img {
+        width: 45px;
+        position: relative;
+        top: 20px;
+        left: 20px;
+    }
 }
 .panel {
     mask-image: linear-gradient(white, transparent);
@@ -79,61 +82,54 @@
     border-radius: app.$border-radius 0 0 app.$border-radius;
     transition: app.$transition-block-move-another;
 }
-#sign_in h1,
-#create_acc h1 {
-    margin-bottom: app.$margin-h1;
-}
-#sign_in,
-#create_acc {
+.signIn,
+.createAcc {
     width: 60%;
     padding: app.$padding;
     background-color: white;
     border-radius: 0 app.$border-radius app.$border-radius 0;
     transition: app.$transition-block-move;
+    h1 {
+        margin-bottom: app.$margin-h1;
+    }
 }
 
 // Форма ввода
-#form_registration form{
-    @include font-size(app.$font-size-base);
-}
-.input-field {
-    appearance: none;
-    border-radius: 0;
-}
+
 .input {
     display: flex;
     flex-direction: column-reverse;
     position: relative;
     padding-top: app.$input-padding;
 }
-.input-label {
-    @include font-size(app.$font-size-base);
+.inputLabel {
     color: app.$note-color;
     position: absolute;
     top: app.$input-padding;
     transition: app.$transition-base ease;
     padding: 0 0 0 5px;
 }
-.input-field {
+.inputField {
+    appearance: none;
+    border-radius: 0;
     border: 0;
     z-index: 1;
     background-color: transparent;
     border-bottom: 2px solid #eee;
     font: inherit;
-    @include font-size(app.$font-size-base);
     padding: .25rem 5px;
     &:focus,
     &:valid:not(.invalid) {
-        @include check-input-field("focus")
+        @include mixin.check-input-field("focus")
     }
 
 }
 .invalid {
-    @include check-input-field("invalid")
+    @include mixin.check-input-field("invalid")
 }
-.button_sign,
-#button_to_sign_up,
-#button_to_sign_in {
+.buttonSign,
+.buttonToSignUp,
+.buttonToSignIn {
     border-radius: app.$border-radius-elements;
     background-color: app.$primary-color;
     color: white;
@@ -141,51 +137,48 @@
     padding: app.$padding-elements;
     margin-top: app.$margin-text;
 }
-#block_button_sign_in {
+.blockButtonSignIn {
     text-align: center;
     margin: auto;
 }
-#block_button_sign_up {
+.blockButtonSignUp {
     margin-bottom: app.$margin-text;
 }
-#button_to_sign_up,
-#button_to_sign_in {
+.buttonToSignUp,
+.buttonToSignIn {
     border: 1px solid white;
     text-align: center;
     background-color: transparent;
 }
 
-.secondary-element {
+.secondaryElement {
     margin-top: app.$margin-text;
 }
-.second_block .note {
-    color: white;
-}
+
 .note {
     color: app.$note-color;
     text-align: center;
-    @include font-size(app.$font-size-note);
 }
-.from_acc .icons img {
-    max-width: clamp(80px,10vw,350px);
-    border-radius: 50%;
-    padding: app.$padding;
-    filter: invert(100%);
-}
-.from_acc {
+.fromAcc {
     margin: auto;
     text-align: center;
     margin-bottom: app.$margin-text;
+    .icons {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: app.$margin-text;
+        img {
+            max-width: clamp(80px,10vw,350px);
+            border-radius: 50%;
+            padding: app.$padding;
+            filter: invert(100%);
+        }
+    }
 }
-.from_acc .icons{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: app.$margin-text;
-}
-#errors,
-#errorEmail {
+.errors,
+.errorEmail {
     text-align: center;
     margin-top: app.$margin-text;
     color: app.$invalid-color;

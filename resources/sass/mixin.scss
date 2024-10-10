@@ -15,7 +15,7 @@
     }
     outline: 0;
     border-bottom-color: $color;
-    &+.input-label {
+    &+.inputLabel {
         color: $color;
         transform: translateY(-$input-padding);
     }

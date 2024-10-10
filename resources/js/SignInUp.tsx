@@ -96,106 +96,117 @@ const SignInUp = () => {
         }, 600)
     }
     return  (
-        <div id={"main_div"}>
-            <div id={"logo"}>
-                <img src={"../../image/logos/nocolorlogo.png"}/>
-            </div>
-            <div className={"panel"}></div>
-            <div id={"main_sign_in"}>
-                <div id={"hello"} className={"second_block"}>
-                    <h1>Привет, друг!</h1>
-                    <div className={"note"}>
-                        Необходимо авторизоваться, чтобы продолжить заказ
-                    </div>
-                    <button id={"button_to_sign_up"} onClick={changePanel}>Зарегистрироваться</button>
+        <div className={styles.root}>
+            <div id={"main_div"} className={styles.mainDiv}>
+                <div id={"logo"} className={styles.logo}>
+                    <img src={"../../image/logos/nocolorlogo.png"}/>
                 </div>
-                <div id={"sign_in"}>
-                    <h1>Войти</h1>
-                    <div className={"from_acc"}>
-                        <div className={"icons"}>
-                            <a href={"#"}><img src={"../../image/icons/icon-google.png"}/></a>
-                            <a href={"#"}><img src={"../../image/icons/icon-telegram.png"}/></a>
-                            <a href={"#"}><img src={"../../image/icons/icon-vk.png"}/></a>
+                <div className={`${styles.panel} panel`}></div>
+                <div id={"main_sign_in"} className={styles.mainSignIn}>
+                    <div id={"hello"} className={styles.secondBlock}>
+                        <h1>Привет, друг!</h1>
+                        <div className={styles.note}>
+                            Необходимо авторизоваться, чтобы продолжить заказ
                         </div>
-                        <div className={"note"}>
-                            или используйте вашу почту и пароль для входа:
-                        </div>
+                        <button id={"button_to_sign_up"} className={styles.buttonToSignUp}
+                                onClick={changePanel}>Зарегистрироваться
+                        </button>
                     </div>
-                    <div id={"form_login"}>
-                        <form onSubmit={(e) => handleSubmit(e, "in")}>
-                            <div className={"input"}>
-                                <input type={"email"} value={Email} onBlur={(e) => handleOnChangeEmail(e.target.value)}
-                                       onChange={(e) => setEmail(e.target.value)}
-                                       className={`input-field ${isValid ? '' : 'invalid'}`} required={true}/>
-                                <label className={"input-label"}>Почта</label>
+                    <div id={"sign_in"} className={styles.signIn}>
+                        <h1>Войти</h1>
+                        <div className={styles.fromAcc}>
+                            <div className={styles.icons}>
+                                <a href={"#"}><img src={"../../image/icons/icon-google.png"}/></a>
+                                <a href={"#"}><img src={"../../image/icons/icon-telegram.png"}/></a>
+                                <a href={"#"}><img src={"../../image/icons/icon-vk.png"}/></a>
                             </div>
-                            <div className={"input"}>
-                                <input type={"password"} value={Password} onChange={(e) => setPass(e.target.value)}
-                                       className={"input-field"} required={true}/>
-                                <label className={"input-label"}>Пароль</label>
+                            <div className={styles.note}>
+                                или используйте вашу почту и пароль для входа:
                             </div>
-                            <div id={"errors"}>{isValid ? '' : 'Неверно введена почта'}</div>
-                            <div id={"block_button_sign_in"}>
-                                <button className={"button_sign"}>
-                                    Войти в аккаунт
-                                </button>
-                            </div>
-                        </form>
-                        <div className={"note"}>
-                            <button className={"secondary-element"}>Забыли пароль?</button>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div id={"main_create_acc"}>
-                <div id={"create_acc"}>
-                    <h1>Создать аккаунт</h1>
-                    <div className={"from_acc"}>
-                        <div className={"icons"}>
-                            <a href={"#"}><img src={"../../image/icons/icon-google.png"}/></a>
-                            <a href={"#"}><img src={"../../image/icons/icon-telegram.png"}/></a>
-                            <a href={"#"}><img src={"../../image/icons/icon-vk.png"}/></a>
+                        <div id={"form_login"} className={styles.formLogin}>
+                            <form onSubmit={(e) => handleSubmit(e, "in")}>
+                                <div className={styles.input}>
+                                    <input type={"email"} value={Email}
+                                           onBlur={(e) => handleOnChangeEmail(e.target.value)}
+                                           onChange={(e) => setEmail(e.target.value)}
+                                           className={`${styles.inputField} ${isValid ? '' : styles.invalid}`}
+                                           required={true}/>
+                                    <label className={styles.inputLabel}>Почта</label>
+                                </div>
+                                <div className={styles.input}>
+                                    <input type={"password"} value={Password} onChange={(e) => setPass(e.target.value)}
+                                           className={styles.inputField} required={true}/>
+                                    <label className={styles.inputLabel}>Пароль</label>
+                                </div>
+                                <div id={"errors"}
+                                     className={styles.errors}>{isValid ? '' : 'Неверно введена почта'}</div>
+                                <div id={"block_button_sign_in"} className={styles.blockButtonSignIn}>
+                                    <button className={styles.buttonSign}>
+                                        Войти в аккаунт
+                                    </button>
+                                </div>
+                            </form>
+                            <div className={styles.note}>
+                                <button className={styles.secondaryElement}>Забыли пароль?</button>
+                            </div>
                         </div>
-                        <div className={"note"}>
-                            или используйте ваш email для регистрации:
-                        </div>
-                    </div>
-                    <div id={"form_registration"}>
-                        <form onSubmit={handleSubmit}>
-                            <div className={"input"}>
-                                <input type={"text"} value={Name} onChange={(e) => setName(e.target.value)}
-                                       className={"input-field"} required={true}/>
-                                <label className={"input-label"}>ФИО</label>
-                            </div>
-                            <div className={"input"}>
-                                <input type={"email"} value={Email} onBlur={(e) => handleOnChangeEmail(e.target.value)}
-                                       onChange={(e) => setEmail(e.target.value)}
-                                       className={`input-field ${isValid ? '' : 'invalid'}`} required={true}/>
-                                <label className={"input-label"}>Почта</label>
-                            </div>
-                            <div id={"errorEmail"}>{isValid ? '' : 'Неверно введена почта'}</div>
-                            <div className={"input"}>
-                                <input type={"password"} value={Password} onChange={(e) => setPass(e.target.value)}
-                                       className={"input-field"} required={true}/>
-                                <label className={"input-label"}>Пароль</label>
-                            </div>
-                            <div id={"block_button_sign_up"}>
-                                <button className={"button_sign"}>
-                                    Зарегистрироваться
-                                </button>
-                            </div>
-                            <div className={"note"}>
-                                Регистрируясь, вы подтверждаете, что согласны с <a href={"#"}>Нашими правилами</a>
-                            </div>
-                        </form>
                     </div>
                 </div>
-                <div id={"welcome"} className={"second_block"}>
-                    <h1>Добро пожаловать!</h1>
-                    <div className={"note"}>
-                        Для создания заказа необходимо зарегистрироваться, введя персональные данные
+                <div id={"main_create_acc"} className={styles.mainCreateAcc}>
+                    <div id={"create_acc"} className={styles.createAcc}>
+                        <h1>Создать аккаунт</h1>
+                        <div className={styles.from_acc}>
+                            <div className={styles.icons}>
+                                <a href={"#"}><img src={"../../image/icons/icon-google.png"}/></a>
+                                <a href={"#"}><img src={"../../image/icons/icon-telegram.png"}/></a>
+                                <a href={"#"}><img src={"../../image/icons/icon-vk.png"}/></a>
+                            </div>
+                            <div className={styles.note}>
+                                или используйте ваш email для регистрации:
+                            </div>
+                        </div>
+                        <div id={"form_registration"} className={styles.formRegistration}>
+                            <form onSubmit={handleSubmit}>
+                                <div className={styles.input}>
+                                    <input type={"text"} value={Name} onChange={(e) => setName(e.target.value)}
+                                           className={styles.inputField} required={true}/>
+                                    <label className={styles.inputLabel}>ФИО</label>
+                                </div>
+                                <div className={styles.input}>
+                                    <input type={"email"} value={Email}
+                                           onBlur={(e) => handleOnChangeEmail(e.target.value)}
+                                           onChange={(e) => setEmail(e.target.value)}
+                                           className={`${styles.inputField} ${isValid ? '' : styles.invalid}`}
+                                           required={true}/>
+                                    <label className={styles.inputLabel}>Почта</label>
+                                </div>
+                                <div id={"errorEmail"}
+                                     className={styles.errorEmail}>{isValid ? '' : 'Неверно введена почта'}</div>
+                                <div className={styles.input}>
+                                    <input type={"password"} value={Password} onChange={(e) => setPass(e.target.value)}
+                                           className={styles.inputField} required={true}/>
+                                    <label className={styles.inputLabel}>Пароль</label>
+                                </div>
+                                <div id={"block_button_sign_up"} className={styles.blockButtonSignUp}>
+                                    <button className={styles.buttonSign}>
+                                        Зарегистрироваться
+                                    </button>
+                                </div>
+                                <div className={styles.note}>
+                                    Регистрируясь, вы подтверждаете, что согласны с <a href={"#"}>Нашими правилами</a>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <button id={"button_to_sign_in"} onClick={changePanel}>Войти</button>
+                    <div id={"welcome"} className={`${styles.secondBlock}`}>
+                        <h1>Добро пожаловать!</h1>
+                        <div className={styles.note}>
+                            Для создания заказа необходимо зарегистрироваться, введя персональные данные
+                        </div>
+                        <button id={"button_to_sign_in"} className={styles.buttonToSignIn} onClick={changePanel}>Войти
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

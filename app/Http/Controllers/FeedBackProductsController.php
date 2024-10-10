@@ -13,7 +13,9 @@ class FeedBackProductsController extends BaseController
     {
         $query = FeedbackProducts::query();
 
-        $feedbacks = $query->orderBy('created_at', 'desc')->paginate(10);
+        $feedbacks = $query
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return $feedbacks;
     }
@@ -48,8 +50,10 @@ class FeedBackProductsController extends BaseController
         $product_id = $request->input('product_id');
         $feedBackProducts = FeedbackProducts::query()
             ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->where('is_approved', true)
             ->where('product_id', $product_id)
-            ->paginate(2);
+            ->paginate(5);
 
 
         return $feedBackProducts;

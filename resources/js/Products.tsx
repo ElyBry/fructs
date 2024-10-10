@@ -312,7 +312,6 @@ const Products: React.FC = () => {
                                                 </div>
                                             </div>
                                             <div className={styles.username}>
-                                                {feedback.id}<br/>
                                                 {feedback.user_name}
                                             </div>
                                             <div className={styles.message}>

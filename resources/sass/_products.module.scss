@@ -1,0 +1,18 @@
+@use "var";
+@use "animations";
+.tableProducts {
+    display: flex;
+    gap: var.$padding-elements;
+    flex-wrap: wrap;
+    position: relative;
+    .grey_card {
+        display: flex;
+        align-items: center !important;
+        justify-content: space-between !important;
+        .grey {
+            color: transparent !important;
+            @include animations.loadSkeleton;
+            box-shadow: unset !important;
+        }
+    }
+}
