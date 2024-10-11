@@ -13,32 +13,28 @@ class AuthController extends BaseController
     {
         return cookie('token', $token, auth()->factory()->getTTL() * 60,null,null,true,true);
     }
+    protected function respondWithSuccessAuth($is)
+    {
+        return cookie('is_authenticated', $is, auth()->factory()->getTTL() * 60, null, null, false, false);
+    }
     public function register(Request $request) {
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
+            'name' => 'required|string|max:100|min:10',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
         ]);
 
         if($validator->fails()){
-            return $this->sendError('Ошибка валидации', $validator->errors());
+            return $this->sendError('Ошибка валидации', $validator->errors(), 400);
         }
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
         $user->assignRole('User');
-        $success['user'] =  $user;
 
-        $credentials = request(['email', 'password']);
-
-        if (! $token = auth()->attempt($credentials)) {
-            return $this->sendError('Ошибка.', ['error' => 'Неверно введён пароль или email'], 400);
-        }
-        $cookie = $this->respondWithToken($token);
-
-        return $this->sendResponse($success, 'Пользователь успешно зарегистрирован')->withCookie($cookie);
+        return $this->login();
     }
     public function login()
     {
@@ -50,7 +46,10 @@ class AuthController extends BaseController
 
         $success['user'] = auth()->user();
         $cookie = $this->respondWithToken($token);
-        return $this->sendResponse($success, 'Пользователь успешно авторизован.')->withCookie($cookie);
+        $isAuth = $this->respondWithSuccessAuth(true);
+        return $this->sendResponse($success, 'Пользователь успешно авторизован.')
+            ->withCookie($cookie)
+            ->withCookie($isAuth);
     }
 
     /**
@@ -73,16 +72,18 @@ class AuthController extends BaseController
     public function logout()
     {
         auth()->logout();
-
-        return $this->sendResponse([], 'Successfully logged out.');
+        $isAuth = cookie('is_authenticated', '', -1);
+        return $this->sendResponse([], 'Successfully logged out.')->withCookie($isAuth);
     }
 
 
     public function refresh()
     {
         $cookie = $this->respondWithToken(auth()->refresh());
-
-        return $this->sendResponse('', 'Обновлённый токен успешно передан.')->withCookie($cookie);
+        $isAuth = $this->respondWithSuccessAuth(true);
+        return $this->sendResponse('', 'Обновлённый токен успешно передан.')
+            ->withCookie($cookie)
+            ->withCookie($isAuth);
     }
 
 

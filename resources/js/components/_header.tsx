@@ -4,7 +4,7 @@ import {HashRouter as Router, Route, Link, useLocation} from "react-router-dom";
 import styles from "../../sass/_layoutHeader.module.scss"
 import {useEffect, useRef} from "react";
 
-export default () => {
+export default ({className}) => {
     const location = useLocation();
     const lastHash = useRef('');
 
@@ -24,7 +24,7 @@ export default () => {
     }, [location]);
 
     return  (
-        <header className={styles.header}>
+        <header className={`${styles.header} ${className}`}>
             <Link to={"/"}>
                 <div id={"logo"} className={styles.logo}>
                     <img src={"../../image/logos/logo.png"} alt={"Доставка фруктов"}/>

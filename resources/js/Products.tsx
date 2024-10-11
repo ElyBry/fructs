@@ -158,6 +158,7 @@ const Products: React.FC = () => {
     const [pageFeedbacksProduct, setPageFeedbacksProduct] = useState(null);
     const [hasMoreFeedbacks, setHasMoreFeedbacks] = useState(false);
 
+
     const updateCart = async () => {
         const productsIds = cart.map(item => item.id);
 
@@ -251,6 +252,7 @@ const Products: React.FC = () => {
         },
         [loadingFeedbacksProduct, hasMoreFeedbacks]
     );
+
     return (
         <div className={styles.root}>
             <div id={"usableItems"} className={styles.usableItems}>
@@ -329,7 +331,7 @@ const Products: React.FC = () => {
                 </div>
             </div>
             <Cart isOpenCart={isOpenCart}/>
-            <Header/>
+            <Header className={styles.header}/>
             <Search/>
             <div id={"infoProducts"} className={styles.infoProducts}>
                 <div className={styles.content}>

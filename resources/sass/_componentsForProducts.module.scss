@@ -12,12 +12,10 @@
     position: relative;
     background-size: cover;
     justify-content: space-between;
-    overflow-x: hidden;
-    overflow-y: scroll;
     background-image: url("../../public/image/background-abstact/5652356.webp");
     background-repeat: repeat;
 }
-header {
+.header {
     position: relative;
 }
 .content {
@@ -337,7 +335,7 @@ header {
         img {
             height: 30vh;
         }
-        .buy-button {
+        .buyButton {
             @include mixin.buttonsCart("add")
         }
         .feedbacks {

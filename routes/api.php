@@ -6,6 +6,7 @@ use App\Http\Controllers\CountriesController;
 use App\Http\Controllers\FeedBackController;
 use App\Http\Controllers\FeedBackProductsController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\RoleController;
@@ -40,6 +41,8 @@ Route::group([
     Route::middleware('throttle:10,600')->group(function () {
         Route::get('promoVerify', [PromoController::class, 'verify']);
     });
+    // Способы оплаты
+    Route::get('pays', [PaymentController::class, 'index']);
     // Точки
     Route::get('tradingPoints', [TradingPointsController::class , 'index']);
 
@@ -81,13 +84,18 @@ Route::group([
     ], function () {
         Route::post('register', [AuthController::class, 'register'])->withoutMiddleware('auth:api')
             ->middleware('throttle:10,14400');
-        Route::post('login', [AuthController::class, 'login'])->withoutMiddleware('auth:api');
+        Route::post('login', [AuthController::class, 'login'])->withoutMiddleware('auth:api')
+            ->middleware('throttle:10,14400');
     });
     // При аутентификации
     Route::group([
         'middleware' => 'api',
         'prefix' => '/auth'
     ], function () {
+        // Заказы
+        Route::post('doOrder', [OrderController::class, 'store']);
+
+        // Аккаунты
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/refresh', [AuthController::class, 'refresh']);
         Route::post('/profile', [AuthController::class, 'profile']);

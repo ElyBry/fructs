@@ -7,36 +7,46 @@ import YandexMap from "../Map/YandexMap";
 import axios from "axios";
 
 import styles from "../../../sass/_cart.module.scss";
+import {Link} from "react-router-dom";
+
+import {isValidPhoneNumber, parsePhoneNumber} from "libphonenumber-js";
+import {userState} from "../User/userAtom";
 
 const Cart = ({ isOpenCart }) => {
+    const [user, setUser] = useRecoilState(userState);
+
     const cart = useRecoilValue(cartAtom);
     const quantity = useRecoilValue(quantityAtom);
     const totalCost = useRecoilValue(totalCostAtom);
     const { addItem, removeItem, updateItemQuantity } = useCart();
 
-    const [discount, setDiscount] = useState(0);
     const [discountPercent, setDiscountPercent] = useState(0);
     const [stage, setStage] = useState(0);
 
     const [address, setAddress] = useState('');
-    const [numPhone, setNumPhone] = useState('');
     const [flat, setFlat] = useState('');
     const [floor, setFloor] = useState('');
     const [entrance, setEntrance] = useState('');
-    const [intercom, setIntercom] = useState('');
     const [comment, setComment] = useState('');
 
     const [howConnect, setHowConnect] = useState('call');
     const [howSocial, setHowSocial] = useState('');
-
+    const [number, setNumber] = useState('');
     const [howDeliver, setHowDeliver] = useState('pickup');
 
     const [tradingPoint, setTradingPoint] = useState([]);
     const [pickedTradePoint, setPickedTradePoint] = useState('');
     const [loadingTradingPoints , setLoadingTradingPoints] = useState(false);
 
-    const [isLogged, setIsLogged] = useState(false);
+    const [isAuth,setIsAuth] = useState(false);
+    const [error, setError] = useState('');
 
+    const [loadingPayments, setLoadingPayments] = useState(false);
+    const [payments, setPayments] = useState([]);
+    const [paymentId,setPaymentId] = useState("");
+
+    const [loadOrder, setLoadOrder ] = useState(false);
+    const [isSuccess, setIsSuccess] = useState('');
 
     const fetchTradingPoints = async () => {
         if (tradingPoint.length > 0) return;
@@ -88,6 +98,82 @@ const Cart = ({ isOpenCart }) => {
         }
     }
 
+    useEffect(() => {
+        const cookies = document.cookie.split('; ');
+        const isAuthenticated = cookies.some(cookie => cookie.startsWith('is_authenticated='));
+        if (isAuthenticated) setIsAuth(true);
+    }, []);
+
+    const convertPhoneNumber = (inp) => {
+        if (isValidPhoneNumber(inp, 'RU')) {
+            const phoneNumber = parsePhoneNumber(inp, 'RU')
+            setNumber(phoneNumber.formatNational())
+        } else {
+            setNumber(inp);
+        }
+    }
+    const checkDeliver = () => {
+        let err = '';
+        if (howDeliver == 'pickup') {
+            if (pickedTradePoint == '') err = 'Пожалуйста, выберите откуда собираетесь забирать заказ'
+        } else {
+            if (address == '' && address.length > 3) err ='Пожалуйста проверьте адрес'
+            if (floor == '') err = 'Напишите этаж'
+            if (flat == '') err = 'Напишите квартиру'
+            if (entrance == '') err = 'Напишите подьезд'
+        }
+        if (howConnect == 'soc' && howSocial == '') {
+            err = 'Пожалуйста, выберите социальную сеть'
+        }
+        if (err == '') {
+            setStage(stage + 1)
+            setError('')
+        }
+        else setError(err)
+    }
+
+    const doOrder = async () => {
+        setLoadOrder(true);
+        try {
+            const response = await axios.get('/api/doOrder', {
+                params: {
+                    user_id: user.id,
+                    how_deliver: howDeliver,
+                    how_connect: howConnect,
+                    how_social: howSocial,
+                    cart: cart,
+                    quantity: quantity,
+                    picked_trade_point: pickedTradePoint,
+                    comment: comment,
+                    address: address + entrance + floor + flat,
+                    total_price: totalCost,
+                    discount_percent: discountPercent,
+                    discount: totalCost - Math.round(totalCost * (1 - discountPercent * 0.01)),
+                    cost_with_discount: Math.round(totalCost * (1 - discountPercent * 0.01)),
+                    payment_method_id: paymentId,
+                    payment_status_id: 1
+                }
+            });
+
+            setLoadOrder(false);
+        } catch (e) {
+            console.error(e);
+        }
+
+    }
+
+    const fetchPaymentMethods = async () => {
+        if (payments.length > 0) return;
+        setLoadingPayments(true);
+        try {
+            const response = await axios.get('/api/pays');
+            setPayments(response.data);
+            setLoadingPayments(false);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     return (
         <div id={"cart"} className={`${styles.cart} ${isOpenCart && quantity > 0 ? styles.visible : ""}`}>
             <div id="cartBlock" className={styles.cartBlock}>
@@ -111,12 +197,17 @@ const Cart = ({ isOpenCart }) => {
                                         <input name={"quantity"}
                                                type={"number"}
                                                value={item.quantity}
-                                               onChange={(e) => updateItemQuantity(item.id, e.target.value)}
+                                               max={item.count}
+                                               onChange={(e) => {
+                                                   updateItemQuantity(item.id, e.target.value, item.count)
+                                               }}
                                         />
                                     </td>
                                     <td className={styles.price}>{item.price}р / {`${item.weight} ${item.type_weight}`}</td>
-                                    <td className={styles.price}>{item.price * item.quantity}р
-                                        / {`${item.weight * item.quantity} ${item.type_weight}`} </td>
+                                    <td className={styles.price}>
+                                        {`${item.price * item.quantity}р
+                                        /${item.weight * item.quantity} ${item.type_weight}`
+                                        }</td>
                                     <td>
                                         <button className={styles.remove} onClick={() => removeItem(item.id)}><span
                                             className="material-symbols-outlined">delete</span>Удалить
@@ -150,36 +241,74 @@ const Cart = ({ isOpenCart }) => {
                             className="material-symbols-outlined">favorite</span></button>
                     </div>
                     <h3>{loadingPromo ? "Поиск промокода..." : errorPromo}</h3>
-                    {isLogged ?
+                    {isAuth ?
                         <button className={styles.next} onClick={() => {
                             setStage(stage + 1);
                             fetchTradingPoints();
+                            fetchPaymentMethods();
                         }}>Начать оформление заказа<span
                             className="material-symbols-outlined">arrow_forward</span>
                         </button>
                         :
-                        <button className={styles.next} onClick={() => {
-
-                        }}>
+                        <Link className={styles.next} to={"/login"}>
                             Авторизоваться/ Зарегистрироваться
-                        </button>
+                        </Link>
                     }
                 </div>
                 <div className={`${styles.infoOrder} ${styles.firstStage} ${stage == 1 ? styles.active : ""}`}>
                     <div className={styles.type}>
                         <h1>Тип платежа?</h1>
                         <div>
-                            <input type={"radio"} id={"cash"} name={"typePay"} defaultChecked={true}/>
-                            <label htmlFor={"cash"}><span className="material-symbols-outlined">currency_ruble</span>Наличными</label>
-                            <input type={"radio"} id={"cashless"} name={"typePay"}/>
-                            <label htmlFor={"cashless"}><span className="material-symbols-outlined">credit_card</span>Безналичными</label>
+                            {payments && payments.map((pay, index) => (
+                                <div key={pay.id}>
+                                    <input type={"radio"} id={`pay ${pay.id}`}
+                                           value={pay.id}
+                                           name={"typePay"}
+                                           defaultChecked={index == 0}
+                                           onChange={(e) => setPaymentId(e.target.value)}
+                                    />
+                                    <label htmlFor={`pay ${pay.id}`}>
+                                        <span
+                                        className="material-symbols-outlined">
+                                            {pay.id == 1 && "currency_ruble"}
+                                            {pay.id == 2 && "credit_card"}
+                                            {pay.id == 3 && "security_update_good "}
+                                        </span><br/>
+                                        {pay.name}
+                                    </label>
+                                </div>
+                            ))}
+                            {loadingPayments && <h2>Загрузка...</h2>}
                         </div>
                     </div>
+                    <div className={styles.number}>
+                        <h1>Ваш номер телефона</h1>
+                        <input type={"tel"}
+                               onChange={(e) => convertPhoneNumber(e.target.value)}
+                               placeholder="+7 (999) 999-99-99"
+                               pattern="^\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$"
+                               value={number}
+                               required
+                        />
+                    </div>
+                    <div className={styles.error}>
+                        {error}
+                    </div>
                     <div className={styles.buttons}>
-                        <button className={styles.back} onClick={() => setStage(stage - 1)}>
+                        <button className={styles.back} onClick={() => {
+                            setStage(stage - 1);
+                            setError('');
+                        }}>
                         <span className="material-symbols-outlined">arrow_back</span>Назад
                         </button>
-                        <button className={styles.next} onClick={() => setStage(stage + 1)}>Продолжить оформление заказа<span
+                        <button className={styles.next} onClick={() => {
+                            if (isValidPhoneNumber(number,'RU')) {
+                                setStage(stage + 1);
+                                setError('');
+                            }
+                            else setError('Пожалуйста, введите правильный номер телефона');
+                        }}
+                            >Продолжить оформление заказа<span
                             className="material-symbols-outlined">arrow_forward</span>
                         </button>
                     </div>
@@ -188,7 +317,7 @@ const Cart = ({ isOpenCart }) => {
                     <div className={styles.left}>
                         <h1>Как доставить заказ?</h1>
                         <h2>Доставка по всему Екатеринбургу</h2>
-                        <div className={"type"}>
+                        <div className={styles.type}>
                             <div className={styles.howDeliverBlock}>
                                 <input type={"radio"} id={"pickup"} name={"howDeliver"} defaultChecked={true}
                                        onChange={(e) => setHowDeliver(e.target.id)}/>
@@ -201,16 +330,16 @@ const Cart = ({ isOpenCart }) => {
                                 {tradingPoint.length > 0
                                     &&
                                     tradingPoint.map((point) => (
-                                        <>
-                                            <input type={"radio"} key={point.id} id={point.name} name={"pickedTradePoint"}
+                                        <div key={point.id}>
+                                            <input type={"radio"} id={point.name} name={"pickedTradePoint"}
                                                    onChange={(e) => setPickedTradePoint(e.target.id)}/>
                                             <label htmlFor={point.name}>
                                                 {point.address}
                                             </label>
-                                        </>
+                                        </div>
                                     ))
                                 }
-                                {tradingPoint.length <= 0 && !loadingTradingPoints && <h2>Точек продаж не найдено</h2>}
+                                {tradingPoint.length == 0 && !loadingTradingPoints && <h2>Точек продаж не найдено</h2>}
                             </div>
                         </div>
                         <div className={styles.type}>
@@ -241,11 +370,15 @@ const Cart = ({ isOpenCart }) => {
                         <div className={`${styles.location} ${howDeliver != "pickup" ? styles.visible : ""}`}>
                             <div>
                                 <label>Адрес</label>
+                            </div>
+                            <div>
                                 <input type={"text"} name={"address"}
                                        onChange={(e) => setAddress(e.target.value)}/>
                             </div>
                             <div>
                                 <label>Квартира</label>
+                            </div>
+                            <div>
                                 <input type={"text"} name={"flat"}
                                        onChange={(e) => {
                                            setFlat(e.target.value)
@@ -253,6 +386,8 @@ const Cart = ({ isOpenCart }) => {
                             </div>
                             <div>
                                 <label>Этаж</label>
+                            </div>
+                            <div>
                                 <input type={"text"} name={"floor"}
                                        onChange={(e) => {
                                            setFloor(e.target.value)
@@ -260,31 +395,32 @@ const Cart = ({ isOpenCart }) => {
                             </div>
                             <div>
                                 <label>Подьезд</label>
+                            </div>
+                            <div>
                                 <input type={"text"} name={"entrance"}
                                        onChange={(e) => {
                                            setEntrance(e.target.value)
                                        }}/>
                             </div>
                             <div>
-                                <label>Домофон</label>
-                                <input type={"text"} name={"intercom"}
-                                       onChange={(e) => {
-                                           setIntercom(e.target.value)
-                                       }}/>
+                                <label>Комментарий для курьера</label>
                             </div>
                             <div>
-                                <label>Комментарий для курьера</label>
                                 <input type={"text"} name={"comment"}
                                        onChange={(e) => {
                                            setComment(e.target.value)
                                        }}/>
                             </div>
                         </div>
+                        <div className={styles.error}>
+                            {error}
+                        </div>
                         <div className={styles.buttons}>
                             <button className={styles.back} onClick={() => setStage(stage - 1)}>
                                 <span className="material-symbols-outlined">arrow_back</span>Назад
                             </button>
-                            <button className={styles.submit} onClick={() => setStage(stage + 1)}>Далее<span
+                            <button className={styles.submit} onClick={() => checkDeliver()}
+                                >Далее<span
                                 className="material-symbols-outlined">arrow_forward</span>
                             </button>
                         </div>
@@ -294,13 +430,51 @@ const Cart = ({ isOpenCart }) => {
                     </div>
                 </div>
                 <div className={`${styles.infoOrder} ${styles.thirdStage} ${stage == 3 ? styles.active : ""}`}>
-                    <h1>Пожалуйста, проверьте ваши данные</h1>
-
+                    <h2>Пожалуйста, проверьте ваши данные</h2>
+                    <div className={styles.summaryItem}>
+                        <strong>Номер телефона:</strong> {number}
+                    </div>
+                    <div className={styles.summaryItem}>
+                        <strong>Способ получения заказа:</strong> {howDeliver == 'delivery' ? "Доставка" : "Самовывоз"}
+                    </div>
+                    {howDeliver === 'delivery' && (
+                        <div>
+                            <div className={styles.summaryItem}>
+                                <strong>Адрес доставки:</strong> {address}
+                            </div>
+                            <div className={styles.summaryItem}>
+                                <strong>Квартира:</strong> {flat}
+                            </div>
+                            <div className={styles.summaryItem}>
+                                <strong>Этаж:</strong> {floor}
+                            </div>
+                            <div className={styles.summaryItem}>
+                                <strong>Подъезд:</strong> {entrance}
+                            </div>
+                        </div>
+                    )}
+                    {howDeliver === 'pickup' && (
+                        <div className={styles.summaryItem}>
+                            <strong>Улица точки выдачи:</strong> {pickedTradePoint}
+                        </div>
+                    )}
+                    <div className={styles.summaryItem}>
+                        <strong>Как связаться:</strong> {howConnect == 'call' ? "Позвонить" : howSocial}
+                    </div>
+                    <div className={styles.summaryItem}>
+                        <strong>Сумма заказа:</strong> {totalCost}₽
+                    </div>
+                    <div className={styles.summaryItem}>
+                        <strong>Скидка:</strong> {totalCost - Math.round(totalCost * (1 - discountPercent * 0.01))}₽
+                    </div>
+                    <div className={styles.summaryItem}>
+                        <strong>К оплате:</strong> {Math.round(totalCost * (1 - discountPercent * 0.01))}₽
+                    </div>
                     <div className={styles.buttons}>
                         <button className={styles.back} onClick={() => setStage(stage - 1)}>
-                            <span className="material-symbols-outlined">arrow_back</span>Назад
+                            <span className="material-symbols-outlined">arrow_back</span>Изменить
                         </button>
-                        <button className={styles.submit} onClick={() => setStage(stage + 1)}>Заказать<span
+                        <button className={styles.submit} onClick={() => doOrder()}>Всё верно<span
                             className="material-symbols-outlined">arrow_forward</span>
                         </button>
                     </div>

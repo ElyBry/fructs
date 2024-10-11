@@ -26,6 +26,7 @@ class OrderController extends BaseController
             'product_id' => 'required',
             'quantity' => 'required',
             'total_price' => 'required',
+            'discount' => 'required',
             'payment_method_id' => 'required',
             'payment_status_id' => 'required'
         ]);

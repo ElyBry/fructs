@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Http\Controllers\TradingPointsController;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -25,12 +24,12 @@ class DatabaseSeeder extends Seeder
             FeedBackSeeder::class,
             OrderSeeder::class,
             PromoSeeder::class,
-            TradingPointsController::class,
+            TradingPointSeeder::class,
         ]);
         $superAdmin = User::factory()->create([
             'name' => 'Test User',
             'email' => 'ermakov631@gmail.com',
-            'password' => Hash::make('12345'),
+            'password' => Hash::make('1234512345'),
         ]);
         $superAdmin->assignRole('Super Admin');
         $admin = User::factory()->create([
@@ -42,7 +41,7 @@ class DatabaseSeeder extends Seeder
         $testUser = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@test.com',
-            'password' => Hash::make('123456'),
+            'password' => Hash::make('1234512345'),
         ]);
         $testUser->assignRole('User');
     }

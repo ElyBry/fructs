@@ -22,10 +22,11 @@ const useCart = () => {
         setCartItems((prevItems) => prevItems.filter(item => item.id !== itemId));
     };
 
-    const updateItemQuantity = (itemId, quantity) => {
+    const updateItemQuantity = (itemId, quantity, maxQuantity) => {
         if (quantity == 0) {
             return removeItem(itemId);
         }
+        if (quantity >= maxQuantity) return ;
         setCartItems((prevItems) =>
             prevItems.map(item =>
                 item.id !== itemId ? item : {...item, quantity}

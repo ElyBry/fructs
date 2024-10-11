@@ -1,29 +1,39 @@
 import * as React from 'react';
-import { Component, useState } from 'react';
+import {Component, useEffect, useState} from 'react';
 import * as ReactDOM from 'react-dom/client';
 
 import styles from "../sass/_componentsForSignInUp.module.scss"
+import {Link, useNavigate} from "react-router-dom";
+import {useRecoilState} from "recoil";
+import { userState} from "./components/User/userAtom";
 
 const SignInUp = () => {
-    const [User, setUser] = useState(null);
-    const [Name, setName] = useState('');
-    const [Email, setEmail] = useState('');
-    const [Password, setPass] = useState('');
-    const [isValid, setIsValid] = useState(true);
+    const navigate = useNavigate();
+    const [user, setUser] = useRecoilState(userState);
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPass] = useState('');
+    const [isValidEmail, setIsValidEmail] = useState(true);
+    const [isValidName, setIsValidName] = useState(true);
+    const [isValidPassword, setIsValidPassword] = useState(true);
     const [isDisabled, setIsDisabled] = useState(false);
-    const errorOut:HTMLInputElement = document.querySelector('#errors');
-    const errorEmail:HTMLInputElement = document.querySelector('#errorEmail');
+    const [errorLogin, setErrorLogin] = useState('');
+    const [errorSignUp, setErrorSignUp] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [reset, setReset] = useState(false);
+
     const handleSubmit = (event, is = "") => {
         event.preventDefault();
-        if (!isValid) return;
+        if (!isValidEmail) return;
+        setLoading(true);
         const url = is === "in" ? 'http://localhost:8000/api/auth/login' : 'http://localhost:8000/api/auth/register';
         const body = is === "in" ? {
-            email: Email,
-            password: Password
+            email: email,
+            password: password
         } : {
-            name: Name,
-            email: Email,
-            password: Password
+            name: name,
+            email: email,
+            password: password
         };
 
         fetch(url, {
@@ -35,24 +45,47 @@ const SignInUp = () => {
             credentials: 'include'
             })
             .then(response => {
-                if (response.status === 400) {
-                    errorOut.textContent = 'Неверно введены данные для авторизации';
-                    throw new Error('Неверно введены данные для авторизации');
+                if (response.status !== 200 && response.status !== 400) {
+                    setLoading(false);
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error || 'Ошибка при выполнении запроса'); // Обработка ошибки
+                    });
                 }
                 return response.json();
             })
             .then(data => {
-                if (data.success) {
-                    setUser(data.user);
-                    window.location.replace('http://localhost:8000/roles');
+                if (!data.success) {
+                    if (is == "in") {
+                        setErrorLogin(data.data.error);
+                    } else {
+                        setErrorSignUp("Почта уже использована");
+                    }
+                    console.log(data.data);
                 }
+                if (data.success) {
+                    setUser(data.data.user);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    navigate('/products');
+                }
+                setLoading(false);
             })
             .catch(error => console.error(error));
     }
     const handleOnChangeEmail = (email) => {
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        setIsValid(re.test(email));
+        setIsValidEmail(re.test(email));
     }
+    const handleOnChangeName = (name) => {
+        setIsValidName(name.length >= 10 && name.length <= 100);
+    }
+    const handleOnChangePassword = (password) => {
+        setIsValidPassword(password.length >= 6);
+    }
+    useEffect(() => {
+        const cookies = document.cookie.split('; ');
+        const isAuthenticated = cookies.some(cookie => cookie.startsWith('is_authenticated='));
+        if (isAuthenticated) navigate('/products');
+    }, []);
     const changePanel = () => {
         if (isDisabled) return;
         setIsDisabled(true);
@@ -95,15 +128,41 @@ const SignInUp = () => {
             setIsDisabled(false);
         }, 600)
     }
+
+    const handleReset = async () => {
+
+    }
+
     return  (
         <div className={styles.root}>
-            <div id={"main_div"} className={styles.mainDiv}>
+            <div className={`${styles.mainDiv} ${reset ? styles.display : ""}`}>
+                <button className={styles.back} onClick={() => setReset(false)}>
+                    <span className={"material-symbols-outlined"}>arrow_back</span>
+                </button>
+                <div className={styles.reset}>
+                    <h1>Сброс пароля. <span style={{color:"red"}}> ПОКА НЕ ДОСТУПНО</span></h1>
+                    <h2>Введите почту для сброса пароля. Код будет отправлена на почту</h2>
+                    <div className={styles.input}>
+                        <input type={"email"} value={email}
+                               onBlur={(e) => handleOnChangeEmail(e.target.value)}
+                               onChange={(e) => setEmail(e.target.value)}
+                               className={`${styles.inputField} ${isValidEmail ? '' : styles.invalid}`}
+                               required={true}/>
+                        <label className={styles.inputLabel}>Почта</label>
+                    </div>
+                    <button className={styles.buttonToSignIn} onClick={() => handleReset()}>Отправить код</button>
+                </div>
+            </div>
+            <div id={"main_div"} className={`${styles.mainDiv} ${!reset ? styles.display : ""}`}>
+                <Link className={styles.back} to={"/products"}>
+                    <span className={"material-symbols-outlined"}>arrow_back</span>
+                </Link>
                 <div id={"logo"} className={styles.logo}>
                     <img src={"../../image/logos/nocolorlogo.png"}/>
                 </div>
                 <div className={`${styles.panel} panel`}></div>
                 <div id={"main_sign_in"} className={styles.mainSignIn}>
-                    <div id={"hello"} className={styles.secondBlock}>
+                <div id={"hello"} className={styles.secondBlock}>
                         <h1>Привет, друг!</h1>
                         <div className={styles.note}>
                             Необходимо авторизоваться, чтобы продолжить заказ
@@ -114,6 +173,7 @@ const SignInUp = () => {
                     </div>
                     <div id={"sign_in"} className={styles.signIn}>
                         <h1>Войти</h1>
+                        {/*
                         <div className={styles.fromAcc}>
                             <div className={styles.icons}>
                                 <a href={"#"}><img src={"../../image/icons/icon-google.png"}/></a>
@@ -124,31 +184,39 @@ const SignInUp = () => {
                                 или используйте вашу почту и пароль для входа:
                             </div>
                         </div>
+                        */}
+
                         <div id={"form_login"} className={styles.formLogin}>
                             <form onSubmit={(e) => handleSubmit(e, "in")}>
                                 <div className={styles.input}>
-                                    <input type={"email"} value={Email}
+                                    <input type={"email"} value={email}
                                            onBlur={(e) => handleOnChangeEmail(e.target.value)}
                                            onChange={(e) => setEmail(e.target.value)}
-                                           className={`${styles.inputField} ${isValid ? '' : styles.invalid}`}
+                                           className={`${styles.inputField} ${isValidEmail ? '' : styles.invalid}`}
                                            required={true}/>
                                     <label className={styles.inputLabel}>Почта</label>
                                 </div>
                                 <div className={styles.input}>
-                                    <input type={"password"} value={Password} onChange={(e) => setPass(e.target.value)}
-                                           className={styles.inputField} required={true}/>
+                                    <input type={"password"} value={password} onChange={(e) => setPass(e.target.value)}
+                                           onBlur={(e) => handleOnChangePassword(e.target.value)}
+                                           className={`${styles.inputField} ${isValidPassword ? '' : styles.invalid}`}
+                                           required={true} minLength={6}
+                                    />
                                     <label className={styles.inputLabel}>Пароль</label>
                                 </div>
                                 <div id={"errors"}
-                                     className={styles.errors}>{isValid ? '' : 'Неверно введена почта'}</div>
+                                     className={styles.errors}>{errorLogin}
+                                </div>
                                 <div id={"block_button_sign_in"} className={styles.blockButtonSignIn}>
-                                    <button className={styles.buttonSign}>
+                                    <button className={`${styles.buttonSign} ${loading ? styles.loading : ""}`}>
                                         Войти в аккаунт
                                     </button>
                                 </div>
                             </form>
                             <div className={styles.note}>
-                                <button className={styles.secondaryElement}>Забыли пароль?</button>
+                                <button className={styles.secondaryElement}
+                                        onClick={() => setReset(true)}
+                                >Забыли пароль?</button>
                             </div>
                         </div>
                     </div>
@@ -156,6 +224,7 @@ const SignInUp = () => {
                 <div id={"main_create_acc"} className={styles.mainCreateAcc}>
                     <div id={"create_acc"} className={styles.createAcc}>
                         <h1>Создать аккаунт</h1>
+                        {/*
                         <div className={styles.from_acc}>
                             <div className={styles.icons}>
                                 <a href={"#"}><img src={"../../image/icons/icon-google.png"}/></a>
@@ -166,30 +235,39 @@ const SignInUp = () => {
                                 или используйте ваш email для регистрации:
                             </div>
                         </div>
+                        */}
+
                         <div id={"form_registration"} className={styles.formRegistration}>
                             <form onSubmit={handleSubmit}>
                                 <div className={styles.input}>
-                                    <input type={"text"} value={Name} onChange={(e) => setName(e.target.value)}
-                                           className={styles.inputField} required={true}/>
+                                    <input type={"text"} value={name} onChange={(e) => setName(e.target.value)}
+                                           className={`${styles.inputField} ${isValidName ? '' : styles.invalid}`}
+                                           onBlur={(e) => handleOnChangeName(e.target.value)}
+                                           required={true} minLength={10} maxLength={100}
+                                    />
                                     <label className={styles.inputLabel}>ФИО</label>
                                 </div>
                                 <div className={styles.input}>
-                                    <input type={"email"} value={Email}
+                                    <input type={"email"} value={email}
                                            onBlur={(e) => handleOnChangeEmail(e.target.value)}
                                            onChange={(e) => setEmail(e.target.value)}
-                                           className={`${styles.inputField} ${isValid ? '' : styles.invalid}`}
+                                           className={`${styles.inputField} ${isValidEmail ? '' : styles.invalid}`}
                                            required={true}/>
                                     <label className={styles.inputLabel}>Почта</label>
                                 </div>
                                 <div id={"errorEmail"}
-                                     className={styles.errorEmail}>{isValid ? '' : 'Неверно введена почта'}</div>
+                                     className={styles.errorEmail}>{errorSignUp}
+                                </div>
                                 <div className={styles.input}>
-                                    <input type={"password"} value={Password} onChange={(e) => setPass(e.target.value)}
-                                           className={styles.inputField} required={true}/>
+                                    <input type={"password"} value={password} onChange={(e) => setPass(e.target.value)}
+                                           className={`${styles.inputField} ${isValidPassword ? '' : styles.invalid}`}
+                                           onBlur={(e) => handleOnChangePassword(e.target.value)}
+                                           required={true} minLength={6}
+                                    />
                                     <label className={styles.inputLabel}>Пароль</label>
                                 </div>
                                 <div id={"block_button_sign_up"} className={styles.blockButtonSignUp}>
-                                    <button className={styles.buttonSign}>
+                                    <button className={`${styles.buttonSign} ${loading ? styles.loading : ""}`}>
                                         Зарегистрироваться
                                     </button>
                                 </div>
@@ -204,7 +282,11 @@ const SignInUp = () => {
                         <div className={styles.note}>
                             Для создания заказа необходимо зарегистрироваться, введя персональные данные
                         </div>
-                        <button id={"button_to_sign_in"} className={styles.buttonToSignIn} onClick={changePanel}>Войти
+                        <button id={"button_to_sign_in"}
+                                className={styles.buttonToSignIn}
+                                onClick={changePanel}
+                        >
+                            Войти
                         </button>
                     </div>
                 </div>

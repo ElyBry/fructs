@@ -10,13 +10,15 @@ import * as ReactDOM from "react-dom/client";
 
 const App = () => {
     return (
-        <Router>
-            <Routes>
-                <Route path={"/"} element={<Main />} />
-                <Route path="/products" element={<RecoilRoot><Products/></RecoilRoot>}/>
-                <Route path="/login" element={<SignInUp />}/>
-            </Routes>
-        </Router>
+        <RecoilRoot>
+            <Router>
+                <Routes>
+                    <Route path={"/"} element={<Main />} />
+                    <Route path="/products" element={<Products/>}/>
+                    <Route path="/login" element={<SignInUp />}/>
+                </Routes>
+            </Router>
+        </RecoilRoot>
     );
 };
 

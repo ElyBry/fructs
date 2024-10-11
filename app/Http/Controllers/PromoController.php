@@ -48,10 +48,7 @@ class PromoController extends BaseController
             ->where('count', ">" , 0)
             ->first();
         if ($promos && $promos->count > 0) {
-            $promos->count -= 1;
-            $promos->save();
-
-            return $this->sendResponse($promos->discount, "Успешно введён промокод");
+            return $this->sendResponse($promos->discount, "Промокод успешно введён");
         }
         return $this->sendResponse(0, "Промокод не найден");
     }

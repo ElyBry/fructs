@@ -7,5 +7,9 @@
     @viteReactRefresh
     @vite(['resources/js/App.tsx'])
 </head>
-<body><div id="root"></div></body>
+<body>
+    <div id="root">
+
+    </div>
+</body>
 </html>
