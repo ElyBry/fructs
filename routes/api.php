@@ -38,7 +38,7 @@ Route::group([
     // Корзина
     Route::get('updateCart', [ProductsController::class, 'updateCart']);
     // Промокоды
-    Route::middleware('throttle:10,600')->group(function () {
+    Route::middleware('throttle:100,600')->group(function () {
         Route::get('promoVerify', [PromoController::class, 'verify']);
     });
     // Способы оплаты
@@ -46,6 +46,15 @@ Route::group([
     // Точки
     Route::get('tradingPoints', [TradingPointsController::class , 'index']);
 
+    Route::group([
+        'middleware' => [
+            'api'
+        ]
+    ], function () {
+        // Заказы
+        Route::get('orders', [OrderController::class, 'getOrders']);
+        Route::post('doOrder', [OrderController::class, 'store'])->middleware('throttle:100,600');
+    });
     // Для менеджера/ администратора
     Route::group([
         'middleware' => [
@@ -85,15 +94,13 @@ Route::group([
         Route::post('register', [AuthController::class, 'register'])->withoutMiddleware('auth:api')
             ->middleware('throttle:10,14400');
         Route::post('login', [AuthController::class, 'login'])->withoutMiddleware('auth:api')
-            ->middleware('throttle:10,14400');
+            ->middleware('throttle:100,14400');
     });
     // При аутентификации
     Route::group([
         'middleware' => 'api',
         'prefix' => '/auth'
     ], function () {
-        // Заказы
-        Route::post('doOrder', [OrderController::class, 'store']);
 
         // Аккаунты
         Route::post('/logout', [AuthController::class, 'logout']);

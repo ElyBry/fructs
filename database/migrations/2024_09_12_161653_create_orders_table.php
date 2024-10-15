@@ -14,19 +14,19 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('address');
+            $table->string('address')->nullable();
             $table->unsignedBigInteger('payment_method_id');
             $table->unsignedBigInteger('payment_status_id');
             $table->decimal('total_price', 10, 2);
-            $table->unsignedInteger('how_deliver')->nullable();
-            $table->unsignedInteger('how_connect')->nullable();
-            $table->unsignedInteger('how_social')->nullable();
-            $table->unsignedInteger('quantity')->default(1);
+            $table->string('how_deliver')->nullable();
+            $table->string('how_connect')->nullable();
+            $table->string('how_social')->nullable();
+            $table->integer('quantity');
             $table->string('picked_trade_point')->nullable();
             $table->text('comment')->nullable();
-            $table->decimal('discount_percent', 5, 2)->default(0);
-            $table->decimal('discount', 10, 2)->default(0);
-            $table->decimal('cost_with_discount', 10, 2)->default(0);
+            $table->decimal('discount_percent', 5, 2);
+            $table->decimal('discount', 10, 2);
+            $table->decimal('cost_with_discount', 10, 2);
             $table->timestamps();
         });
     }

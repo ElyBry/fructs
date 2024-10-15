@@ -4,18 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController as BaseController;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends BaseController
 {
     protected function respondWithToken($token)
     {
-        return cookie('token', $token, auth()->factory()->getTTL() * 60,null,null,true,true);
+        return cookie('token', $token, null,null,null,true,true)->withExpires(now()->addHour());
     }
     protected function respondWithSuccessAuth($is)
     {
-        return cookie('is_authenticated', $is, auth()->factory()->getTTL() * 60, null, null, false, false);
+        return cookie('is_authenticated', $is, null, null, null, false, false)->withExpires(now()->addHour());
     }
     public function register(Request $request) {
 
@@ -45,6 +47,7 @@ class AuthController extends BaseController
         }
 
         $success['user'] = auth()->user();
+        $success['role'] = auth()->user()->getRoleNames();
         $cookie = $this->respondWithToken($token);
         $isAuth = $this->respondWithSuccessAuth(true);
         return $this->sendResponse($success, 'Пользователь успешно авторизован.')
@@ -73,7 +76,7 @@ class AuthController extends BaseController
     {
         auth()->logout();
         $isAuth = cookie('is_authenticated', '', -1);
-        return $this->sendResponse([], 'Successfully logged out.')->withCookie($isAuth);
+        return $this->sendResponse([], 'Успешный выход из аккаунта.')->withCookie($isAuth);
     }
 
 
@@ -85,7 +88,4 @@ class AuthController extends BaseController
             ->withCookie($cookie)
             ->withCookie($isAuth);
     }
-
-
-
 }

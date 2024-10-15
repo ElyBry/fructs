@@ -2,9 +2,23 @@ import * as React from 'react';
 import {HashRouter as Router, Route, Link, useLocation} from "react-router-dom";
 
 import styles from "../../sass/_layoutHeader.module.scss"
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
+import {userAuth} from "./User/userAtom";
+import {useRecoilState} from "recoil";
+import axios from "axios";
 
 export default ({className}) => {
+    const [isAuth, setIsAuth] = useRecoilState( userAuth );
+    const [loadingLogout, setLoadingLogout] = useState(false);
+
+    useEffect(() => {
+        const cookies = document.cookie.split('; ');
+        const isAuthenticated = cookies.some(cookie => cookie.startsWith('is_authenticated='));
+        if (isAuthenticated) setIsAuth(true);
+        const user = localStorage.getItem('user');
+        console.log(user)
+    }, []);
+
     const location = useLocation();
     const lastHash = useRef('');
 
@@ -23,6 +37,21 @@ export default ({className}) => {
         }
     }, [location]);
 
+    const logout = () => {
+        setLoadingLogout(true);
+        axios.post('api/auth/logout')
+            .then(response => {
+                document.cookie = "is_authenticated=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                setIsAuth(false);
+                setLoadingLogout(false);
+            })
+            .catch(e => {
+                console.error(e);
+                setLoadingLogout(false);
+            })
+
+    }
+
     return  (
         <header className={`${styles.header} ${className}`}>
             <Link to={"/"}>
@@ -31,23 +60,41 @@ export default ({className}) => {
                     Фруктовый мир
                 </div>
             </Link>
-            <div id={"hHead"} className={styles.hHead}>
-                <Link to={"/products"}>
-                    <div className={styles.hSection}>Заказать продукты</div>
-                </Link>
-                <Link to={"/#guaranteeBlock"}>
-                    <div className={styles.hSection}>Гарантия</div>
-                </Link>
-                <Link to={"/#faqBlock"}>
-                    <div className={styles.hSection}>FAQ</div>
-                </Link>
-                <Link to={"/login"}>
-                    <div className={styles.hSection}>Войти</div>
-                </Link>
-            </div>
-            <div id={"burger"} className={styles.burger}>
-                <img src={"../../image/icons/elements/burger-menu-right.svg"}/>
-            </div>
+            {isAuth ?
+                <>
+                    <div id={"hHead"} className={styles.hHead}>
+                        <Link to={"/orders"}>
+                            <div className={styles.hSection}>Заказы</div>
+                        </Link>
+                        <div onClick={() => logout()} className={styles.hSection}>Выйти</div>
+                    </div>
+                    <div id={"burger"} className={styles.burger}>
+                        <img src={"../../image/icons/elements/burger-menu-right.svg"}/>
+                    </div>
+                </>
+                :
+                <>
+                    <div id={"hHead"} className={styles.hHead}>
+                        <Link to={"/products"}>
+                            <div className={styles.hSection}>Заказать продукты</div>
+                        </Link>
+                        <Link to={"/#guaranteeBlock"}>
+                            <div className={styles.hSection}>Гарантия</div>
+                        </Link>
+                        <Link to={"/#faqBlock"}>
+                            <div className={styles.hSection}>FAQ</div>
+                        </Link>
+                        <Link to={"/login"}>
+                            <div className={styles.hSection}>Войти</div>
+                        </Link>
+                    </div>
+                    <div id={"burger"} className={styles.burger}>
+                        <img src={"../../image/icons/elements/burger-menu-right.svg"}/>
+                    </div>
+                </>
+
+            }
+
         </header>
     );
 }

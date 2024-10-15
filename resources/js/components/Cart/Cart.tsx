@@ -10,12 +10,11 @@ import styles from "../../../sass/_cart.module.scss";
 import {Link} from "react-router-dom";
 
 import {isValidPhoneNumber, parsePhoneNumber} from "libphonenumber-js";
-import {userState} from "../User/userAtom";
+import {userAuth} from "../User/userAtom";
 
 const Cart = ({ isOpenCart }) => {
-    const [user, setUser] = useRecoilState(userState);
 
-    const cart = useRecoilValue(cartAtom);
+    const [cart, setCart] = useRecoilState(cartAtom);
     const quantity = useRecoilValue(quantityAtom);
     const totalCost = useRecoilValue(totalCostAtom);
     const { addItem, removeItem, updateItemQuantity } = useCart();
@@ -38,15 +37,20 @@ const Cart = ({ isOpenCart }) => {
     const [pickedTradePoint, setPickedTradePoint] = useState('');
     const [loadingTradingPoints , setLoadingTradingPoints] = useState(false);
 
-    const [isAuth,setIsAuth] = useState(false);
+    const [isAuth,setIsAuth] = useRecoilState(userAuth);
     const [error, setError] = useState('');
 
     const [loadingPayments, setLoadingPayments] = useState(false);
     const [payments, setPayments] = useState([]);
-    const [paymentId,setPaymentId] = useState("");
+    const [paymentId,setPaymentId] = useState(1);
 
     const [loadOrder, setLoadOrder ] = useState(false);
-    const [isSuccess, setIsSuccess] = useState('');
+
+    useEffect(() => {
+        const cookies = document.cookie.split('; ');
+        const isAuthenticated = cookies.some(cookie => cookie.startsWith('is_authenticated='));
+        if (isAuthenticated) setIsAuth(true);
+    }, []);
 
     const fetchTradingPoints = async () => {
         if (tradingPoint.length > 0) return;
@@ -88,21 +92,16 @@ const Cart = ({ isOpenCart }) => {
                 setErrorPromo(response.data.message)
                 setDiscountPercent(parseInt(response.data.data));
             }
-            setLoadingPromo(false);
         } catch (e) {
             if (e.status == 429) {
                 setErrorPromo('Превышено количество попыток, попробуйте позже)');
             } else {
                 console.log(e)
             }
+        } finally {
+            setLoadingPromo(false);
         }
     }
-
-    useEffect(() => {
-        const cookies = document.cookie.split('; ');
-        const isAuthenticated = cookies.some(cookie => cookie.startsWith('is_authenticated='));
-        if (isAuthenticated) setIsAuth(true);
-    }, []);
 
     const convertPhoneNumber = (inp) => {
         if (isValidPhoneNumber(inp, 'RU')) {
@@ -135,27 +134,30 @@ const Cart = ({ isOpenCart }) => {
     const doOrder = async () => {
         setLoadOrder(true);
         try {
-            const response = await axios.get('/api/doOrder', {
-                params: {
-                    user_id: user.id,
+            const response = await axios.post('/api/doOrder', {
                     how_deliver: howDeliver,
                     how_connect: howConnect,
                     how_social: howSocial,
                     cart: cart,
-                    quantity: quantity,
+                    promo: promo,
                     picked_trade_point: pickedTradePoint,
                     comment: comment,
-                    address: address + entrance + floor + flat,
+                    address: `${address} ${entrance} ${floor} ${flat}`,
+                    quantity: quantity,
                     total_price: totalCost,
                     discount_percent: discountPercent,
                     discount: totalCost - Math.round(totalCost * (1 - discountPercent * 0.01)),
                     cost_with_discount: Math.round(totalCost * (1 - discountPercent * 0.01)),
                     payment_method_id: paymentId,
                     payment_status_id: 1
-                }
             });
+            if (response.status == 200) {
+                setCart([]);
+                localStorage.setItem('cartItems',JSON.stringify([]))
+                setLoadOrder(false);
+                setStage(0)
+            }
 
-            setLoadOrder(false);
         } catch (e) {
             console.error(e);
         }
@@ -265,7 +267,7 @@ const Cart = ({ isOpenCart }) => {
                                            value={pay.id}
                                            name={"typePay"}
                                            defaultChecked={index == 0}
-                                           onChange={(e) => setPaymentId(e.target.value)}
+                                           onChange={(e) => setPaymentId(parseInt(e.target.value))}
                                     />
                                     <label htmlFor={`pay ${pay.id}`}>
                                         <span
@@ -332,7 +334,7 @@ const Cart = ({ isOpenCart }) => {
                                     tradingPoint.map((point) => (
                                         <div key={point.id}>
                                             <input type={"radio"} id={point.name} name={"pickedTradePoint"}
-                                                   onChange={(e) => setPickedTradePoint(e.target.id)}/>
+                                                   onChange={() => setPickedTradePoint(point.address)}/>
                                             <label htmlFor={point.name}>
                                                 {point.address}
                                             </label>
@@ -474,14 +476,10 @@ const Cart = ({ isOpenCart }) => {
                         <button className={styles.back} onClick={() => setStage(stage - 1)}>
                             <span className="material-symbols-outlined">arrow_back</span>Изменить
                         </button>
-                        <button className={styles.submit} onClick={() => doOrder()}>Всё верно<span
+                        <button className={`${styles.submit} ${loadOrder ? styles.load : ""}`} onClick={() => doOrder()}>Всё верно<span
                             className="material-symbols-outlined">arrow_forward</span>
                         </button>
                     </div>
-                </div>
-                <div className={`${styles.infoOrder} ${styles.lastStage} ${stage == 4 ? styles.active : ""}`}>
-                    <h1>Благодарим за заказ</h1>
-                    <h2>В ближайшее время с вами свяжется курьер для уточнения деталей заказа</h2>
                 </div>
             </div>
         </div>

@@ -4,12 +4,9 @@ import * as ReactDOM from 'react-dom/client';
 
 import styles from "../sass/_componentsForSignInUp.module.scss"
 import {Link, useNavigate} from "react-router-dom";
-import {useRecoilState} from "recoil";
-import { userState} from "./components/User/userAtom";
 
 const SignInUp = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useRecoilState(userState);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPass] = useState('');
@@ -58,13 +55,11 @@ const SignInUp = () => {
                     if (is == "in") {
                         setErrorLogin(data.data.error);
                     } else {
-                        setErrorSignUp("Почта уже использована");
+                        setErrorSignUp(data.data.email);
                     }
-                    console.log(data.data);
                 }
                 if (data.success) {
-                    setUser(data.data.user);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
                     navigate('/products');
                 }
                 setLoading(false);
@@ -197,7 +192,7 @@ const SignInUp = () => {
                                     <label className={styles.inputLabel}>Почта</label>
                                 </div>
                                 <div className={styles.input}>
-                                    <input type={"password"} value={password} onChange={(e) => setPass(e.target.value)}
+                                    <input type={"password"} onChange={(e) => setPass(e.target.value)}
                                            onBlur={(e) => handleOnChangePassword(e.target.value)}
                                            className={`${styles.inputField} ${isValidPassword ? '' : styles.invalid}`}
                                            required={true} minLength={6}
@@ -240,7 +235,7 @@ const SignInUp = () => {
                         <div id={"form_registration"} className={styles.formRegistration}>
                             <form onSubmit={handleSubmit}>
                                 <div className={styles.input}>
-                                    <input type={"text"} value={name} onChange={(e) => setName(e.target.value)}
+                                    <input type={"text"} onChange={(e) => setName(e.target.value)}
                                            className={`${styles.inputField} ${isValidName ? '' : styles.invalid}`}
                                            onBlur={(e) => handleOnChangeName(e.target.value)}
                                            required={true} minLength={10} maxLength={100}
@@ -248,7 +243,7 @@ const SignInUp = () => {
                                     <label className={styles.inputLabel}>ФИО</label>
                                 </div>
                                 <div className={styles.input}>
-                                    <input type={"email"} value={email}
+                                    <input type={"email"}
                                            onBlur={(e) => handleOnChangeEmail(e.target.value)}
                                            onChange={(e) => setEmail(e.target.value)}
                                            className={`${styles.inputField} ${isValidEmail ? '' : styles.invalid}`}
@@ -259,7 +254,7 @@ const SignInUp = () => {
                                      className={styles.errorEmail}>{errorSignUp}
                                 </div>
                                 <div className={styles.input}>
-                                    <input type={"password"} value={password} onChange={(e) => setPass(e.target.value)}
+                                    <input type={"password"} onChange={(e) => setPass(e.target.value)}
                                            className={`${styles.inputField} ${isValidPassword ? '' : styles.invalid}`}
                                            onBlur={(e) => handleOnChangePassword(e.target.value)}
                                            required={true} minLength={6}

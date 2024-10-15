@@ -1,5 +1,4 @@
 import {atom, selector} from "recoil";
-import {json} from "react-router-dom";
 
 export const cartAtom = atom({
     key: 'cartList',

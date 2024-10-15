@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 class OrderItems extends Model
 {
     use HasFactory;
+    public $timestamps = false;
     protected $fillable = [
         'order_id',
         'product_id',

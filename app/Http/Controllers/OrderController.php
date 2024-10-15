@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController as BaseController;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\OrderItems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -14,28 +16,111 @@ class OrderController extends BaseController
     {
         $query = Order::query();
 
-        $feedbacks = $query->orderBy('created_at', 'desc')->paginate(10);
+        $order = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        return $feedbacks;
+        return $order;
     }
+
+    public function getOrders(Request $request)
+    {
+        if (auth()->check()) $user_id = auth()->user()["id"]; else {
+            return $this->sendError('Ошибка аутентификации', ['error' => 'Не аутентифицирован'],401);
+        }
+        $order = Order::query()
+            ->where('user_id', $user_id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        return $order;
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-            'address' => 'required',
-            'product_id' => 'required',
             'quantity' => 'required',
+            'cart.*.id' => 'required|exists:products,id',
+            'cart.*.quantity' => 'required|integer|min:1',
+            'cart.*.price' => 'required|integer|min:1',
             'total_price' => 'required',
-            'discount' => 'required',
             'payment_method_id' => 'required',
             'payment_status_id' => 'required'
         ]);
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+            return $this->sendError('Ошибка данных', $validator->errors(), 400);
         }
+        if (auth()->check()) $user_id = auth()->user()["id"]; else {
+            return $this->sendError('Ошибка аутентификации', ['error' => 'Не аутентифицирован'],401);
+        }
+
         $input = $request->all();
-        $feedBack = Order::create($input);
-        return response()->json([$feedBack, 200]);
+
+        $totalCalcPrice = 0;
+        foreach ($input['cart'] as $product) {
+            $dbProduct = Product::findOrFail($product['id']);
+
+            if ($dbProduct->price !== $product['price']) {
+                return $this->sendError('Стоимость продукта не соответствует актуальной',
+                    [
+                        'product_id' => $product['id'],
+                        'expected_price' => $dbProduct->price,
+                        'given_price' => $product['price']
+                    ]
+                );
+            }
+            $totalCalcPrice += $product['price'] * $product['quantity'];
+        }
+        if ($totalCalcPrice != $input['total_price']) {
+            return $this->sendError('Итог стоимости не совпадает', [
+                'expected_total_price' => $totalCalcPrice,
+                'given_total_price' => $input['total_price']
+            ]);
+        }
+
+        if ($input['promo'] !== '') {
+            $promo = DB::table('promos')
+                ->where('id', $input['promo'])
+                ->where('count','>',0)
+                ->first();
+            if ($promo) {
+                if ($promo->discount != $input['discount_percent']) {
+                    return $this->sendError('Процент скидки не совпадает',[
+                        "expected_discount_percent" => $promo->discount,
+                        "given_discount_percent" => $input['discount_percent']
+                    ]);
+                }
+                $promo->update(['count' => $promo->count - 1]);
+            }
+        }
+
+
+        $order = Order::create([
+            'user_id' => $user_id,
+            'picked_trade_point' => $input['picked_trade_point'],
+            'address' => $input['address'],
+            'total_price' => $input['total_price'],
+            'discount_percent' => $input['discount_percent'],
+            'cost_with_discount' => $input['cost_with_discount'],
+            'how_deliver' => $input['how_deliver'],
+            'how_connect' => $input['how_connect'],
+            'how_social' => $input['how_social'],
+            'discount' => $input['discount'],
+            'payment_method_id' => $input['payment_method_id'],
+            'payment_status_id' => $input['payment_status_id'],
+            'quantity' => $input['quantity'],
+            'comment' => $input['comment'],
+        ]);
+
+
+
+        foreach ($input['cart'] as $product) {
+            OrderItems::create([
+                'order_id' => $order->id,
+                'product_id' => $product['id'],
+                'quantity' => $product['quantity'],
+                'total_price' => $product['price'],
+            ]);
+        }
+
+        return response()->json([$order, 200]);
     }
     public function edit(Request $request, $id)
     {

@@ -6,6 +6,7 @@ import SignInUp from "./SignInUp";
 
 import {RecoilRoot} from "recoil";
 import * as ReactDOM from "react-dom/client";
+import Orders from "./Orders";
 
 
 const App = () => {
@@ -16,6 +17,9 @@ const App = () => {
                     <Route path={"/"} element={<Main />} />
                     <Route path="/products" element={<Products/>}/>
                     <Route path="/login" element={<SignInUp />}/>
+                    <Route path="/profile"/>
+                    <Route path="/logout" />
+                    <Route path="/orders" element={<Orders />}/>
                 </Routes>
             </Router>
         </RecoilRoot>

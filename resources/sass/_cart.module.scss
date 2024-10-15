@@ -1,4 +1,6 @@
 @use "var";
+@use "animations";
+
 .cart {
     display: none;
     justify-content: center;
@@ -274,6 +276,9 @@
             .buttons {
                 display: flex;
                 gap: var.$margin-h1;
+                .load {
+                    @include animations.loadSkeleton;
+                }
             }
         }
     }

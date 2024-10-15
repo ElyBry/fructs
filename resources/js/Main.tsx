@@ -181,7 +181,7 @@ const Main: React.FC = () => {
 
     return (
         <div className={styles.root}>
-            <Header/>
+            <Header className={styles.header}/>
             <div id={"target"} className={styles.target}>
                 <div id={"bgTarget"} className={styles.bgTarget}></div>
                 <div id={"bgTargetS"} className={styles.bgTargetS}></div>
