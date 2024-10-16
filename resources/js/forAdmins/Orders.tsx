@@ -1,13 +1,14 @@
 import * as React from "react";
 
-import styles from "../sass/_componentsForOrders.module.scss"
+import styles from "../../sass/_componentsForOrders.module.scss"
 
-import Header from "./components/_header.js";
+import Header from "../components/_header";
 import {useCallback, useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
 const Orders = () => {
+
     const navigate = useNavigate();
     const [loadingOrders, setLoadingOrders] = useState(false);
     const [orders, setOrders] = useState([]);
@@ -16,7 +17,7 @@ const Orders = () => {
     const fetchOrders = async () => {
         try {
             setLoadingOrders(true);
-            const response = await axios.get(`api/orders?page=${page}`);
+            const response = await axios.get(`api/admins/orders?page=${page}`);
             setOrders((prev) => [...prev, ...response.data.data]);
             setHasMoreOrders(response.data.current_page < response.data.last_page)
             setLoadingOrders(false);
@@ -29,9 +30,7 @@ const Orders = () => {
             }
         }
     }
-    useEffect(() => {
-        setOrders([])
-    }, []);
+
     useEffect(() => {
         fetchOrders();
     }, [page]);

@@ -59,15 +59,37 @@
         color: #00796b;
     }
 
-    ul {
+    .productList {
         list-style-type: none;
         padding: 0;
+    }
 
-        li {
-            margin: 5px 0;
-            font-size: 14px;
-            color: #333;
-        }
+    .productItem {
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.3s;
+    }
+
+    .productInfo {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .productTitle {
+        font-weight: bold;
+    }
+
+    .productQuantity, .productPrice {
+        color: #555;
+    }
+
+    .productTotal {
+        color: #000000;
     }
 }
 .grey {

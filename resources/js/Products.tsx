@@ -209,6 +209,7 @@ const Products: React.FC = () => {
             }
         }
     }
+
     const openAboutProduct = (product) => {
         if (aboutProduct && product.id == aboutProduct["id"]) {
             setIsOpenAboutProduct(true);
@@ -219,8 +220,8 @@ const Products: React.FC = () => {
         setHasMoreFeedbacks(true);
         setAboutProduct(product);
         setIsOpenAboutProduct(true);
-
     };
+
     useEffect(() => {
         const controller = new AbortController();
         setLoadingFeedbacksProduct(true);

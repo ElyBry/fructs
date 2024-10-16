@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\OrderItems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends BaseController
@@ -26,11 +27,33 @@ class OrderController extends BaseController
         if (auth()->check()) $user_id = auth()->user()["id"]; else {
             return $this->sendError('Ошибка аутентификации', ['error' => 'Не аутентифицирован'],401);
         }
-        $order = Order::query()
+        $orders = Order::query()
+            ->leftJoin('order_statuses', 'orders.payment_status_id', '=', 'order_statuses.id')
             ->where('user_id', $user_id)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('orders.created_at', 'desc')
+            ->selectRaw('orders.*, order_statuses.name as payment_status_id')
             ->paginate(10);
-        return $order;
+        return $orders;
+    }
+
+    public function getOrderItems($order_id)
+    {
+        if (auth()->check()) $user_id = auth()->user()["id"]; else {
+            return $this->sendError('Ошибка аутентификации', ['error' => 'Не аутентифицирован'],401);
+        }
+        if (!$order_id) {
+            return $this->sendError('Id не найден', ['error' => 'Id не найден'], 404);
+        }
+        $order = Order::find($order_id);
+        if (!$order || $order->user_id != $user_id) {
+            return $this->sendError('Ошибка доступа', ['error' => 'Вы не имеете доступ к заказу'], 403);
+        }
+        $order_items = OrderItems::query()
+            ->leftJoin('products', 'order_items.product_id', '=', 'products.id')
+            ->where('order_id', $order_id)
+            ->orderBy('order_items.id', 'desc')
+            ->get();
+        return $order_items;
     }
 
     public function store(Request $request)

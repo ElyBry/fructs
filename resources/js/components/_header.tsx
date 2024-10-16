@@ -10,13 +10,19 @@ import axios from "axios";
 export default ({className}) => {
     const [isAuth, setIsAuth] = useRecoilState( userAuth );
     const [loadingLogout, setLoadingLogout] = useState(false);
+    const [roles, setRoles] = useState<string[]>([])
+
+    const checkRole = (requiredRoles: string[]) => {
+        return Array.isArray(roles) && requiredRoles.some((role) => roles.includes(role));
+    }
 
     useEffect(() => {
         const cookies = document.cookie.split('; ');
         const isAuthenticated = cookies.some(cookie => cookie.startsWith('is_authenticated='));
         if (isAuthenticated) setIsAuth(true);
-        const user = localStorage.getItem('user');
-        console.log(user)
+        const user = JSON.parse(localStorage.getItem('user'));
+        const roles = user.roles.map(role => role.name);
+        setRoles(roles);
     }, []);
 
     const location = useLocation();
@@ -49,7 +55,6 @@ export default ({className}) => {
                 console.error(e);
                 setLoadingLogout(false);
             })
-
     }
 
     return  (
@@ -63,6 +68,10 @@ export default ({className}) => {
             {isAuth ?
                 <>
                     <div id={"hHead"} className={styles.hHead}>
+                        {checkRole(['Super Admin', 'Admin', 'Manager']) ? "gg" : ""}
+                        <Link to={"/products"}>
+                            <div className={styles.hSection}>Заказать продукты</div>
+                        </Link>
                         <Link to={"/orders"}>
                             <div className={styles.hSection}>Заказы</div>
                         </Link>

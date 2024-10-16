@@ -8,8 +8,10 @@ const ProtectedRoute = ({ element }) => {
     const isAdmin = true;
 
     if (!isAdmin) {
-        return <Navigate to="/login" />; // перенаправляем на страницу входа, если не администратор
+        return <Navigate to="/login" />;
     }
 
     return element;
 };
+
+export default ProtectedRoute;

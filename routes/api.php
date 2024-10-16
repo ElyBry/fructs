@@ -53,6 +53,7 @@ Route::group([
     ], function () {
         // Заказы
         Route::get('orders', [OrderController::class, 'getOrders']);
+        Route::get('orderItems/{id}', [OrderController::class, 'getOrderItems']);
         Route::post('doOrder', [OrderController::class, 'store'])->middleware('throttle:100,600');
     });
     // Для менеджера/ администратора
