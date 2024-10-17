@@ -8,6 +8,7 @@ import {RecoilRoot} from "recoil";
 import * as ReactDOM from "react-dom/client";
 import Orders from "./Orders";
 import AdminOrders from './forAdmins/Orders';
+import AdminProducts from './forAdmins/Users';
 
 const App = () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -26,6 +27,7 @@ const App = () => {
                     <Route path="/logout" />
                     <Route path="/orders" element={<Orders />}/>
                     <Route path="/admin/orders" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <AdminOrders/> : <Navigate to={"/login"}/>}/>
+                    <Route path="/admin/products" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <AdminProducts/> : <Navigate to={"/login"}/>}/>
                 </Routes>
             </Router>
         </RecoilRoot>

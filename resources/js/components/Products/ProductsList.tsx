@@ -96,8 +96,6 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
         [loading, hasMore]
     );
 
-
-
     return (
         <div id={"tableProducts"} className={stylesProducts.tableProducts}>
             {products.length != 0 && products.map((product, index) => (

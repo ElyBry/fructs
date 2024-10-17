@@ -5,7 +5,7 @@ import {useRecoilValue} from "recoil";
 
 import styles from "../../../sass/_product.module.scss"
 
-const Product = ({ product, openAboutProduct, addItem, refLast }) => {
+const Product = ({ product, openAboutProduct = null, addItem = null, refLast = null, isAdmin = null}) => {
     const cart = useRecoilValue(cartAtom);
     const {ref, inView} = useInView({
         threshold: 0,
@@ -49,12 +49,15 @@ const Product = ({ product, openAboutProduct, addItem, refLast }) => {
                         {product.price}р <br/> {`${product.weight} ${product.type_weight}`}
                     </div>
                     <div className={styles.buttonsProducts}>
-                        <button className={styles.addCart}
-                                onClick={() => addItem(product)}>
-                            {cart.findIndex(item => item.id == product.id) < 0 ? "Добавить в корзину" : "Удалить из корзины"}
-
-                        </button>
-                        <button className={styles.aboutProducts} onClick={() => openAboutProduct(product)}>Подробнее</button>
+                        {isAdmin ? <button className={styles.addCart}>Добавить в корзину</button> :
+                            <button className={styles.addCart}
+                                    onClick={() => addItem(product)}>
+                                {cart.findIndex(item => item.id == product.id) < 0 ? "Добавить в корзину" : "Удалить из корзины"}
+                            </button>
+                        }
+                        {isAdmin ? <button  className={styles.aboutProducts}>Подробнее</button> :
+                            <button className={styles.aboutProducts} onClick={() => openAboutProduct(product)}>Подробнее</button>
+                        }
                     </div>
                 </>
                 :

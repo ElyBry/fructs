@@ -1,0 +1,9 @@
+@use 'var';
+@use 'mixin';
+
+.header {
+    position: relative;
+}
+.content {
+    @include mixin.content;
+}
