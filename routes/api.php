@@ -84,7 +84,11 @@ Route::group([
         Route::resource('colors', ColorsController::class);
         Route::resource('countries', CountriesController::class);
         Route::resource('promo', PromoController::class);
+        // Заказы
+        Route::get('orderItems/{order_id}', [OrderController::class, 'indexItems']);
         Route::resource('orders', OrderController::class);
+        Route::post('changeStatus', [OrderController::class, 'changeStatus']);
+
         Route::resource('feedBacks', FeedBackController::class);
         Route::resource('feedBacksProducts', FeedBackProductsController::class);
     });

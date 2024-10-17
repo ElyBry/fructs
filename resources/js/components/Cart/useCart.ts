@@ -26,7 +26,7 @@ const useCart = () => {
         if (quantity == 0) {
             return removeItem(itemId);
         }
-        if (quantity >= maxQuantity) return ;
+        if (quantity > maxQuantity) return ;
         setCartItems((prevItems) =>
             prevItems.map(item =>
                 item.id !== itemId ? item : {...item, quantity}

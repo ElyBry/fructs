@@ -29,6 +29,7 @@ class OrderSeeder extends Seeder
                 'user_id' => $userId,
                 'address' => $address,
                 'total_price' => 0,
+                'number' => "89530577774",
                 'quantity' => rand(1, 10),
                 'discount' => 0,
                 'discount_percent' => 0,

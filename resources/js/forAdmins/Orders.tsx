@@ -6,14 +6,27 @@ import Header from "../components/_header";
 import {useCallback, useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import {useRecoilState} from "recoil";
+import {userIsAuth, userRole} from "../components/User/userAtom";
+import User from "../components/User/user";
 
 const Orders = () => {
+    const [isAuth, setIsAuth] = useRecoilState( userIsAuth );
+    const [roles, setRoles] = useState(userRole);
+    const {checkRole, checkAuthAndGetRole} = User();
 
     const navigate = useNavigate();
     const [loadingOrders, setLoadingOrders] = useState(false);
     const [orders, setOrders] = useState([]);
     const [hasMoreOrders, setHasMoreOrders] = useState(true);
     const [page, setPage] = useState(1);
+
+    useEffect(() => {
+        if (!checkRole) {
+            navigate('/login');
+        }
+    }, []);
+
     const fetchOrders = async () => {
         try {
             setLoadingOrders(true);
@@ -23,9 +36,9 @@ const Orders = () => {
             setHasMoreOrders(response.data.current_page < response.data.last_page)
             setLoadingOrders(false);
         } catch (e) {
-            if (e.status == 401) {
+            if (e.status == 401 || e.status == 403) {
                 console.error("Не аутентифицирован");
-                navigate('/login');
+                navigate('../login');
             } else {
                 console.error(e);
             }
@@ -37,7 +50,9 @@ const Orders = () => {
     }, [page]);
 
     useEffect(() => {
-        setOrders([])
+        setExpandedOrderId([]);
+        setOrderDetails([]);
+        setOrders([]);
     }, []);
 
     const observerFeedbacks = useRef<IntersectionObserver | null>(null);
@@ -57,7 +72,7 @@ const Orders = () => {
     );
 
     const fetchOrderDetails = async (orderId) => {
-        const response = await axios.get(`../api/orderItems/${orderId}`);
+        const response = await axios.get(`../api/admin/orderItems/${orderId}`);
         console.log(response);
         return response.data;
     }
@@ -78,6 +93,24 @@ const Orders = () => {
         }
     };
 
+    const changeStatus = (order_id, status_id) => {
+        axios.post('../api/admin/changeStatus', {
+            order_id: order_id,
+            payment_status_id: status_id + 1
+        }).then((data) => {
+            const updatedOrder = data.data[0];
+            console.log(updatedOrder);
+            setOrders((prevOrders) =>
+                prevOrders.map(order =>
+                    order.id === updatedOrder.id ?
+                        { ...order, payment_status_id: updatedOrder.payment_status_id ,payment_status_name: updatedOrder.payment_status_name } :
+                        order
+                )
+            );
+        }).catch((e) => {
+            console.error(e);
+        });
+    }
 
     return (
         <>
@@ -87,22 +120,25 @@ const Orders = () => {
                     {orders.length > 0 &&
                         orders.map((order, index) => (
                             <div key={order.id} ref={index + 1 == orders.length ? lastElementRef : null}
-                                 className={styles.order} onClick={() => toggleOrderDetails(order.id)}>
+                                 className={styles.order}>
                                 <div className={styles.orderHeader}>
                                     <h3>Заказ #{order.id}</h3>
-                                    <p></p>
+                                    <p>{order.user_name}</p>
+                                    <p>Номер телефона: <a href={`tel:${order.number}`}>{order.number}</a></p>
                                     <p>{new Date(order.created_at).toLocaleString()}</p>
                                     <p>Итоговая сумма: {order.cost_with_discount}р</p>
                                     {order.discount_percent != 0 && <p>Без скидки: {order.total_price}р</p> }
-                                    <p>Статус оплаты: {order.payment_status_id}</p>
+                                    <p>Статус оплаты: {order.payment_status_name}</p>
                                     {order.discount_percent != 0 && <span className={styles.orderDiscount}>{order.discount_percent}% скидка</span>}
+                                    <button onClick={() => toggleOrderDetails(order.id)}>Подробнее</button>
                                 </div>
                                 {expandedOrderId === order.id && (
                                     <div className={styles.orderDetails}>
-                                        {order.address && <p>Адрес доставки: {order.address}</p>}
-                                        {order.picked_trade_point && <p>Точка приёма: {order.picked_trade_point}</p>}
-                                        <p>Способ доставки: {order.how_deliver == "pickup" ? "Самовывоз" : "Доставка"}</p>
-                                        {order.comment &&<p>Комментарий: {order.comment}</p>}
+                                        {order.address && order.how_deliver != "pickup" && <p>Адрес доставки: {order.address}</p>}
+                                        {order.picked_trade_point && order.how_deliver == "pickup" && <p>Точка приёма: {order.picked_trade_point}</p>}
+                                        <p>Способ
+                                            доставки: {order.how_deliver == "pickup" ? "Самовывоз" : "Доставка"}</p>
+                                        {order.comment && <p>Комментарий: {order.comment}</p>}
                                         <h4>Содержимое заказа:</h4>
                                         <ul className={styles.productList}>
                                             {orderDetails[order.id] && orderDetails[order.id].length > 0 ? (
@@ -125,6 +161,19 @@ const Orders = () => {
                                                 <h2>Загрузка...</h2>
                                             )}
                                         </ul>
+                                        {order.payment_status_id != 5 &&
+                                            <div>
+                                                <button
+                                                    onClick={() => changeStatus(order.id, order.payment_status_id)}>Подтвердить
+                                                    наличие, перейти к
+                                                    доставке
+                                                </button>
+                                                <button onClick={() => changeStatus(order.id, 5)}>
+                                                    Отменить
+                                                </button>
+                                            </div>
+                                        }
+
                                     </div>
                                 )}
                             </div>

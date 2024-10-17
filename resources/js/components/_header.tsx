@@ -3,26 +3,22 @@ import {HashRouter as Router, Route, Link, useLocation} from "react-router-dom";
 
 import styles from "../../sass/_layoutHeader.module.scss"
 import {useEffect, useRef, useState} from "react";
-import {userAuth} from "./User/userAtom";
+
+import {userIsAuth, userRole} from "./User/userAtom";
+import User from "./User/user";
+
 import {useRecoilState} from "recoil";
+
 import axios from "axios";
 
 export default ({className}) => {
-    const [isAuth, setIsAuth] = useRecoilState( userAuth );
+    const [isAuth, setIsAuth] = useRecoilState( userIsAuth );
+    const [roles, setRoles] = useState(userRole);
+    const {checkRole, checkAuthAndGetRole} = User();
     const [loadingLogout, setLoadingLogout] = useState(false);
-    const [roles, setRoles] = useState<string[]>([])
-
-    const checkRole = (requiredRoles: string[]) => {
-        return Array.isArray(roles) && requiredRoles.some((role) => roles.includes(role));
-    }
 
     useEffect(() => {
-        const cookies = document.cookie.split('; ');
-        const isAuthenticated = cookies.some(cookie => cookie.startsWith('is_authenticated='));
-        if (isAuthenticated) setIsAuth(true);
-        const user = JSON.parse(localStorage.getItem('user'));
-        const roles = user.roles.map(role => role.name);
-        setRoles(roles);
+        checkAuthAndGetRole();
     }, []);
 
     const location = useLocation();

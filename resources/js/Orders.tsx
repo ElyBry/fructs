@@ -93,8 +93,8 @@ const Orders = () => {
                                 </div>
                                 {expandedOrderId === order.id && (
                                     <div className={styles.orderDetails}>
-                                        {order.address && <p>Адрес доставки: {order.address}</p>}
-                                        {order.picked_trade_point && <p>Точка приёма: {order.picked_trade_point}</p>}
+                                        {order.address && order.how_deliver != "pickup" && <p>Адрес доставки: {order.address}</p>}
+                                        {order.picked_trade_point && order.how_deliver == "pickup" && <p>Точка приёма: {order.picked_trade_point}</p>}
                                         <p>Способ доставки: {order.how_deliver == "pickup" ? "Самовывоз" : "Доставка"}</p>
                                         {order.comment &&<p>Комментарий: {order.comment}</p>}
                                         <h4>Содержимое заказа:</h4>

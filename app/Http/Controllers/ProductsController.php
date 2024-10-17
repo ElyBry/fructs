@@ -15,6 +15,7 @@ class ProductsController extends BaseController
     public function index(Request $request)
     {
         $query = Product::query()
+            ->where('count', '>', 0)
             ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
             ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
             ->groupBy('products.id')

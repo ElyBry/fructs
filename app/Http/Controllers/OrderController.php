@@ -6,6 +6,8 @@ use App\Http\Controllers\BaseController as BaseController;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItems;
+use App\Models\Reservations;
+use Composer\XdebugHandler\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -15,11 +17,19 @@ class OrderController extends BaseController
 {
     public function index()
     {
-        $query = Order::query();
-
-        $order = $query->orderBy('created_at', 'desc')->paginate(10);
-
-        return $order;
+        return Order::query()
+            ->leftJoin('order_statuses', 'orders.payment_status_id', '=', 'order_statuses.id')
+            ->leftJoin('users', 'orders.user_id', '=', 'users.id')
+            ->orderBy('orders.created_at', 'desc')
+            ->selectRaw('orders.*, order_statuses.name as payment_status_name, users.name as user_name')
+            ->paginate(10);
+    }
+    public function indexItems($order_id)
+    {
+        return OrderItems::query()
+            ->leftJoin('products', 'order_items.product_id', '=', 'products.id')
+            ->where('order_id', $order_id)
+            ->get();
     }
 
     public function getOrders(Request $request)
@@ -28,16 +38,6 @@ class OrderController extends BaseController
             return $this->sendError('Ошибка аутентификации', ['error' => 'Не аутентифицирован'],401);
         }
         $user_id = $user["id"];
-        $user_roles = $user["roles"];
-        $access_roles = ["Super Admin", "Admin", "Manager"];
-        if (in_array($user_roles[0]["name"],$access_roles)) {
-            return Order::query()
-                ->leftJoin('order_statuses', 'orders.payment_status_id', '=', 'order_statuses.id')
-                ->leftJoin('users', 'orders.user_id', '=', 'users.id')
-                ->orderBy('orders.created_at', 'desc')
-                ->selectRaw('orders.*, order_statuses.name as payment_status_id, users.name')
-                ->paginate(10);
-        }
         $orders = Order::query()
             ->leftJoin('order_statuses', 'orders.payment_status_id', '=', 'order_statuses.id')
             ->where('user_id', $user_id)
@@ -54,16 +54,9 @@ class OrderController extends BaseController
         }
         $user_id = $user["id"];
         if (!$order_id) {
-            return $this->sendError('Id не найден', ['error' => 'Id не найден'], 404);
+            return $this->sendError('Id не найден', ['error' => 'Id не найден'], 401);
         }
-        $user_roles = $user["roles"];
-        $access_roles = ["Super Admin", "Admin", "Manager"];
-        if (in_array($user_roles[0]["name"],$access_roles)) {
-            return OrderItems::query()
-                ->leftJoin('products', 'order_items.product_id', '=', 'products.id')
-                ->where('order_id', $order_id)
-                ->get();
-        }
+
         $order = Order::find($order_id);
         if (!$order || $order->user_id != $user_id) {
             return $this->sendError('Ошибка доступа', ['error' => 'Вы не имеете доступ к заказу'], 403);
@@ -80,6 +73,7 @@ class OrderController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'quantity' => 'required',
+            'number' => 'required|min:9',
             'cart.*.id' => 'required|exists:products,id',
             'cart.*.quantity' => 'required|integer|min:1',
             'cart.*.price' => 'required|integer|min:1',
@@ -99,6 +93,9 @@ class OrderController extends BaseController
         $totalCalcPrice = 0;
         foreach ($input['cart'] as $product) {
             $dbProduct = Product::findOrFail($product['id']);
+            if ($product['quantity'] > $dbProduct->count) {
+                return $this->sendError('Нехватка продуктов', ['error' => "Продукта {$product['title']} не хватает"], 400);
+            }
 
             if ($dbProduct->price !== $product['price']) {
                 return $this->sendError('Стоимость продукта не соответствует актуальной',
@@ -134,10 +131,10 @@ class OrderController extends BaseController
             }
         }
 
-
         $order = Order::create([
             'user_id' => $user_id,
             'picked_trade_point' => $input['picked_trade_point'],
+            'number' => $input['number'],
             'address' => $input['address'],
             'total_price' => $input['total_price'],
             'discount_percent' => $input['discount_percent'],
@@ -152,8 +149,6 @@ class OrderController extends BaseController
             'comment' => $input['comment'],
         ]);
 
-
-
         foreach ($input['cart'] as $product) {
             OrderItems::create([
                 'order_id' => $order->id,
@@ -161,15 +156,21 @@ class OrderController extends BaseController
                 'quantity' => $product['quantity'],
                 'total_price' => $product['price'],
             ]);
+            $dbProduct = Product::find($product['id']);
+            $dbProduct->count -= $product['quantity'];
+            $dbProduct->save();
+
+            Reservations::create([
+                'order_id' => $order->id,
+                'product_id' => $product['id'],
+                'reserved_quantity' => $product['quantity']
+            ]);
         }
 
         return response()->json([$order, 200]);
     }
     public function edit(Request $request, $id)
     {
-        if (in_array($request['payment_status_id'],[0, 1])) {
-            return $this->sendError('Невозможно изменить заказ', 'Курьер уже в пути');
-        }
         $request->validate([
             'user_id' => 'required',
             'address' => 'required',
@@ -184,15 +185,32 @@ class OrderController extends BaseController
         $order->update($input);
         return response()->json([$order, 200]);
     }
-    public function changeStatus(Request $request, Order $order)
+    public function changeStatus(Request $request)
     {
         $request->validate([
+            'order_id' => 'required',
             'payment_status_id' => 'required',
         ]);
+        $order = Order::find($request['order_id']);
         $order->update([
             'payment_status_id' => $request['payment_status_id'],
         ]);
-        return response()->json([$order, 200]);
+        $status = DB::table('order_statuses')->where('id', $order->payment_status_id)->first();
+        if ($request['payment_status_id'] == 5) {
+            $orderItems = OrderItems::query()
+                ->where('order_id', $order->id)
+                ->get();
+            foreach ($orderItems as $orderItem) {
+                $product = Product::find($orderItem->product_id);
+                if ($product) {
+                    $product->count += $orderItem->quantity;
+                    $product->save();
+                }
+                Reservations::query()->where('order_id', $order->id)->delete();
+            }
+        }
+        $response = ['id' => $order->id, 'payment_status_id' => $order->payment_status_id, 'payment_status_name' => $status->name];
+        return response()->json([$response, 200]);
     }
     public function delete(Order $order)
     {

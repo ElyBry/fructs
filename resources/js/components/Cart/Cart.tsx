@@ -10,7 +10,7 @@ import styles from "../../../sass/_cart.module.scss";
 import {Link} from "react-router-dom";
 
 import {isValidPhoneNumber, parsePhoneNumber} from "libphonenumber-js";
-import {userAuth} from "../User/userAtom";
+import {userIsAuth} from "../User/userAtom";
 
 const Cart = ({ isOpenCart }) => {
 
@@ -37,7 +37,7 @@ const Cart = ({ isOpenCart }) => {
     const [pickedTradePoint, setPickedTradePoint] = useState('');
     const [loadingTradingPoints , setLoadingTradingPoints] = useState(false);
 
-    const [isAuth,setIsAuth] = useRecoilState(userAuth);
+    const [isAuth,setIsAuth] = useRecoilState(userIsAuth);
     const [error, setError] = useState('');
 
     const [loadingPayments, setLoadingPayments] = useState(false);
@@ -45,12 +45,6 @@ const Cart = ({ isOpenCart }) => {
     const [paymentId,setPaymentId] = useState(1);
 
     const [loadOrder, setLoadOrder ] = useState(false);
-
-    useEffect(() => {
-        const cookies = document.cookie.split('; ');
-        const isAuthenticated = cookies.some(cookie => cookie.startsWith('is_authenticated='));
-        if (isAuthenticated) setIsAuth(true);
-    }, []);
 
     const fetchTradingPoints = async () => {
         if (tradingPoint.length > 0) return;
@@ -135,21 +129,22 @@ const Cart = ({ isOpenCart }) => {
         setLoadOrder(true);
         try {
             const response = await axios.post('/api/doOrder', {
-                    how_deliver: howDeliver,
-                    how_connect: howConnect,
-                    how_social: howSocial,
-                    cart: cart,
-                    promo: promo,
-                    picked_trade_point: pickedTradePoint,
-                    comment: comment,
-                    address: `${address} ${entrance} ${floor} ${flat}`,
-                    quantity: quantity,
-                    total_price: totalCost,
-                    discount_percent: discountPercent,
-                    discount: totalCost - Math.round(totalCost * (1 - discountPercent * 0.01)),
-                    cost_with_discount: Math.round(totalCost * (1 - discountPercent * 0.01)),
-                    payment_method_id: paymentId,
-                    payment_status_id: 1
+                how_deliver: howDeliver,
+                how_connect: howConnect,
+                how_social: howSocial,
+                number: number,
+                cart: cart,
+                promo: promo,
+                picked_trade_point: pickedTradePoint,
+                comment: comment,
+                address: `${address} ${entrance} ${floor} ${flat}`,
+                quantity: quantity,
+                total_price: totalCost,
+                discount_percent: discountPercent,
+                discount: totalCost - Math.round(totalCost * (1 - discountPercent * 0.01)),
+                cost_with_discount: Math.round(totalCost * (1 - discountPercent * 0.01)),
+                payment_method_id: paymentId,
+                payment_status_id: 2
             });
             if (response.status == 200) {
                 setCart([]);

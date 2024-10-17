@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('address')->nullable();
+            $table->string('number');
             $table->unsignedBigInteger('payment_method_id');
             $table->unsignedBigInteger('payment_status_id');
             $table->decimal('total_price', 10, 2);
