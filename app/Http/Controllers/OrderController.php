@@ -24,8 +24,19 @@ class OrderController extends BaseController
 
     public function getOrders(Request $request)
     {
-        if (auth()->check()) $user_id = auth()->user()["id"]; else {
+        if (auth()->check()) $user = auth()->user(); else {
             return $this->sendError('Ошибка аутентификации', ['error' => 'Не аутентифицирован'],401);
+        }
+        $user_id = $user["id"];
+        $user_roles = $user["roles"];
+        $access_roles = ["Super Admin", "Admin", "Manager"];
+        if (in_array($user_roles[0]["name"],$access_roles)) {
+            return Order::query()
+                ->leftJoin('order_statuses', 'orders.payment_status_id', '=', 'order_statuses.id')
+                ->leftJoin('users', 'orders.user_id', '=', 'users.id')
+                ->orderBy('orders.created_at', 'desc')
+                ->selectRaw('orders.*, order_statuses.name as payment_status_id, users.name')
+                ->paginate(10);
         }
         $orders = Order::query()
             ->leftJoin('order_statuses', 'orders.payment_status_id', '=', 'order_statuses.id')
@@ -38,11 +49,20 @@ class OrderController extends BaseController
 
     public function getOrderItems($order_id)
     {
-        if (auth()->check()) $user_id = auth()->user()["id"]; else {
+        if (auth()->check()) $user = auth()->user(); else {
             return $this->sendError('Ошибка аутентификации', ['error' => 'Не аутентифицирован'],401);
         }
+        $user_id = $user["id"];
         if (!$order_id) {
             return $this->sendError('Id не найден', ['error' => 'Id не найден'], 404);
+        }
+        $user_roles = $user["roles"];
+        $access_roles = ["Super Admin", "Admin", "Manager"];
+        if (in_array($user_roles[0]["name"],$access_roles)) {
+            return OrderItems::query()
+                ->leftJoin('products', 'order_items.product_id', '=', 'products.id')
+                ->where('order_id', $order_id)
+                ->get();
         }
         $order = Order::find($order_id);
         if (!$order || $order->user_id != $user_id) {

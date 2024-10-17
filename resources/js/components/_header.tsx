@@ -68,7 +68,14 @@ export default ({className}) => {
             {isAuth ?
                 <>
                     <div id={"hHead"} className={styles.hHead}>
-                        {checkRole(['Super Admin', 'Admin', 'Manager']) ? "gg" : ""}
+                        {checkRole(['Super Admin', 'Admin', 'Manager'])
+                            ?
+                            <>
+                                <Link to={"/admin/orders"}>
+                                    <div className={styles.hSection}>Заказы</div>
+                                </Link>
+                            </>
+                            : ""}
                         <Link to={"/products"}>
                             <div className={styles.hSection}>Заказать продукты</div>
                         </Link>

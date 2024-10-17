@@ -17,8 +17,9 @@ const Orders = () => {
     const fetchOrders = async () => {
         try {
             setLoadingOrders(true);
-            const response = await axios.get(`api/admins/orders?page=${page}`);
+            const response = await axios.get(`../api/admin/orders?page=${page}`);
             setOrders((prev) => [...prev, ...response.data.data]);
+            console.log(response);
             setHasMoreOrders(response.data.current_page < response.data.last_page)
             setLoadingOrders(false);
         } catch (e) {
@@ -34,6 +35,10 @@ const Orders = () => {
     useEffect(() => {
         fetchOrders();
     }, [page]);
+
+    useEffect(() => {
+        setOrders([])
+    }, []);
 
     const observerFeedbacks = useRef<IntersectionObserver | null>(null);
     const lastElementRef = useCallback(
@@ -52,7 +57,8 @@ const Orders = () => {
     );
 
     const fetchOrderDetails = async (orderId) => {
-        const response = await axios.get(`api/orderItems/${orderId}`);
+        const response = await axios.get(`../api/orderItems/${orderId}`);
+        console.log(response);
         return response.data;
     }
 
@@ -84,6 +90,7 @@ const Orders = () => {
                                  className={styles.order} onClick={() => toggleOrderDetails(order.id)}>
                                 <div className={styles.orderHeader}>
                                     <h3>Заказ #{order.id}</h3>
+                                    <p></p>
                                     <p>{new Date(order.created_at).toLocaleString()}</p>
                                     <p>Итоговая сумма: {order.cost_with_discount}р</p>
                                     {order.discount_percent != 0 && <p>Без скидки: {order.total_price}р</p> }

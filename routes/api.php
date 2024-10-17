@@ -102,7 +102,6 @@ Route::group([
         'middleware' => 'api',
         'prefix' => '/auth'
     ], function () {
-
         // Аккаунты
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/refresh', [AuthController::class, 'refresh']);
