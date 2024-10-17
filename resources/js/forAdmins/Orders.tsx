@@ -164,16 +164,17 @@ const Orders = () => {
                                         {order.payment_status_id != 5 &&
                                             <div>
                                                 <button
-                                                    onClick={() => changeStatus(order.id, order.payment_status_id)}>Подтвердить
-                                                    наличие, перейти к
-                                                    доставке
+                                                    onClick={() => changeStatus(order.id, order.how_deliver == "pickup" ? 0 : 2)}>Подтвердить
+                                                    наличие, {order.how_deliver == "pickup" ? "перейти в ожидание клиента" : "перейти к доставке"}
                                                 </button>
-                                                <button onClick={() => changeStatus(order.id, 5)}>
+                                                <button onClick={() => changeStatus(order.id, 3)}>
+                                                    Доставлено
+                                                </button>
+                                                <button onClick={() => changeStatus(order.id, 4)}>
                                                     Отменить
                                                 </button>
                                             </div>
                                         }
-
                                     </div>
                                 )}
                             </div>
