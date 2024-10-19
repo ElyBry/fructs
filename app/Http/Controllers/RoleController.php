@@ -15,7 +15,7 @@ class RoleController extends BaseController
 {
     public function index()
     {
-        $roles = Role::orderBy('id','DESC')->paginate(5);
+        $roles = Role::get();
         return $roles;
     }
 

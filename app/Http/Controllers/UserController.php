@@ -14,9 +14,13 @@ use Illuminate\Http\RedirectResponse;
 use Spatie\Permission\Models\Role;
 
 class UserController extends BaseController {
-    public function index(Request $request): View
+    public function index(Request $request)
     {
-        $user = User::orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(12);
+        $user = User::query()
+            ->leftJoin('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->selectRaw('users.*, roles.id as role_id')
+            ->paginate(12);
 
         return $user;
     }
@@ -37,10 +41,9 @@ class UserController extends BaseController {
 
         return $this->sendResponse($user,'Пользователь успешно создан');
     }
-    public function show($id): View
+    public function show($id)
     {
         $user = User::find($id);
-
         return $user;
     }
 
@@ -48,9 +51,9 @@ class UserController extends BaseController {
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'email|unique:users,email,'.$id,
             'password' => 'same:confirm-password',
-            'roles' => 'required'
+            'role_id' => 'required'
         ]);
 
         $input = $request->all();
@@ -62,9 +65,7 @@ class UserController extends BaseController {
 
         $user = User::find($id);
         $user->update($input);
-        DB::table('model_has_roles')->where('model_id',$id)->delete();
-
-        $user->assignRole($request->input('roles'));
+        DB::table('model_has_roles')->where('model_id',$id)->update(['role_id' => $input['role_id']]);
 
         return $this->sendResponse($user,'Данные пользователя успешно обновлены');
     }

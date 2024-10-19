@@ -15,9 +15,13 @@ const useR = () => {
         else return false;
         const user = JSON.parse(localStorage.getItem('user'));
         setUser(user);
-        const role = user.roles[0].name;
-        setRole(role);
-        return true;
+        if (user.roles[0]){
+            const role = user.roles[0].name;
+            setRole(role);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     return {checkRole, checkAuthAndGetRole}

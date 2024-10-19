@@ -60,7 +60,7 @@ Route::group([
     Route::group([
         'middleware' => [
             'api',
-            'permission:create-products|edit-products|delete-products',
+            'role:Super Admin|Admin|Manager',
         ],
         'prefix' => 'products'
     ], function () {
@@ -73,7 +73,7 @@ Route::group([
     Route::group([
         'middleware' => [
             'api',
-            'permission:view-roles|edit-roles|create-roles|delete-roles'
+            'role:Super Admin|Admin'
         ],
         'prefix' => '/admin'
     ], function () {

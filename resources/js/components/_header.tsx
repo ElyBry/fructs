@@ -70,8 +70,8 @@ export default ({className}) => {
                                 <Link to={"/admin/orders"}>
                                     <div className={styles.hSection}>Заказы</div>
                                 </Link>
-                                <Link to={"/admin/products"}>
-                                    <div className={styles.hSection}>Продукты</div>
+                                <Link to={"/admin/users"}>
+                                    <div className={styles.hSection}>Пользователи</div>
                                 </Link>
                             </>
                             : ""}
