@@ -53,6 +53,12 @@ export default ({className}) => {
             })
     }
 
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
+
     return  (
         <header className={`${styles.header} ${className}`}>
             <Link to={"/"}>
@@ -64,17 +70,26 @@ export default ({className}) => {
             {isAuth ?
                 <>
                     <div id={"hHead"} className={styles.hHead}>
-                        {checkRole(['Super Admin', 'Admin', 'Manager'])
-                            ?
-                            <>
-                                <Link to={"/admin/orders"}>
-                                    <div className={styles.hSection}>Заказы</div>
-                                </Link>
-                                <Link to={"/admin/users"}>
-                                    <div className={styles.hSection}>Пользователи</div>
-                                </Link>
-                            </>
-                            : ""}
+                        {checkRole(['Super Admin', 'Admin', 'Manager']) && (
+                            <div className={styles.dropdown}>
+                                <div className={styles.hSection} onClick={toggleMenu}>
+                                    Админ Панель
+                                </div>
+                                {isOpen && (
+                                    <div className={styles.dropdownContent}>
+                                        <Link to={"/admin/orders"}>
+                                            <div className={styles.hSection}>Заказы</div>
+                                        </Link>
+                                        <Link to={"/admin/users"}>
+                                            <div className={styles.hSection}>Пользователи</div>
+                                        </Link>
+                                        <Link to={"/admin/products"}>
+                                            <div className={styles.hSection}>Продукты</div>
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                         <Link to={"/products"}>
                             <div className={styles.hSection}>Заказать продукты</div>
                         </Link>

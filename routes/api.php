@@ -68,7 +68,6 @@ Route::group([
         Route::put('{product}',[ProductsController::class, 'update']);
         Route::delete('{product}', [ProductsController::class, 'delete']);
     });
-
     // Для администратора
     Route::group([
         'middleware' => [
@@ -79,7 +78,6 @@ Route::group([
     ], function () {
         Route::resource('roles', RoleController::class);
         Route::resource('users', UserController::class);
-        Route::resource('products', ProductsController::class);
         Route::resource('typeProducts', TypeProductsController::class);
         Route::resource('colors', ColorsController::class);
         Route::resource('countries', CountriesController::class);
@@ -110,6 +108,12 @@ Route::group([
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/refresh', [AuthController::class, 'refresh']);
         Route::post('/profile', [AuthController::class, 'profile']);
+    });
+    // ENV
+    Route::get('/env', function() {
+       return [
+           'APP_URL' => env('APP_URL'),
+       ];
     });
 });
 

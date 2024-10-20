@@ -31,6 +31,20 @@ header {
     display: flex;
     gap: var.$margin-h1;
 }
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+.dropdownContent {
+    top: 55px;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 10000;
+    background-color: white;
+    border-radius: var.$border-radius;
+}
 .hSection {
     transition: .7s box-shadow ease;
     cursor: pointer;

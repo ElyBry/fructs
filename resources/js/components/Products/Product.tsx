@@ -39,7 +39,7 @@ const Product = ({ product, openAboutProduct = null, addItem = null, refLast = n
                                 {product.count_feeds}
                             </div>
                         </div>
-                        <img src={product.img}/>
+                        <img src={`http://localhost:8000/${product.img}`}/>
                         {product.id}
                     </div>
                     <div className={styles.textProducts}>

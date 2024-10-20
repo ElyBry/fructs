@@ -22,7 +22,7 @@ const Orders = () => {
     const [page, setPage] = useState(1);
 
     useEffect(() => {
-        if (!checkRole) {
+        if (!checkRole(['Super Admin', 'Admin', 'Manager'])) {
             navigate('/login');
         }
     }, []);

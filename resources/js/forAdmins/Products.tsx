@@ -2,26 +2,40 @@ import * as React from 'react';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import * as ReactDOM from 'react-dom/client';
 
-import styles from "../sass/_componentsForProducts.module.scss";
+import styles from "../../sass/_componentsForProducts.module.scss";
 
 import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
 import axios from "axios";
 
-import Footer from "./components/_footer.js";
-import Header from "./components/_header.js";
+import Footer from "../components/_footer";
+import Header from "../components/_header.js";
 
-import Search from "./components/Search/Search";
+import Search from "../components/Search/Search";
 
-import Countries from "./components/CountriesSearch/CountriesSearch";
-import { countriesList } from "./components/CountriesSearch/countriesAtom";
+import Countries from "../components/CountriesSearch/CountriesSearch";
+import { countriesList } from "../components/CountriesSearch/countriesAtom";
 
-import ProductsList from "./components/Products/ProductsList";
+import ProductsList from "../components/Products/ProductsList";
 
-import Cart from "./components/Cart/Cart";
-import {cartAtom, totalCostAtom, quantityAtom} from "./components/Cart/cartAtom";
-import useCart from "./components/Cart/useCart";
+import Cart from "../components/Cart/Cart";
+import {cartAtom, totalCostAtom, quantityAtom} from "../components/Cart/cartAtom";
+import useCart from "../components/Cart/useCart";
+import {userIsAuth, userRole} from "../components/User/userAtom";
+import {useNavigate} from "react-router-dom";
+import User from "../components/User/user";
 
 const Products: React.FC = () => {
+    const [isAuth, setIsAuth] = useRecoilState( userIsAuth );
+    const [roles, setRoles] = useState(userRole);
+    const {checkRole, checkAuthAndGetRole} = User();
+
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (!checkRole(['Super Admin', 'Admin', 'Manager'])) {
+            navigate('/login');
+        }
+    }, []);
+
 
     const selectedCountries = useRecoilValue(countriesList);
 
@@ -85,23 +99,14 @@ const Products: React.FC = () => {
     }
     const fetchTopInfo = async () => {
         try {
-            setLoadingTop(true);
             setLoadingCategories(true);
             setLoadingColors(true);
 
-            const responseNewProduct = await axios.get<any>('api/newProduct');
-            setNewProduct(responseNewProduct.data);
-            const responsePopularProduct = await axios.get<any>('api/popularProduct');
-            setPopularProduct(responsePopularProduct.data);
-            const responseNewCategory = await axios.get<any>('api/newCategory');
-            setNewCategory(responseNewCategory.data);
-            setLoadingTop(false);
-
-            const responseAllCategory = await axios.get<any>('api/typeProducts');
+            const responseAllCategory = await axios.get<any>('../api/typeProducts');
             setAllCategory(responseAllCategory.data);
             setLoadingCategories(false);
 
-            const responseAllColors = await axios.get<any>('api/colors');
+            const responseAllColors = await axios.get<any>('../api/colors');
             setAllColors(responseAllColors.data);
             setLoadingColors(false);
 
@@ -110,6 +115,7 @@ const Products: React.FC = () => {
             console.log('Ошибка получения данных',e);
         }
     };
+
     useEffect(() => {
         fetchTopInfo();
     }, []);
@@ -132,67 +138,13 @@ const Products: React.FC = () => {
             }
         }
     };
-
-    const handleTopPick = (id) => {
-        const allCategories = document.querySelectorAll("input[name=type]");
-        allCategories.forEach((categories:HTMLInputElement) => categories.checked = false);
-        setSelectedTypes([]);
-        const category:HTMLInputElement = document.querySelector("#type" + id);
-        category.checked = !category.defaultChecked;
-        category.defaultChecked = category.checked;
-        handleAnyChange({target: {value: id, checked: category.checked}},"Category")
-    };
-
-    const totalCost = useRecoilValue(totalCostAtom);
-    const quantity = useRecoilValue(quantityAtom);
-    const { addItem, removeItem, updateItemQuantity } = useCart();
-    const [cart, setCart] = useRecoilState(cartAtom);
-
     const [aboutProduct, setAboutProduct] = useState(null);
     const [isOpenAboutProduct, setIsOpenAboutProduct] = useState(false);
-    const [isOpenCart, setIsOpenCart] = useState(false);
 
     const [feedbacksProduct, setFeedbacksProduct] = useState([]);
     const [loadingFeedbacksProduct, setLoadingFeedbacksProduct] = useState(false);
     const [pageFeedbacksProduct, setPageFeedbacksProduct] = useState(null);
     const [hasMoreFeedbacks, setHasMoreFeedbacks] = useState(false);
-
-
-    const updateCart = async () => {
-        const productsIds = cart.map(item => item.id);
-
-        try {
-            const response = await axios.get('/api/updateCart', {
-                params: {
-                    productsIds: productsIds
-                }
-            });
-            const data = response.data;
-            const updatedCart = cart.map(item => {
-                const updatedProduct = data.find(data => data.id === item.id);
-                return {
-                    ...item,
-                    price: updatedProduct ? updatedProduct.price : item.price,
-                    count: updatedProduct ? updatedProduct.count : item.count
-                }
-            })
-            setCart(updatedCart);
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    useEffect(() => {
-        if (isOpenCart) {
-            updateCart();
-        }
-    }, [isOpenCart]);
-
-    useEffect(() => {
-        if (cart.length == 0) {
-            setIsOpenCart(false);
-        }
-    }, [cart]);
 
     const fetchFeedbacksProduct = async (page, product, controller) => {
         try {
@@ -253,28 +205,29 @@ const Products: React.FC = () => {
         [loadingFeedbacksProduct, hasMoreFeedbacks]
     );
 
+    const [product,setProduct] = useState(null);
+    const addNewProduct = async () => {
+        const response = await axios.post('../api/admin/products/', {
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            type_weight: product.type_weight,
+            img: product.img,
+            type_products_id: product.type_products_id,
+            color_id: product.color_id,
+            country_id: product.country_id,
+            count: product.count
+        });
+    };
+    const handleInputChange = (e, field) => {
+        const { value } = e.target;
+        setProduct((prevUser) => ({
+            ...prevUser,
+            [field]: value
+        }));
+    };
     return (
         <div className={styles.root}>
-            <div id={"usableItems"} className={styles.usableItems}>
-                <button id={"openCart"} className={`${styles.openCart} ${quantity > 0 && !isOpenCart ? styles.visible : ""}`}
-                        onClick={() => {
-                            setIsOpenCart(true);
-                            setIsOpenAboutProduct(false);
-                        }}
-                >
-                    <span className="material-symbols-outlined">shopping_cart</span><br/>
-                    {totalCost} р<br/>
-                    Кол-во: {quantity}
-                </button>
-                <button id={"close"} className={`${styles.close} ${isOpenAboutProduct || isOpenCart ? styles.visible : ""}`}
-                        onClick={() => {
-                            setIsOpenAboutProduct(false);
-                            setIsOpenCart(false);
-                        }}
-                >
-                    <span className="material-symbols-outlined">arrow_back</span>
-                </button>
-            </div>
             <div id={"aboutProductModule"} className={`${styles.aboutProductModule} ${isOpenAboutProduct ? styles.visible : ""}`}>
                 <div id={"aboutProduct"} className={styles.aboutProduct}>
                     {
@@ -288,14 +241,6 @@ const Products: React.FC = () => {
                             </div>
                             <div className={styles.price}>
                                 <p>Цена: {aboutProduct["price"]}р / {aboutProduct["weight"]} {aboutProduct["type_weight"]}</p>
-                                <button className={styles.buyButton}
-                                        onClick={() => {
-                                            addItem(aboutProduct)
-                                            setIsOpenAboutProduct(false);
-                                        }}
-                                >
-                                    {cart.findIndex(item => item.id == aboutProduct.id) < 0 ? "Добавить в корзину" : "Удалить из коризны"}
-                                </button>
                             </div>
                             <div className={styles.feedbacksProducts}>
                                 <h2>К-во отзывов: {aboutProduct["count_feeds"]}</h2>
@@ -330,101 +275,12 @@ const Products: React.FC = () => {
                     }
                 </div>
             </div>
-            <Cart isOpenCart={isOpenCart}/>
             <Header className={styles.header}/>
-            <Search/>
-            <div id={"infoProducts"} className={styles.infoProducts}>
-                <div className={styles.content}>
-                    <div className={styles.cards}>
-                        {loadingTop ?
-                            <>
-                                <div className={`${styles.infoCard} ${styles.grey}`}>
-                                    <div className={styles.leftSide}>
-                                        <h4>Хит Продаж(за месяц)</h4>
-                                        <h1>Яблоко</h1>
-                                        <h3>320р/ Килограмм</h3>
-                                        <button disabled={true}>Подробнее</button>
-                                    </div>
-                                    <div className={styles.rightSide}>
-                                    </div>
-                                </div>
-                                <div className={`${styles.infoCard} ${styles.grey}`}>
-                                    <div className={styles.leftSide}>
-                                        <h4>Новая Категория</h4>
-                                        <h1>Фрукты</h1>
-                                        <button disabled={true}>Отфильтровать</button>
-                                    </div>
-                                    <div className={styles.rightSide}>
-                                    </div>
-                                </div>
-                                <div className={`${styles.infoCard} ${styles.grey}`}>
-                                    <div className={styles.leftSide}>
-                                        <h4>Новый Продукт</h4>
-                                        <h1>Апельсин</h1>
-                                        <h3>320р/ Килограмм</h3>
-                                        <button disabled={true}>Подробнее</button>
-                                    </div>
-                                    <div className={styles.rightSide}>
-                                    </div>
-                                </div>
-                            </>
-                            :
-                            <>
-                                <div className={styles.infoCard}>
-                                    <div className={styles.star}>
-                                        <span className={"material-symbols-outlined"}>star_rate</span>
-                                        <div>
-                                            {popularProduct["average_rating"]}
-                                            {popularProduct["average_rating"] ? <hr/> : ""}
-                                            {popularProduct["count_feeds"]}
-                                        </div>
-                                    </div>
-                                    <div className={styles.leftSide}>
-                                        <h4>Хит Продаж(за месяц)</h4>
-                                        <h1>{popularProduct["title"]}</h1>
-                                        <h3>{popularProduct["price"] + "р/ "} {`${popularProduct["weight"]} ${popularProduct["type_weight"]}`}</h3>
-                                        <button onClick={() => openAboutProduct(popularProduct)}>Подробнее</button>
-                                    </div>
-                                    <div className={styles.rightSide}>
-                                        <img src={popularProduct["img"]}/>
-                                    </div>
-                                </div>
-                                <div className={styles.infoCard}>
-                                    <div className={styles.leftSide}>
-                                        <h4>Новая Категория</h4>
-                                        <h1>{newCategory["name"]}</h1>
-                                        <button onClick={() => handleTopPick(newCategory["id"])}>Отфильтровать</button>
-                                    </div>
-                                    <div className={styles.rightSide}>
-                                        <img src={newCategory["img"]}/>
-                                    </div>
-                                </div>
-                                <div className={styles.infoCard}>
-                                    <div className={styles.star}>
-                                        <span className={"material-symbols-outlined"}>star_rate</span>
-                                        <div>
-                                            {newProduct["average_rating"]}
-                                            {newProduct["average_rating"] ? <hr/> : ""}
-                                            {newProduct["count_feeds"]}
-                                        </div>
-                                    </div>
-                                    <div className={styles.leftSide}>
-                                        <h4>Новый Продукт</h4>
-                                        <h1>{newProduct["title"]}</h1>
-                                        <h3>{newProduct["price"] + "р/ "} {`${newProduct["weight"]} ${newProduct["type_weight"]}`}</h3>
-                                        <button onClick={() => openAboutProduct(newProduct)}>Подробнее</button>
-                                    </div>
-                                    <div className={styles.rightSide}>
-                                        <img src={newProduct["img"]}/>
-                                    </div>
-                                </div>
-                            </>
-                        }
-                    </div>
-                </div>
-            </div>
             <div id={"main"} className={styles.main}>
                 <div className={styles.content}>
+                    <div className={styles.change}
+                         onClick={addNewProduct}
+                    >Добавить новый продукт</div>
                     <div id={"filter"} className={styles.filterBlock}>
                         <div className={styles.mainType}>
                             {loadingCategories ?
@@ -595,6 +451,7 @@ const Products: React.FC = () => {
                             </div>
                         </div>
                     </div>
+                    <Search/>
                     <ProductsList maxPrice={maxPrice} minPrice={minPrice} ascendingSort={ascendingSort}
                                   howSort={howSort} selectedColors={selectedColors} selectedTypes={selectedTypes}
                                   openAboutProduct={openAboutProduct}
