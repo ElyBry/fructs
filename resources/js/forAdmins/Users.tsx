@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 import {useRecoilState} from "recoil";
 import {userIsAuth, userRole} from "../components/User/userAtom";
 import User from "../components/User/user";
+import Alert from "../components/Alert/Alert";
 
 const Users = () => {
     const [isAuth, setIsAuth] = useRecoilState( userIsAuth );
@@ -106,7 +107,7 @@ const Users = () => {
         }));
     };
 
-    const [alert, setAlert] = useState('');
+    const [message, setMessage] = useState('');
 
     const saveChanges = async () => {
         try {
@@ -121,9 +122,9 @@ const Users = () => {
                     user.id === newData.id ? newData : user
                 );
             });
-            setAlert('Пользователь успешно обновлён!');
+            setMessage('Пользователь успешно обновлён!');
             setTimeout(() => {
-                setAlert('');
+                setMessage('');
             }, 3000);
         } catch (e) {
             if (e.status == 401 || e.status == 403) {
@@ -138,9 +139,7 @@ const Users = () => {
     return (
         <>
             <Header className={styles.header}/>
-            {alert != '' && <div className={styles.alert}>
-                {alert}
-            </div>}
+            <Alert message={message}/>
             <div className={`${styles.changer} ${isOpenEdit ? styles.visible : ""}`}>
                 <div className={styles.content}>
                     <input

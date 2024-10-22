@@ -96,21 +96,19 @@ class ProductsController extends BaseController
             'type_products_id' => 'integer',
             'color_id' => 'required|integer',
             'country_id' => 'required|integer',
-            'img' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'count' => 'required|integer'
+            'count' => 'required|integer',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:16384',
         ]);
 
         $productData = $request->all();
         if ($request->hasFile('image')) {
             $image = Image::read($request->file('image'));
-            $image->encode('webp');
-            $path = 'image/fruits_for_products';
+            $image->encode(new AutoEncoder('webp'));
+            $path = 'image/fruits_for_products/';
             $uniq = $this->generateUniqueFilename($path);
-            $in = 'fruits_for_products/' . $uniq . '.webp';
-            Storage::put('public/' . $in, (string) $image->encode());
-            $productData['img'] = 'storage/' . $in;
-            Log::error($in." path:".$path." in:".$in);
+            $in = $path . $uniq;
+            $image->save($in);
+            $productData['img'] = $in;
         }
 
         $product = Product::create($productData);
@@ -131,7 +129,6 @@ class ProductsController extends BaseController
         ]);
         $productData = $request->all();
         if ($request->hasFile('image')) {
-            Log::info($productData['img']." ".public_path($productData['img']));
             if (isset($productData['img'])) {
                 $previousImagePath = public_path($productData['img']);
                 if (file_exists($previousImagePath)) {
@@ -148,7 +145,7 @@ class ProductsController extends BaseController
         }
 
         $product = $product->update($productData);
-        return $this->sendResponse($product,'Успешно обновлено');
+        return $this->sendResponse($productData,'Успешно обновлено');
     }
     public function delete(Product $product)
     {

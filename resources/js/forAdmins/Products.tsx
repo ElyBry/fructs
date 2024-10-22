@@ -23,6 +23,9 @@ import useCart from "../components/Cart/useCart";
 import {userIsAuth, userRole} from "../components/User/userAtom";
 import {useNavigate} from "react-router-dom";
 import User from "../components/User/user";
+import {productsAtom} from "../components/Products/productsAtom";
+import {FileUploadFile} from "primereact/fileupload";
+import Alert from "../components/Alert/Alert";
 
 const Products: React.FC = () => {
     const [isAuth, setIsAuth] = useRecoilState( userIsAuth );
@@ -137,10 +140,14 @@ const Products: React.FC = () => {
     const [aboutProduct, setAboutProduct] = useState(null);
     const [isOpenAboutProduct, setIsOpenAboutProduct] = useState(false);
 
+    const [products, setProducts] = useRecoilState(productsAtom);
+
     const [feedbacksProduct, setFeedbacksProduct] = useState([]);
     const [loadingFeedbacksProduct, setLoadingFeedbacksProduct] = useState(false);
     const [pageFeedbacksProduct, setPageFeedbacksProduct] = useState(null);
     const [hasMoreFeedbacks, setHasMoreFeedbacks] = useState(false);
+
+    const [addingNewProduct, setAddingNewProduct] = useState(false);
 
     const fetchFeedbacksProduct = async (page, product, controller) => {
         try {
@@ -169,6 +176,12 @@ const Products: React.FC = () => {
         setAboutProduct(product);
         setIsOpenAboutProduct(true);
     };
+
+    useEffect(() => {
+        setProduct([]);
+        setAboutProduct([]);
+        setIsOpenAboutProduct(true);
+    }, [addingNewProduct]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -203,43 +216,58 @@ const Products: React.FC = () => {
     );
 
     const [isLoadingChange, setIsLoadingChange] = useState(false)
-    const [product, setProduct] = useState(null);
-    const fileInputRef = useRef();
+    const [newProduct, setProduct] = useState(null);
+    const fileInputRef = useRef<HTMLInputElement | null>();
+    const [message, setMessage] = useState('');
     const addNewProduct = async () => {
         try {
             setIsLoadingChange(true)
-            console.log(product);
+            console.log(newProduct);
             const formData = new FormData();
             const file = fileInputRef.current?.files[0];
             if (file) {
                 formData.append('image', file);
-            } else {
-                console.log(file);
             }
-            formData.append('title', product.title);
-            formData.append('description', product.description);
-            formData.append('price', product.price);
-            formData.append('weight', product.weight);
-            formData.append('type_weight', product.type_weight);
-            formData.append('img', product.img);
-            formData.append('type_products_id', product.type_products_id);
-            formData.append('color_id', product.color_id);
-            formData.append('country_id', product.country_id);
-            formData.append('count', product.count);
-            const response = await axios.post(`../api/products/${product.id}`, formData, {
+            formData.append('title', newProduct.title);
+            formData.append('description', newProduct.description);
+            formData.append('price', newProduct.price);
+            formData.append('weight', newProduct.weight);
+            formData.append('type_weight', newProduct.type_weight);
+            formData.append('img', newProduct.img);
+            formData.append('type_products_id', newProduct.type_products_id);
+            formData.append('color_id', newProduct.color_id);
+            formData.append('country_id', newProduct.country_id);
+            formData.append('count', newProduct.count);
+            const response = await axios.post(`../api/products/${newProduct.id ? newProduct.id : ""}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log(response);
+            const newData = response.data.data;
+            newData.id = newProduct.id;
+            setProducts((prevProducts) => {
+                return prevProducts.map((product) => {
+                    return product.id == newProduct.id ?  newData : product;
+                })
+            })
+            fileInputRef.current.value = '';
+            setProduct(newData);
+            setMessage('Успешно обновлено')
+            setTimeout(() => {
+                setMessage('');
+            }, 3000);
             setIsLoadingChange(false);
         } catch (e) {
             console.error(e);
+            setMessage('Произошла непредвиденная ошибка')
+            setTimeout(() => {
+                setMessage('');
+            }, 3000);
+            setIsLoadingChange(false);
         }
     };
     const handleInputChange = (e, field) => {
         let { value } = e.target;
-        console.log(product);
         if (field == "country_id") {
             setProduct((prevProduct) => ({
                 ...prevProduct,
@@ -254,11 +282,13 @@ const Products: React.FC = () => {
 
     return (
         <div className={styles.root}>
+            <Alert message={message}/>
             <div id={"usableItems"} className={styles.usableItems}>
                 <button id={"close"}
                         className={`${styles.close} ${isOpenAboutProduct ? styles.visible : ""}`}
                         onClick={() => {
                             setIsOpenAboutProduct(false);
+                            setAddingNewProduct(false);
                         }}
                 >
                     <span className="material-symbols-outlined">arrow_back</span>
@@ -270,28 +300,32 @@ const Products: React.FC = () => {
                     {
                         aboutProduct &&
                         <>
-                            <img src={`${window.location.origin}/${aboutProduct["img"]}`}/>
-                            <label>Изменить Изображение</label>
-                            <input type={"file"} accept={"image/*"} ref={fileInputRef}/>
+                            <img src={`${window.location.origin}/${newProduct["img"]}`}/>
+                            <div>
+                                <label>Изменить Изображение</label><br/>
+                                <input type={"file"} accept={"image/*"} ref={fileInputRef}/>
+                            </div>
                             <h2>
-                                <input className={styles.productName} value={product.title}
+                                <label>Название:</label>
+                                <input className={styles.productName} value={newProduct.title}
                                        onChange={(e) => handleInputChange(e, 'title')}
                                 />
                             </h2>
                             <p>
-                                <textarea className={styles.description} value={product.description}
+                                <label>Описание:</label>
+                                <textarea className={styles.description} value={newProduct.description}
                                           onChange={(e) => handleInputChange(e, 'description')}
                                 />
                             </p>
                             <div className={styles.details}>
                                 <p>
-                                    Страна: {product.country}
+                                    Страна: {newProduct.country}
                                 </p>
                                 <Countries selectCountry={(e) => handleInputChange(e, 'country_id')}/>
                             </div>
                             <div className={styles.details}>
                                 Тип продукта
-                                <select value={product.type_products_id}
+                                <select value={newProduct.type_products_id}
                                         onChange={(e) => handleInputChange(e,'type_products_id')}
                                 >
                                     {allCategory.length > 0 && allCategory.map((category) => (
@@ -303,7 +337,7 @@ const Products: React.FC = () => {
                             </div>
                             <div className={styles.details}>
                                 Цвет продукта
-                                <select value={product.color_id}
+                                <select value={newProduct.color_id}
                                         onChange={(e) => handleInputChange(e,'color_id')}
                                 >
                                     {allColors.length > 0 && allColors.map((color) => (
@@ -315,46 +349,55 @@ const Products: React.FC = () => {
                             </div>
                             <div className={styles.price}>
                                 Цена:
-                                <input value={product.price} onChange={e => handleInputChange(e, 'price')}/>р
+                                <input value={newProduct.price} onChange={e => handleInputChange(e, 'price')}/>р
                                 <hr/>
-                                <input value={product.weight} onChange={e => handleInputChange(e, "weight")}/>
-                                <input value={product.type_weight} onChange={e => handleInputChange(e, "type_weight")}/>
+                                За
+                                <input value={newProduct.weight} onChange={e => handleInputChange(e, "weight")}/>
+                                <input value={newProduct.type_weight} onChange={e => handleInputChange(e, "type_weight")}/>
+                            </div>
+                            <div className={styles.price}>
+                                Кол-во доступных:
+                                <input type={"number"} value={newProduct.count} onChange={e => handleInputChange(e, 'count')}/>
                             </div>
                             <button id={"change"}
                                     className={`${styles.changeButton} ${isLoadingChange ? styles.grey : ""}`}
                                     onClick={() => addNewProduct()}
                             >
-                                Сохранить
+                                {addingNewProduct ? "Добавить" : "Сохранить"}
                             </button>
-                            <div className={styles.feedbacksProducts}>
-                                <h2>К-во отзывов: {aboutProduct["count_feeds"]}</h2>
-                                <h2>Рейтинг: {aboutProduct["average_rating"]}</h2>
-                                <h1>Отзывы</h1>
-                                <div id={"feedbacks"} className={styles.feedbacks}>
-                                    {feedbacksProduct && feedbacksProduct.map((feedback, index) => (
-                                        <div key={feedback.id}
-                                             ref={index + 1 == feedbacksProduct.length ? lastElementRef : null}
-                                             className={styles.feedback}
-                                        >
-                                            <div className={styles.star}>
-                                                <span className={"material-symbols-outlined"}>star_rate</span>
-                                                <div>
-                                                    {feedback["rating"]}
+                            {!addingNewProduct ?
+                                <div className={styles.feedbacksProducts}>
+                                    <h2>К-во отзывов: {aboutProduct["count_feeds"]}</h2>
+                                    <h2>Рейтинг: {aboutProduct["average_rating"]}</h2>
+                                    <h1>Отзывы</h1>
+                                    <div id={"feedbacks"} className={styles.feedbacks}>
+                                        {feedbacksProduct && feedbacksProduct.map((feedback, index) => (
+                                            <div key={feedback.id}
+                                                 ref={index + 1 == feedbacksProduct.length ? lastElementRef : null}
+                                                 className={styles.feedback}
+                                            >
+                                                <div className={styles.star}>
+                                                    <span className={"material-symbols-outlined"}>star_rate</span>
+                                                    <div>
+                                                        {feedback["rating"]}
+                                                    </div>
+                                                </div>
+                                                <div className={styles.username}>
+                                                    {feedback.user_name}
+                                                </div>
+                                                <div className={styles.message}>
+                                                    {feedback.message}
                                                 </div>
                                             </div>
-                                            <div className={styles.username}>
-                                                {feedback.user_name}
-                                            </div>
-                                            <div className={styles.message}>
-                                                {feedback.message}
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {loadingFeedbacksProduct && <p>Загрузка....</p>}
-                                    {!loadingFeedbacksProduct && feedbacksProduct.length == 0 &&
-                                        <p>Отзывов не найдено</p>}
+                                        ))}
+                                        {loadingFeedbacksProduct && <p>Загрузка....</p>}
+                                        {!loadingFeedbacksProduct && feedbacksProduct.length == 0 &&
+                                            <p>Отзывов не найдено</p>}
+                                    </div>
                                 </div>
-                            </div>
+                                :
+                                <></>
+                            }
                         </>
                     }
                 </div>
@@ -364,7 +407,7 @@ const Products: React.FC = () => {
                 <Search/>
                 <div className={styles.content}>
                     <div className={styles.change}
-                         onClick={addNewProduct}
+                         onClick={() => setAddingNewProduct(true)}
                     >Добавить новый продукт
                     </div>
                     <div id={"filter"} className={styles.filterBlock}>
