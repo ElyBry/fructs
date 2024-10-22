@@ -12,7 +12,7 @@ import useCart from "../Cart/useCart"
 import stylesProducts from "../../../sass/_products.module.scss";
 import stylesProduct from "../../../sass/_product.module.scss";
 
-const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSort, ascendingSort, openAboutProduct, minRate, maxRate}) => {
+const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSort, ascendingSort, openAboutProduct, minRate, maxRate, isAdmin = false}) => {
     const [aboutProduct, setAboutProduct] = useRecoilState(aboutProductAtom)
     const [isOpenAboutProduct, setIsOpenAboutProduct] = useRecoilState(openAboutProductAtom)
 
@@ -99,7 +99,11 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
     return (
         <div id={"tableProducts"} className={stylesProducts.tableProducts}>
             {products.length != 0 && products.map((product, index) => (
-                <Product product={product} key={product.id} openAboutProduct={openAboutProduct} addItem={addItem} refLast={products.length == index + 1 ? lastElementRef : null}/>
+                <Product product={product} key={product.id}
+                         openAboutProduct={openAboutProduct} addItem={addItem}
+                         refLast={products.length == index + 1 ? lastElementRef : null}
+                         isAdmin={isAdmin}
+                />
             ))}
             {loading && [...Array(12)].map((_, index) => (
                 <div key={index} className={`${stylesProduct.products} ${stylesProducts.grey_card}`}>

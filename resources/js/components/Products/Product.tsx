@@ -4,12 +4,14 @@ import {cartAtom} from "../Cart/cartAtom";
 import {useRecoilValue} from "recoil";
 
 import styles from "../../../sass/_product.module.scss"
+import {useEffect} from "react";
 
 const Product = ({ product, openAboutProduct = null, addItem = null, refLast = null, isAdmin = null}) => {
     const cart = useRecoilValue(cartAtom);
     const {ref, inView} = useInView({
         threshold: 0,
     })
+
     const mergeRefs = (...inputRefs) => {
         return (ref) => {
             inputRefs.forEach((inputRef) => {
@@ -31,16 +33,17 @@ const Product = ({ product, openAboutProduct = null, addItem = null, refLast = n
                 ?
                 <>
                     <div className={styles.imgProducts}>
-                        <div className={styles.star}>
-                            <span className={"material-symbols-outlined"}>star_rate</span>
-                            <div>
-                                {product.average_rating}
-                                {product.average_rating ? <hr/> : ""}
-                                {product.count_feeds}
+                        {product.average_rating && product.count_feeds &&
+                            <div className={styles.star}>
+                                <span className={"material-symbols-outlined"}>star_rate</span>
+                                <div>
+                                    {product.average_rating}
+                                    {product.average_rating ? <hr/> : ""}
+                                    {product.count_feeds}
+                                </div>
                             </div>
-                        </div>
-                        <img src={`http://localhost:8000/${product.img}`}/>
-                        {product.id}
+                        }
+                        <img src={`${window.location.origin}/${product.img}`}/>
                     </div>
                     <div className={styles.textProducts}>
                         {product.title}
@@ -55,9 +58,7 @@ const Product = ({ product, openAboutProduct = null, addItem = null, refLast = n
                                 {cart.findIndex(item => item.id == product.id) < 0 ? "Добавить в корзину" : "Удалить из корзины"}
                             </button>
                         }
-                        {isAdmin ? <button  className={styles.aboutProducts}>Подробнее</button> :
-                            <button className={styles.aboutProducts} onClick={() => openAboutProduct(product)}>Подробнее</button>
-                        }
+                        <button className={styles.aboutProducts} onClick={() => openAboutProduct(product)}>{isAdmin ? "Изменить" : "Подробнее"}</button>
                     </div>
                 </>
                 :

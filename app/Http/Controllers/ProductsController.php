@@ -8,7 +8,14 @@ use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Intervention\Image\Encoders\AutoEncoder;
+use Intervention\Image\Laravel\Facades\Image;
+use Intervention\Image\Interfaces\EncoderInterface;
 
 class ProductsController extends BaseController
 {
@@ -19,7 +26,9 @@ class ProductsController extends BaseController
             ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
             ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
             ->groupBy('products.id')
-            ->selectRaw('count, type_weight, countries.name as country, products.id, title, img, description, price, weight, COUNT(DISTINCT feedback_products.id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating');
+            ->selectRaw('count, type_weight, countries.name as country, products.id, title, img, type_products_id, color_id, country_id,
+            description, price, weight, COUNT(DISTINCT CASE WHEN feedback_products.is_approved = true THEN feedback_products.id END) AS count_feeds,
+            ROUND(AVG(CASE WHEN feedback_products.is_approved = true THEN feedback_products.rating END), 2) AS average_rating');
         if ($request->has('name') && $request->get('name') != '') {
             $query->where('title', 'like', '%' . $request->get('name') . '%');
         }
@@ -78,27 +87,67 @@ class ProductsController extends BaseController
     }
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|unique:products|max:255',
+        $request->validate([
+            'title' => 'required|max:255',
             'description' => 'required',
-            'price' => 'integer',
-            'type_weight' => 'string',
-            'weight' => 'integer',
-            'img' => 'string',
+            'price' => 'required|integer',
+            'type_weight' => 'required|string',
+            'weight' => 'required|integer',
             'type_products_id' => 'integer',
-            'color_id' => 'integer',
-            'country_id' => 'integer',
-            'count' => 'number'
+            'color_id' => 'required|integer',
+            'country_id' => 'required|integer',
+            'img' => 'required',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'count' => 'required|integer'
         ]);
-        if($validator->fails()){
-            return $this->sendError('Ошибка валидации', $validator->errors());
+
+        $productData = $request->all();
+        if ($request->hasFile('image')) {
+            $image = Image::read($request->file('image'));
+            $image->encode('webp');
+            $path = 'image/fruits_for_products';
+            $uniq = $this->generateUniqueFilename($path);
+            $in = 'fruits_for_products/' . $uniq . '.webp';
+            Storage::put('public/' . $in, (string) $image->encode());
+            $productData['img'] = 'storage/' . $in;
+            Log::error($in." path:".$path." in:".$in);
         }
-        $product = Product::create($request->all());
+
+        $product = Product::create($productData);
         return $this->sendResponse($product,'Успешно добавлено');
     }
     public function update(Request $request, Product $product)
     {
-        $product->update($request->all());
+        $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required',
+            'price' => 'required|integer',
+            'type_weight' => 'required|string',
+            'weight' => 'required|integer',
+            'type_products_id' => 'integer',
+            'color_id' => 'required|integer',
+            'country_id' => 'required|integer',
+            'count' => 'required|integer'
+        ]);
+        $productData = $request->all();
+        if ($request->hasFile('image')) {
+            Log::info($productData['img']." ".public_path($productData['img']));
+            if (isset($productData['img'])) {
+                $previousImagePath = public_path($productData['img']);
+                if (file_exists($previousImagePath)) {
+                    unlink($previousImagePath);
+                }
+            }
+            $image = Image::read($request->file('image'));
+            $image->encode(new AutoEncoder('webp'));
+            $path = 'image/fruits_for_products/';
+            $uniq = $this->generateUniqueFilename($path);
+            $in = $path . $uniq;
+            $image->save($in);
+            $productData['img'] = $in;
+        }
+
+        $product = $product->update($productData);
         return $this->sendResponse($product,'Успешно обновлено');
     }
     public function delete(Product $product)
@@ -112,8 +161,8 @@ class ProductsController extends BaseController
             ->select('products.id', 'products.title', 'products.img', 'products.description', 'products.price',
                 'products.weight','count',
                 'products.type_weight')
-            ->selectRaw('COUNT(DISTINCT feedback_products.id) AS count_feeds,
-                ROUND(AVG(feedback_products.rating), 2) AS average_rating,
+            ->selectRaw('COUNT(DISTINCT CASE WHEN feedback_products.is_approved = true THEN feedback_products.id END) AS count_feeds,
+                ROUND(AVG(CASE WHEN feedback_products.is_approved = true THEN feedback_products.rating END), 2) AS average_rating,
                 count(DISTINCT order_items.id) as order_count')
             ->join('order_items', 'products.id', '=', 'order_items.product_id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
@@ -134,8 +183,8 @@ class ProductsController extends BaseController
                 ->select('products.id', 'products.title', 'products.img', 'products.description', 'products.price',
                     'products.weight','count',
                     'products.type_weight')
-                ->selectRaw('COUNT(DISTINCT feedback_products.id) AS count_feeds,
-                ROUND(AVG(feedback_products.rating), 2) AS average_rating,
+                ->selectRaw('COUNT(DISTINCT CASE WHEN feedback_products.is_approved = true THEN feedback_products.id END) AS count_feeds,
+                ROUND(AVG(CASE WHEN feedback_products.is_approved = true THEN feedback_products.rating END), 2) AS average_rating,
                 count(DISTINCT order_items.id) as order_count')
                 ->join('order_items', 'products.id', '=', 'order_items.product_id')
                 ->join('orders', 'order_items.order_id', '=', 'orders.id')
@@ -156,7 +205,10 @@ class ProductsController extends BaseController
             ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
             ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
             ->groupBy('products.id')
-            ->selectRaw('count, type_weight, countries.name as country, products.id, title, img, description, price, weight, COUNT(feedback_products.product_id) AS count_feeds, ROUND(AVG(feedback_products.rating), 2) AS average_rating')
+            ->selectRaw('count, type_weight, countries.name as country, products.id,
+            title, img, description, price, weight,
+            COUNT(DISTINCT CASE WHEN feedback_products.is_approved = true THEN feedback_products.id END) AS count_feeds,
+            ROUND(AVG(CASE WHEN feedback_products.is_approved = true THEN feedback_products.rating END), 2) AS average_rating')
             ->first();
         return $product;
     }
@@ -177,5 +229,18 @@ class ProductsController extends BaseController
             return $result;
         }
         return $this->sendError('Id не найдены', 400);
+    }
+    function generateUniqueFilename($directory, $length = 8) {
+        $existingFiles = File::files($directory);
+        $existingFilenames = collect($existingFiles)->map(function($file) {
+            return $file->getFilename();
+        })->toArray();
+
+        while (true) {
+            $randomName = Str::random($length) . '.webp';
+            if (!in_array($randomName, $existingFilenames)) {
+                return $randomName;
+            }
+        }
     }
 }

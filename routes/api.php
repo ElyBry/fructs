@@ -65,7 +65,7 @@ Route::group([
         'prefix' => 'products'
     ], function () {
         Route::post('/',[ProductsController::class, 'store']);
-        Route::put('{product}',[ProductsController::class, 'update']);
+        Route::post('{product}',[ProductsController::class, 'update']);
         Route::delete('{product}', [ProductsController::class, 'delete']);
     });
     // Для администратора

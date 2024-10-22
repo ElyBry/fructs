@@ -4,7 +4,7 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { countriesList } from "./countriesAtom";
 
-const Countries = () => {
+const Countries = ({selectCountry = null}) => {
 
     const [query, setQuery] = useState('');
     const [selectedCountries, setSelectedCountries] = useRecoilState(countriesList);
@@ -18,7 +18,7 @@ const Countries = () => {
         try {
             setIsLoadingCountries(true);
             if (query.length > 0 ) {
-                const response = await axios.get(`api/countries?country=${query}`,{
+                const response = await axios.get(`${window.location.origin}/api/countries?country=${query}`,{
                     signal: controllerCountries.signal
                 });
                 setCountries(response.data.data);
@@ -71,11 +71,17 @@ const Countries = () => {
                 {!loadingCountries ?
                     unselectedCountries.map((country) => (
                         <div key={country["id"]}>
-                            <input type={"checkbox"}
-                                   id={"check_country" + country["id"]}
-                                   onChange={(e) => handleAnyChange(e,  country)}/>
+                            <input type={`${selectCountry ? "radio" : "checkbox"}`}
+                                   id={country.name}
+                                   name={"country_id"}
+                                   value={country.id}
+                                   onChange={(e) => {
+                                       if (!selectCountry) handleAnyChange(e,  country);
+                                       else selectCountry(e, "country_id")
+                                   }}
+                            />
                             <label
-                                htmlFor={"check_country" + country["id"]}>{country["name"]} </label>
+                                htmlFor={country.name}>{country["name"]} </label>
                         </div>
                     ))
                     : <p>Загрузка...</p>

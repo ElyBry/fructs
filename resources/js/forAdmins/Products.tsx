@@ -48,11 +48,6 @@ const Products: React.FC = () => {
     const [howSort, setHowSort] = useState('New');
     const [ascendingSort, setAscendingSort] = useState('asc');
 
-    const [newProduct, setNewProduct] = useState([])
-    const [newCategory, setNewCategory] = useState([]);
-    const [popularProduct, setPopularProduct] = useState([])
-
-    const [loadingTop, setLoadingTop] = useState(false);
     const [loadingCategories, setLoadingCategories] = useState(false);
     const [loadingColors, setLoadingColors] = useState(false);
 
@@ -118,6 +113,7 @@ const Products: React.FC = () => {
 
     useEffect(() => {
         fetchTopInfo();
+        setFeedbacksProduct([])
     }, []);
     const handleAnyChange = (event, type:string) => {
         const value = event.target.value;
@@ -149,7 +145,7 @@ const Products: React.FC = () => {
     const fetchFeedbacksProduct = async (page, product, controller) => {
         try {
             const { signal } = controller;
-            const response = await axios.get(`/api/feedBackProducts?product_id=${product.id}&page=${page}`, { signal });
+            const response = await axios.get(`../api/feedBackProducts?product_id=${product.id}&page=${page}`, { signal });
             const newData = response.data;
             setFeedbacksProduct((prev) => [...prev, ...newData.data]);
             setHasMoreFeedbacks(newData.current_page < newData.last_page);
@@ -169,6 +165,7 @@ const Products: React.FC = () => {
         setFeedbacksProduct([])
         setPageFeedbacksProduct(1);
         setHasMoreFeedbacks(true);
+        setProduct(product);
         setAboutProduct(product);
         setIsOpenAboutProduct(true);
     };
@@ -205,43 +202,130 @@ const Products: React.FC = () => {
         [loadingFeedbacksProduct, hasMoreFeedbacks]
     );
 
-    const [product,setProduct] = useState(null);
+    const [isLoadingChange, setIsLoadingChange] = useState(false)
+    const [product, setProduct] = useState(null);
+    const fileInputRef = useRef();
     const addNewProduct = async () => {
-        const response = await axios.post('../api/admin/products/', {
-            title: product.title,
-            description: product.description,
-            price: product.price,
-            type_weight: product.type_weight,
-            img: product.img,
-            type_products_id: product.type_products_id,
-            color_id: product.color_id,
-            country_id: product.country_id,
-            count: product.count
-        });
+        try {
+            setIsLoadingChange(true)
+            console.log(product);
+            const formData = new FormData();
+            const file = fileInputRef.current?.files[0];
+            if (file) {
+                formData.append('image', file);
+            } else {
+                console.log(file);
+            }
+            formData.append('title', product.title);
+            formData.append('description', product.description);
+            formData.append('price', product.price);
+            formData.append('weight', product.weight);
+            formData.append('type_weight', product.type_weight);
+            formData.append('img', product.img);
+            formData.append('type_products_id', product.type_products_id);
+            formData.append('color_id', product.color_id);
+            formData.append('country_id', product.country_id);
+            formData.append('count', product.count);
+            const response = await axios.post(`../api/products/${product.id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log(response);
+            setIsLoadingChange(false);
+        } catch (e) {
+            console.error(e);
+        }
     };
     const handleInputChange = (e, field) => {
-        const { value } = e.target;
-        setProduct((prevUser) => ({
-            ...prevUser,
-            [field]: value
+        let { value } = e.target;
+        console.log(product);
+        if (field == "country_id") {
+            setProduct((prevProduct) => ({
+                ...prevProduct,
+                ["country"]: e.target.id,
+            }));
+        }
+        setProduct((prevProduct) => ({
+            ...prevProduct,
+            [field]: value,
         }));
     };
+
     return (
         <div className={styles.root}>
-            <div id={"aboutProductModule"} className={`${styles.aboutProductModule} ${isOpenAboutProduct ? styles.visible : ""}`}>
+            <div id={"usableItems"} className={styles.usableItems}>
+                <button id={"close"}
+                        className={`${styles.close} ${isOpenAboutProduct ? styles.visible : ""}`}
+                        onClick={() => {
+                            setIsOpenAboutProduct(false);
+                        }}
+                >
+                    <span className="material-symbols-outlined">arrow_back</span>
+                </button>
+            </div>
+            <div id={"aboutProductModule"}
+                 className={`${styles.aboutProductModule} ${isOpenAboutProduct ? styles.visible : ""}`}>
                 <div id={"aboutProduct"} className={styles.aboutProduct}>
                     {
                         aboutProduct &&
                         <>
-                            <img src={aboutProduct["img"]}/>
-                            <h2 className={styles.productName}>{aboutProduct["title"]}</h2>
-                            <p className={styles.description}>{aboutProduct["description"]}</p>
-                            <div className={styles.detailds}>
-                                <p>Страна: {aboutProduct["country"]}</p>
+                            <img src={`${window.location.origin}/${aboutProduct["img"]}`}/>
+                            <label>Изменить Изображение</label>
+                            <input type={"file"} accept={"image/*"} ref={fileInputRef}/>
+                            <h2>
+                                <input className={styles.productName} value={product.title}
+                                       onChange={(e) => handleInputChange(e, 'title')}
+                                />
+                            </h2>
+                            <p>
+                                <textarea className={styles.description} value={product.description}
+                                          onChange={(e) => handleInputChange(e, 'description')}
+                                />
+                            </p>
+                            <div className={styles.details}>
+                                <p>
+                                    Страна: {product.country}
+                                </p>
+                                <Countries selectCountry={(e) => handleInputChange(e, 'country_id')}/>
+                            </div>
+                            <div className={styles.details}>
+                                Тип продукта
+                                <select value={product.type_products_id}
+                                        onChange={(e) => handleInputChange(e,'type_products_id')}
+                                >
+                                    {allCategory.length > 0 && allCategory.map((category) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className={styles.details}>
+                                Цвет продукта
+                                <select value={product.color_id}
+                                        onChange={(e) => handleInputChange(e,'color_id')}
+                                >
+                                    {allColors.length > 0 && allColors.map((color) => (
+                                        <option key={color.id} value={color.id}>
+                                            {color.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div className={styles.price}>
-                                <p>Цена: {aboutProduct["price"]}р / {aboutProduct["weight"]} {aboutProduct["type_weight"]}</p>
+                                Цена:
+                                <input value={product.price} onChange={e => handleInputChange(e, 'price')}/>р
+                                <hr/>
+                                <input value={product.weight} onChange={e => handleInputChange(e, "weight")}/>
+                                <input value={product.type_weight} onChange={e => handleInputChange(e, "type_weight")}/>
                             </div>
+                            <button id={"change"}
+                                    className={`${styles.changeButton} ${isLoadingChange ? styles.grey : ""}`}
+                                    onClick={() => addNewProduct()}
+                            >
+                                Сохранить
+                            </button>
                             <div className={styles.feedbacksProducts}>
                                 <h2>К-во отзывов: {aboutProduct["count_feeds"]}</h2>
                                 <h2>Рейтинг: {aboutProduct["average_rating"]}</h2>
@@ -277,10 +361,12 @@ const Products: React.FC = () => {
             </div>
             <Header className={styles.header}/>
             <div id={"main"} className={styles.main}>
+                <Search/>
                 <div className={styles.content}>
                     <div className={styles.change}
                          onClick={addNewProduct}
-                    >Добавить новый продукт</div>
+                    >Добавить новый продукт
+                    </div>
                     <div id={"filter"} className={styles.filterBlock}>
                         <div className={styles.mainType}>
                             {loadingCategories ?
@@ -451,11 +537,11 @@ const Products: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <Search/>
                     <ProductsList maxPrice={maxPrice} minPrice={minPrice} ascendingSort={ascendingSort}
                                   howSort={howSort} selectedColors={selectedColors} selectedTypes={selectedTypes}
                                   openAboutProduct={openAboutProduct}
                                   minRate={minRate} maxRate={maxRate}
+                                  isAdmin={true}
                     />
                 </div>
             </div>
