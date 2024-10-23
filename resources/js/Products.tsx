@@ -332,7 +332,6 @@ const Products: React.FC = () => {
             </div>
             <Cart isOpenCart={isOpenCart}/>
             <Header className={styles.header}/>
-            <Search/>
             <div id={"infoProducts"} className={styles.infoProducts}>
                 <div className={styles.content}>
                     <div className={styles.cards}>
@@ -423,6 +422,7 @@ const Products: React.FC = () => {
                     </div>
                 </div>
             </div>
+            <Search/>
             <div id={"main"} className={styles.main}>
                 <div className={styles.content}>
                     <div id={"filter"} className={styles.filterBlock}>

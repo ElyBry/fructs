@@ -30,6 +30,7 @@ const ProductsList = ({ minPrice, maxPrice, selectedTypes, selectedColors, howSo
             const response = await axios.get<any>('/api/products', {
                 signal: controller.signal,
                 params: {
+                    isAdmin: isAdmin,
                     page: pageNumber,
                     name: searchTerm,
                     min_price: minPrice || undefined,

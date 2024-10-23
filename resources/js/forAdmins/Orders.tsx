@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 import {useRecoilState} from "recoil";
 import {userIsAuth, userRole} from "../components/User/userAtom";
 import User from "../components/User/user";
+import Alert from "../components/Alert/Alert";
 
 const Orders = () => {
     const [isAuth, setIsAuth] = useRecoilState( userIsAuth );
@@ -99,7 +100,10 @@ const Orders = () => {
             payment_status_id: status_id + 1
         }).then((data) => {
             const updatedOrder = data.data[0];
-            console.log(updatedOrder);
+            setMessage('Успешно изменено');
+            setTimeout(() => {
+                setMessage('');
+            }, 3000);
             setOrders((prevOrders) =>
                 prevOrders.map(order =>
                     order.id === updatedOrder.id ?
@@ -111,10 +115,11 @@ const Orders = () => {
             console.error(e);
         });
     }
-
+    const [message, setMessage] = useState('');
     return (
         <>
             <Header className={styles.header}/>
+            <Alert message={message}/>
             <div className={styles.orders}>
                 <div className={styles.content}>
                     {orders.length > 0 &&
@@ -164,11 +169,12 @@ const Orders = () => {
                                         {order.payment_status_id != 5 &&
                                             <div>
                                                 <button
-                                                    onClick={() => changeStatus(order.id, order.how_deliver == "pickup" ? 0 : 2)}>Подтвердить
-                                                    наличие, {order.how_deliver == "pickup" ? "перейти в ожидание клиента" : "перейти к доставке"}
+                                                    onClick={() => changeStatus(order.id, order.how_deliver == "pickup" ? 0 : 2)}>
+                                                    Подтвердить наличие,
+                                                    {order.how_deliver == "pickup" ? "перейти в ожидание клиента" : "перейти к доставке"}
                                                 </button>
                                                 <button onClick={() => changeStatus(order.id, 3)}>
-                                                    Доставлено
+                                                    {order.how_deliver == "pickup" ? "Продукты отданы" : "Доставлено"}
                                                 </button>
                                                 <button onClick={() => changeStatus(order.id, 4)}>
                                                     Отменить

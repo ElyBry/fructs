@@ -86,6 +86,12 @@ export default ({className}) => {
                                         <Link to={"/admin/products"}>
                                             <div className={styles.hSection}>Продукты</div>
                                         </Link>
+                                        <Link to={"/admin/feedbacksProducts"}>
+                                            <div className={styles.hSection}>Отзывы о продуктах</div>
+                                        </Link>
+                                        <Link to={"/admin/feedbacks"}>
+                                            <div className={styles.hSection}>Отзывы о приложении</div>
+                                        </Link>
                                     </div>
                                 )}
                             </div>

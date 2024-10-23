@@ -10,6 +10,10 @@
     box-shadow: var.$box-shadow-elements;
     backdrop-filter: blur(6px);
     border-radius: var.$border-radius-elements;
+    .error {
+        text-align: center;
+        color: var.$invalid-color;
+    }
     .imgProducts {
         width: 100%;
         border-radius: var.$border-radius-elements var.$border-radius-elements 0 0;

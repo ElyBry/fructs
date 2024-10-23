@@ -10,6 +10,8 @@ import Orders from "./Orders";
 import AdminOrders from './forAdmins/Orders';
 import Users from './forAdmins/Users';
 import AdminProducts from './forAdmins/Products'
+import FeedBacks from "./forAdmins/FeedBacks";
+import FeedBacksProducts from "./forAdmins/FeedBacksProducts";
 
 const App = () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -30,6 +32,8 @@ const App = () => {
                     <Route path="/admin/orders" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <AdminOrders/> : <Navigate to={"/login"}/>}/>
                     <Route path="/admin/users" element={checkRole(['Super Admin', 'Admin']) ? <Users/> : <Navigate to={"/login"}/>}/>
                     <Route path="/admin/products" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <AdminProducts/> : <Navigate to={"/login"}/>}/>
+                    <Route path="/admin/feedbacks" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <FeedBacks/> : <Navigate to={"/login"}/>}/>
+                    <Route path="/admin/feedbacksProducts" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <FeedBacksProducts/> : <Navigate to={"/login"}/>}/>
                 </Routes>
             </Router>
         </RecoilRoot>

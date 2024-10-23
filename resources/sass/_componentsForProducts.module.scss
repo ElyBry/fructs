@@ -11,12 +11,13 @@
     align-items: center;
     background-color: rgba(243, 243, 243, 0.1);
     position: relative;
-    background-size: contain;
+    background-size: auto;
     background-image: url("../../public/image/background-abstact/5652356.webp");
     background-repeat: repeat;
 }
 .header {
     position: relative;
+    margin-bottom: var.$margin-h1;
 }
 .content {
     @include mixin.content;
@@ -114,10 +115,8 @@
 
 .main {
     width: 100%;
-
     .content {
-        padding: var.$padding-page;
-
+        padding: 0 var.$padding-page;
         .filterBlock {
             padding: var.$padding-page 0;
             display: flex;
@@ -379,5 +378,14 @@
         transform: translateX(0%);
     }
 
+}
+.change {
+    text-align: center;
+    padding: var.$padding-elements;
+    background-color: var.$primary-color;
+    width: fit-content;
+    margin: auto;
+    border-radius: var.$border-radius-elements;
+    cursor: pointer;
 }
 

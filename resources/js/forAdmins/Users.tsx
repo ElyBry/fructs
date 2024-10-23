@@ -44,6 +44,7 @@ const Users = () => {
     }
 
     useEffect(() => {
+        setPageUsers(1);
         setUsers([]);
         setUserRoles([]);
         fetchRoles();

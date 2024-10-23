@@ -33,6 +33,14 @@ Route::group([
     Route::get('feedBackProducts', [FeedBackProductsController::class,'getFeedBackProducts']);
         // О приложении
     Route::get('feedback', [FeedBackController::class,'getFeedBack']);
+        // Оставлял ли уже о приложении
+    Route::get('getExist/{id}', [FeedBackController::class,'getExist']);
+        // Оставлял ли уже о продукте
+    Route::get('getExistProduct/{id}', [FeedBackProductsController::class,'getExistProduct']);
+        // Добавить отзыв на приложение
+    Route::post('addFeedback', [FeedBackController::class,'store']);
+        // Добавить отзыв на продукт
+    Route::post('addFeedbackProducts', [FeedBackProductsController::class,'store']);
     // Страны
     Route::get('countries', [CountriesController::class,'index']);
     // Корзина
@@ -108,12 +116,6 @@ Route::group([
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/refresh', [AuthController::class, 'refresh']);
         Route::post('/profile', [AuthController::class, 'profile']);
-    });
-    // ENV
-    Route::get('/env', function() {
-       return [
-           'APP_URL' => env('APP_URL'),
-       ];
     });
 });
 

@@ -17,15 +17,13 @@ import { countriesList } from "../components/CountriesSearch/countriesAtom";
 
 import ProductsList from "../components/Products/ProductsList";
 
-import Cart from "../components/Cart/Cart";
-import {cartAtom, totalCostAtom, quantityAtom} from "../components/Cart/cartAtom";
-import useCart from "../components/Cart/useCart";
 import {userIsAuth, userRole} from "../components/User/userAtom";
 import {useNavigate} from "react-router-dom";
 import User from "../components/User/user";
 import {productsAtom} from "../components/Products/productsAtom";
 import {FileUploadFile} from "primereact/fileupload";
 import Alert from "../components/Alert/Alert";
+import product from "../components/Products/Product";
 
 const Products: React.FC = () => {
     const [isAuth, setIsAuth] = useRecoilState( userIsAuth );
@@ -178,12 +176,6 @@ const Products: React.FC = () => {
     };
 
     useEffect(() => {
-        setProduct([]);
-        setAboutProduct([]);
-        setIsOpenAboutProduct(true);
-    }, [addingNewProduct]);
-
-    useEffect(() => {
         const controller = new AbortController();
         setLoadingFeedbacksProduct(true);
         const fetchData = async () => {
@@ -222,7 +214,7 @@ const Products: React.FC = () => {
     const addNewProduct = async () => {
         try {
             setIsLoadingChange(true)
-            console.log(newProduct);
+
             const formData = new FormData();
             const file = fileInputRef.current?.files[0];
             if (file) {
@@ -259,13 +251,44 @@ const Products: React.FC = () => {
             setIsLoadingChange(false);
         } catch (e) {
             console.error(e);
-            setMessage('Произошла непредвиденная ошибка')
-            setTimeout(() => {
-                setMessage('');
-            }, 3000);
+            if (e.status == 403) {
+                console.error("Не аутентифицирован");
+                navigate('../login');
+            }
+            if (e.status == 413) {
+                setMessage('Изображение слишком большое, попробуйте другое')
+                setTimeout(() => {
+                    setMessage('');
+                }, 3000);
+            } else {
+                setMessage('Произошла непредвиденная ошибка')
+                setTimeout(() => {
+                    setMessage('');
+                }, 3000);
+            }
             setIsLoadingChange(false);
         }
     };
+
+    const openAddNewProduct = () => {
+        setProduct({
+            'description': '',
+            'title': '',
+            'price': '',
+            'img': '',
+            'country': '',
+            'country_id': '',
+            'type_weight': '',
+            'weight': '',
+            'count': '',
+            'color_id': 1,
+            'type_products_id': 1
+        });
+        setAboutProduct([]);
+        setIsOpenAboutProduct(true);
+        setAddingNewProduct(true);
+    }
+
     const handleInputChange = (e, field) => {
         let { value } = e.target;
         if (field == "country_id") {
@@ -288,7 +311,6 @@ const Products: React.FC = () => {
                         className={`${styles.close} ${isOpenAboutProduct ? styles.visible : ""}`}
                         onClick={() => {
                             setIsOpenAboutProduct(false);
-                            setAddingNewProduct(false);
                         }}
                 >
                     <span className="material-symbols-outlined">arrow_back</span>
@@ -407,7 +429,7 @@ const Products: React.FC = () => {
                 <Search/>
                 <div className={styles.content}>
                     <div className={styles.change}
-                         onClick={() => setAddingNewProduct(true)}
+                         onClick={() => openAddNewProduct()}
                     >Добавить новый продукт
                     </div>
                     <div id={"filter"} className={styles.filterBlock}>

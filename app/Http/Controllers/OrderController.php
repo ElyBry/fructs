@@ -63,6 +63,9 @@ class OrderController extends BaseController
         }
         $order_items = OrderItems::query()
             ->leftJoin('products', 'order_items.product_id', '=', 'products.id')
+            ->select('order_items.*', 'products.*',
+                DB::raw("(SELECT COUNT(*) FROM feedback_products WHERE feedback_products.product_id = order_items.product_id AND feedback_products.user_id = $user_id) AS feedback_exists",)
+            )
             ->where('order_id', $order_id)
             ->orderBy('order_items.id', 'desc')
             ->get();
@@ -206,8 +209,11 @@ class OrderController extends BaseController
                     $product->count += $orderItem->quantity;
                     $product->save();
                 }
-                Reservations::query()->where('order_id', $order->id)->delete();
             }
+            Reservations::query()->where('order_id', $order->id)->delete();
+        }
+        if ($request['payment_status_id'] == 4) {
+            Reservations::query()->where('order_id', $order->id)->delete();
         }
         $response = ['id' => $order->id, 'payment_status_id' => $order->payment_status_id, 'payment_status_name' => $status->name];
         return response()->json([$response, 200]);

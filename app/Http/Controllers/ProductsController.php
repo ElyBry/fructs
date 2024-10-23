@@ -22,13 +22,15 @@ class ProductsController extends BaseController
     public function index(Request $request)
     {
         $query = Product::query()
-            ->where('count', '>', 0)
             ->leftJoin('feedback_products', 'products.id', '=', 'feedback_products.product_id')
             ->leftJoin('countries', 'products.country_id', '=', 'countries.id')
             ->groupBy('products.id')
             ->selectRaw('count, type_weight, countries.name as country, products.id, title, img, type_products_id, color_id, country_id,
             description, price, weight, COUNT(DISTINCT CASE WHEN feedback_products.is_approved = true THEN feedback_products.id END) AS count_feeds,
             ROUND(AVG(CASE WHEN feedback_products.is_approved = true THEN feedback_products.rating END), 2) AS average_rating');
+        if ($request->has('isAdmin') && !$request->get('isAdmin')) {
+            $query->where('count', '>', 0);
+        }
         if ($request->has('name') && $request->get('name') != '') {
             $query->where('title', 'like', '%' . $request->get('name') . '%');
         }
@@ -102,13 +104,18 @@ class ProductsController extends BaseController
 
         $productData = $request->all();
         if ($request->hasFile('image')) {
-            $image = Image::read($request->file('image'));
-            $image->encode(new AutoEncoder('webp'));
-            $path = 'image/fruits_for_products/';
-            $uniq = $this->generateUniqueFilename($path);
-            $in = $path . $uniq;
-            $image->save($in);
-            $productData['img'] = $in;
+            try {
+                $image = Image::read($request->file('image'));
+                $image->encode(new AutoEncoder('webp'));
+                $path = 'image/fruits_for_products/';
+                $uniq = $this->generateUniqueFilename($path);
+                $in = $path . $uniq;
+                $image->save($in);
+                $productData['img'] = $in;
+            } catch (\Exception $e) {
+                return $this->sendError($e->getMessage(), 500);
+            }
+
         }
 
         $product = Product::create($productData);
