@@ -60,9 +60,51 @@ header {
         border: 1px solid transparent;
     }
 }
+
 .burger {
     display: none;
+    .burgerImg {
+        position: relative;
+        &::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            width: 65px;
+            height: 65px;
+            background: var.$third-color;
+            border-radius: 50%;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transform-origin: center 70%;
+            transform: scale(1);
+            transition: all 0.75s ease-out;
+        }
+        &.visible {
+            &::before {
+                transform: scale(40);
+            }
+        }
+        img {
+            width: 45px;
+        }
+    }
 }
-.burger img {
+.burgerMenu {
+    display: none;
+    &.visible {
+        display: block;
+    }
+}
 
+// Медиа
+
+@media (max-width: 1094px) {
+    .hHead {
+        display: none;
+    }
+    .burger {
+        display:block;
+    }
 }
