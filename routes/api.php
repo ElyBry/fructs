@@ -84,19 +84,27 @@ Route::group([
         ],
         'prefix' => '/admin'
     ], function () {
+        // Пользователи
         Route::resource('roles', RoleController::class);
         Route::resource('users', UserController::class);
+        // Типы продуктов
+        Route::post('typeProducts/{id}', [TypeProductsController::class, 'update']);
         Route::resource('typeProducts', TypeProductsController::class);
+        // Цвета
         Route::resource('colors', ColorsController::class);
+        // Страны
         Route::resource('countries', CountriesController::class);
+        // Промокоды
         Route::resource('promo', PromoController::class);
         // Заказы
         Route::get('orderItems/{order_id}', [OrderController::class, 'indexItems']);
         Route::resource('orders', OrderController::class);
         Route::post('changeStatus', [OrderController::class, 'changeStatus']);
-
+        // Отзывы
         Route::resource('feedBacks', FeedBackController::class);
         Route::resource('feedBacksProducts', FeedBackProductsController::class);
+        // Точки
+        Route::resource('tradingPoints', TradingPointsController::class);
     });
     // Вход и регистрация без аутентификации
     Route::group([

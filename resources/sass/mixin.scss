@@ -1,6 +1,16 @@
 // Миксины
 @use 'var' as *;
 
+@mixin defButton() {
+    text-align: center;
+    padding: $padding-elements;
+    background-color: $primary-color;
+    width: fit-content;
+    margin: auto;
+    border-radius: $border-radius-elements;
+    cursor: pointer;
+}
+
 @mixin content() {
     padding: 0 $padding-page;
     width: 10px;

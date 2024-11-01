@@ -115,7 +115,6 @@ class ProductsController extends BaseController
             } catch (\Exception $e) {
                 return $this->sendError($e->getMessage(), 500);
             }
-
         }
 
         $product = Product::create($productData);
@@ -233,18 +232,5 @@ class ProductsController extends BaseController
             return $result;
         }
         return $this->sendError('Id не найдены', 400);
-    }
-    function generateUniqueFilename($directory, $length = 8) {
-        $existingFiles = File::files($directory);
-        $existingFilenames = collect($existingFiles)->map(function($file) {
-            return $file->getFilename();
-        })->toArray();
-
-        while (true) {
-            $randomName = Str::random($length) . '.webp';
-            if (!in_array($randomName, $existingFilenames)) {
-                return $randomName;
-            }
-        }
     }
 }

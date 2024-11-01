@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useEffect, useRef, useState} from 'react';
 import * as ReactDOM from 'react-dom/client';
 import Footer from "./components/_footer.js";
-import Header from "./components/_header.js";
+import Header from "./components/Header/_header";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 const random = gsap.utils.random;

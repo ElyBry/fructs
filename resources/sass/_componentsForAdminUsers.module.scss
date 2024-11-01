@@ -1,14 +1,23 @@
 @use 'var';
 @use 'mixin';
 
+.root {
+    width: 100%;
+    height: 100vh;
+}
+
 .header {
     position: relative;
 }
 .content {
     @include mixin.content;
 }
-
+.defButton {
+    @include mixin.defButton;
+}
 .usersTable {
+    margin-top: 20px;
+    overflow: auto;
     table {
         width: 100%;
         border-collapse: collapse;

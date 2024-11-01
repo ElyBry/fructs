@@ -8,7 +8,7 @@ import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
 import axios from "axios";
 
 import Footer from "../components/_footer";
-import Header from "../components/_header.js";
+import Header from "../components/Header/_header";
 
 import Search from "../components/Search/Search";
 
@@ -108,7 +108,7 @@ const Products: React.FC = () => {
 
             return true;
         } catch (e) {
-            console.log('Ошибка получения данных',e);
+            console.error('Ошибка получения данных',e);
         }
     };
 
@@ -324,31 +324,34 @@ const Products: React.FC = () => {
                         <>
                             <img src={`${window.location.origin}/${newProduct["img"]}`}/>
                             <div>
-                                <label>Изменить Изображение</label><br/>
-                                <input type={"file"} accept={"image/*"} ref={fileInputRef}/>
+                                <label>
+                                    <input type={"file"} accept={"image/*"} ref={fileInputRef}/><br/>
+                                    <span className="input-file-btn">Выберите изображение</span><br/>
+                                    <span className="input-file-text">Максимум 16МБ</span>
+                                </label>
                             </div>
                             <h2>
-                                <label>Название:</label>
+                                <label>Название:</label><br/>
                                 <input className={styles.productName} value={newProduct.title}
                                        onChange={(e) => handleInputChange(e, 'title')}
                                 />
                             </h2>
                             <p>
-                                <label>Описание:</label>
+                                <label>Описание:</label><br/>
                                 <textarea className={styles.description} value={newProduct.description}
                                           onChange={(e) => handleInputChange(e, 'description')}
                                 />
                             </p>
                             <div className={styles.details}>
                                 <p>
-                                    Страна: {newProduct.country}
+                                    Страна: <br/>{newProduct.country}
                                 </p>
                                 <Countries selectCountry={(e) => handleInputChange(e, 'country_id')}/>
                             </div>
                             <div className={styles.details}>
-                                Тип продукта
+                                Тип продукта<br/>
                                 <select value={newProduct.type_products_id}
-                                        onChange={(e) => handleInputChange(e,'type_products_id')}
+                                        onChange={(e) => handleInputChange(e, 'type_products_id')}
                                 >
                                     {allCategory.length > 0 && allCategory.map((category) => (
                                         <option key={category.id} value={category.id}>
@@ -358,9 +361,9 @@ const Products: React.FC = () => {
                                 </select>
                             </div>
                             <div className={styles.details}>
-                                Цвет продукта
+                                Цвет продукта<br/>
                                 <select value={newProduct.color_id}
-                                        onChange={(e) => handleInputChange(e,'color_id')}
+                                        onChange={(e) => handleInputChange(e, 'color_id')}
                                 >
                                     {allColors.length > 0 && allColors.map((color) => (
                                         <option key={color.id} value={color.id}>
@@ -370,16 +373,18 @@ const Products: React.FC = () => {
                                 </select>
                             </div>
                             <div className={styles.price}>
-                                Цена:
+                                Цена:<br/>
                                 <input value={newProduct.price} onChange={e => handleInputChange(e, 'price')}/>р
-                                <hr/>
-                                За
+                                <br/>За<br/>
                                 <input value={newProduct.weight} onChange={e => handleInputChange(e, "weight")}/>
-                                <input value={newProduct.type_weight} onChange={e => handleInputChange(e, "type_weight")}/>
+                                <br/>
+                                <input value={newProduct.type_weight}
+                                       onChange={e => handleInputChange(e, "type_weight")}/>
                             </div>
                             <div className={styles.price}>
-                                Кол-во доступных:
-                                <input type={"number"} value={newProduct.count} onChange={e => handleInputChange(e, 'count')}/>
+                                Кол-во доступных:<br/>
+                                <input type={"number"} value={newProduct.count}
+                                       onChange={e => handleInputChange(e, 'count')}/>
                             </div>
                             <button id={"change"}
                                     className={`${styles.changeButton} ${isLoadingChange ? styles.grey : ""}`}

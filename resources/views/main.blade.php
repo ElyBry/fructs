@@ -8,7 +8,7 @@
     @vite(['resources/js/App.tsx'])
 </head>
 <body>
-    <div id="root">
+    <div id="root" style="overflow:hidden;">
 
     </div>
 </body>

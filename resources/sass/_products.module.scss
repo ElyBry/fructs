@@ -16,3 +16,16 @@
         }
     }
 }
+
+@media (max-width: 530px) {
+    .tableProducts {
+        display: grid;
+        grid-template-columns: 50% 50%;
+    }
+}
+@media (max-width: 404px) {
+    .tableProducts {
+        display: grid;
+        grid-template-columns: 100%;
+    }
+}

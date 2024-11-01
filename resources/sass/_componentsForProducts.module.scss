@@ -1,10 +1,14 @@
 @use "var";
 @use "mixin";
 @use "animations";
+.noScroll {
+    overflow: hidden;
+}
 .root {
     inset: 0;
     width: 100vw;
     height: 100%;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -120,14 +124,17 @@
         .filterBlock {
             padding: var.$padding-page 0;
             display: flex;
-            justify-content: space-between;
+            gap: var.$margin-h1;
+            flex-wrap: wrap;
             align-items: center;
-
+            justify-content: center;
             .mainType {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-
+                gap: var.$margin-text;
+                flex-wrap: wrap;
+                justify-content: center;
                 input[type="checkbox"]:checked {
                     + label {
                         background-color: green !important;
@@ -330,13 +337,21 @@
     background-repeat: no-repeat;
     .aboutProduct {
         padding: var.$padding-elements;
-
+        input[type="radio"] {
+            display:none;
+        }
+        input,
+        select,
+        textarea {
+            width:100%;
+            border: 1px solid var.$primary-color;
+            padding: var.$padding-elements;
+        }
         .description {
-            width: 100%;
             height: 100%;
         }
         img {
-            height: 30vh;
+            max-width: 100%;
         }
         .buyButton,
         .changeButton {
@@ -350,6 +365,7 @@
             align-items: center;
             gap: var.$margin-text;
             .feedback {
+                width: 100%;
                 padding: var.$padding-elements;
                 border-radius: var.$border-radius;
                 background-color: var.$secondary-color;
@@ -380,12 +396,61 @@
 
 }
 .change {
-    text-align: center;
-    padding: var.$padding-elements;
-    background-color: var.$primary-color;
-    width: fit-content;
-    margin: auto;
-    border-radius: var.$border-radius-elements;
-    cursor: pointer;
+    @include mixin.defButton;
+}
+@media (max-width: 1000px) {
+    .infoProducts .content .cards {
+        grid-template-columns: 100%;
+        grid-gap: var.$margin-h1;
+        .infoCard:last-child {
+            margin-bottom: var.$margin-h1;
+        }
+    }
 }
 
+@media (max-width: 768px) {
+    .aboutProductModule {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .content {
+        padding: 0 15px;
+    }
+    .main .content {
+        padding: 0 15px;
+    }
+    .contentTreeFilter {
+        left: 0 !important;
+        width: max-content;
+    }
+    .contentTreeSort {
+        width: max-content;
+        right: 100% !important;
+        left: -100% !important;
+    }
+}
+
+@media (max-width: 560px) {
+    .infoProducts .content .cards .infoCard {
+        flex-direction: column-reverse;
+        .rightSide {
+
+            img {
+                position: relative;
+                left: 0;
+            }
+        }
+    }
+
+}
+
+@media (max-width: 420px) {
+    .contentTreeSort {
+        left: -110% !important;
+        .blocksTree div {
+            padding: 5px !important;
+        }
+    }
+}

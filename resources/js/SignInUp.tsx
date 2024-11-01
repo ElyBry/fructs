@@ -139,6 +139,7 @@ const SignInUp = () => {
                     <h2>Введите почту для сброса пароля. Код будет отправлена на почту</h2>
                     <div className={styles.input}>
                         <input type={"email"} value={email}
+                               autoComplete={"email"}
                                onBlur={(e) => handleOnChangeEmail(e.target.value)}
                                onChange={(e) => setEmail(e.target.value)}
                                className={`${styles.inputField} ${isValidEmail ? '' : styles.invalid}`}
@@ -185,6 +186,7 @@ const SignInUp = () => {
                             <form onSubmit={(e) => handleSubmit(e, "in")}>
                                 <div className={styles.input}>
                                     <input type={"email"} value={email}
+                                           autoComplete={"email"}
                                            onBlur={(e) => handleOnChangeEmail(e.target.value)}
                                            onChange={(e) => setEmail(e.target.value)}
                                            className={`${styles.inputField} ${isValidEmail ? '' : styles.invalid}`}
@@ -194,6 +196,7 @@ const SignInUp = () => {
                                 <div className={styles.input}>
                                     <input type={"password"} onChange={(e) => setPass(e.target.value)}
                                            onBlur={(e) => handleOnChangePassword(e.target.value)}
+                                           autoComplete={"current-password"}
                                            className={`${styles.inputField} ${isValidPassword ? '' : styles.invalid}`}
                                            required={true} minLength={6}
                                     />
@@ -211,8 +214,12 @@ const SignInUp = () => {
                             <div className={styles.note}>
                                 <button className={styles.secondaryElement}
                                         onClick={() => setReset(true)}
-                                >Забыли пароль?</button>
+                                >Забыли пароль?
+                                </button>
                             </div>
+                            <button className={styles.buttonGoToSignUp}
+                                    onClick={changePanel}>У меня нету аккаунта
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -236,6 +243,7 @@ const SignInUp = () => {
                             <form onSubmit={handleSubmit}>
                                 <div className={styles.input}>
                                     <input type={"text"} onChange={(e) => setName(e.target.value)}
+                                           autoComplete={"username"}
                                            className={`${styles.inputField} ${isValidName ? '' : styles.invalid}`}
                                            onBlur={(e) => handleOnChangeName(e.target.value)}
                                            required={true} minLength={10} maxLength={100}
@@ -244,6 +252,7 @@ const SignInUp = () => {
                                 </div>
                                 <div className={styles.input}>
                                     <input type={"email"}
+                                           autoComplete={"email"}
                                            onBlur={(e) => handleOnChangeEmail(e.target.value)}
                                            onChange={(e) => setEmail(e.target.value)}
                                            className={`${styles.inputField} ${isValidEmail ? '' : styles.invalid}`}
@@ -256,6 +265,7 @@ const SignInUp = () => {
                                 <div className={styles.input}>
                                     <input type={"password"} onChange={(e) => setPass(e.target.value)}
                                            className={`${styles.inputField} ${isValidPassword ? '' : styles.invalid}`}
+                                           autoComplete={"new-password"}
                                            onBlur={(e) => handleOnChangePassword(e.target.value)}
                                            required={true} minLength={6}
                                     />
@@ -270,6 +280,9 @@ const SignInUp = () => {
                                     Регистрируясь, вы подтверждаете, что согласны с <a href={"#"}>Нашими правилами</a>
                                 </div>
                             </form>
+                            <button className={styles.buttonGoToSignIn}
+                                    onClick={changePanel}>У меня уже есть аккаунт
+                            </button>
                         </div>
                     </div>
                     <div id={"welcome"} className={`${styles.secondBlock}`}>

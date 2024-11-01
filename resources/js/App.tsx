@@ -10,8 +10,10 @@ import Orders from "./Orders";
 import AdminOrders from './forAdmins/Orders';
 import Users from './forAdmins/Users';
 import AdminProducts from './forAdmins/Products'
-import FeedBacks from "./forAdmins/FeedBacks";
-import FeedBacksProducts from "./forAdmins/FeedBacksProducts";
+import TradePoints from "./forAdmins/TradePoints";
+import Feedbacks from "./forAdmins/Feedbacks";
+import FeedbacksProducts from "./forAdmins/FeedbacksProducts";
+import TypeProducts from "./forAdmins/TypeProducts";
 
 const App = () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -32,8 +34,10 @@ const App = () => {
                     <Route path="/admin/orders" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <AdminOrders/> : <Navigate to={"/login"}/>}/>
                     <Route path="/admin/users" element={checkRole(['Super Admin', 'Admin']) ? <Users/> : <Navigate to={"/login"}/>}/>
                     <Route path="/admin/products" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <AdminProducts/> : <Navigate to={"/login"}/>}/>
-                    <Route path="/admin/feedbacks" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <FeedBacks/> : <Navigate to={"/login"}/>}/>
-                    <Route path="/admin/feedbacksProducts" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <FeedBacksProducts/> : <Navigate to={"/login"}/>}/>
+                    <Route path="/admin/feedbacks" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <Feedbacks/> : <Navigate to={"/login"}/>}/>
+                    <Route path="/admin/feedbacksProducts" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <FeedbacksProducts/> : <Navigate to={"/login"}/>}/>
+                    <Route path="/admin/tradePoints" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <TradePoints/> : <Navigate to={"/login"}/>}/>
+                    <Route path="/admin/typeProducts" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <TypeProducts/> : <Navigate to={"/login"}/>}/>
                 </Routes>
             </Router>
         </RecoilRoot>

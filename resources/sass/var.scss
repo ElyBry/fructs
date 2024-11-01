@@ -5,9 +5,11 @@ $note-color: #8597a3;
 
 $font-weight-base: 500;
 $font-weight-bold: 700;
-$font-size-h1: 38px;
-$font-size-note: 14px;
-$font-size-base: 18px;
+$font-size-h1: clamp(1rem, 0.725rem + 1.375vw, 2.375rem);
+$font-size-h2: clamp(1rem, 0.775rem + 1.125vw, 2.125rem);
+$font-size-h3: clamp(0.75rem, 0.55rem + 1vw, 1.75rem);
+$font-size-note: clamp(0.75rem, 0.725rem + 0.125vw, 0.875rem);
+$font-size-base: clamp(0.875rem, 0.825rem + 0.25vw, 1.125rem);
 
 $margin-text: 16px;
 $margin-h1: 36px;
@@ -28,8 +30,7 @@ $line-height-base: 1.2;
 $line-height-h1: 0.8;
 
 $width-icon: 35px;
-
-
+$width-top-icon: clamp(6.25rem, 5.5625rem + 3.4375vw, 9.6875rem);
 
 $invalid-color: red;
 $input-padding: 1.5rem;

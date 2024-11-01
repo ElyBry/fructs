@@ -2,7 +2,7 @@ import * as React from "react";
 
 import styles from "../../sass/_componentsForOrders.module.scss"
 
-import Header from "../components/_header";
+import Header from "../components/Header/_header";
 import {useCallback, useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
@@ -33,7 +33,6 @@ const Orders = () => {
             setLoadingOrders(true);
             const response = await axios.get(`../api/admin/orders?page=${page}`);
             setOrders((prev) => [...prev, ...response.data.data]);
-            console.log(response);
             setHasMoreOrders(response.data.current_page < response.data.last_page)
             setLoadingOrders(false);
         } catch (e) {
@@ -74,7 +73,6 @@ const Orders = () => {
 
     const fetchOrderDetails = async (orderId) => {
         const response = await axios.get(`../api/admin/orderItems/${orderId}`);
-        console.log(response);
         return response.data;
     }
 

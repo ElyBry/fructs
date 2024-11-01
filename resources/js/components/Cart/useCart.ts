@@ -23,10 +23,14 @@ const useCart = () => {
     };
 
     const updateItemQuantity = (itemId, quantity, maxQuantity) => {
-        if (quantity == 0) {
+        if (quantity < 0) {
             return removeItem(itemId);
         }
+        if (quantity == '') {
+            quantity = 0;
+        }
         if (quantity > maxQuantity) return ;
+        quantity = String(parseInt(quantity));
         setCartItems((prevItems) =>
             prevItems.map(item =>
                 item.id !== itemId ? item : {...item, quantity}

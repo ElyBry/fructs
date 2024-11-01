@@ -8,7 +8,9 @@ import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
 import axios from "axios";
 
 import Footer from "./components/_footer.js";
-import Header from "./components/_header.js";
+
+import {isOpenBurgerMenu} from "./components/Header/HeaderAtom";
+import Header from "./components/Header/_header";
 
 import Search from "./components/Search/Search";
 
@@ -253,10 +255,20 @@ const Products: React.FC = () => {
         [loadingFeedbacksProduct, hasMoreFeedbacks]
     );
 
+    const isOpenBurger = useRecoilValue( isOpenBurgerMenu );
+
+    useEffect(() => {
+        if (isOpenCart || isOpenAboutProduct) {
+            document.body.classList.add(styles.noScroll);
+        } else {
+            document.body.classList.remove(styles.noScroll);
+        }
+    }, [isOpenCart, isOpenAboutProduct]);
+
     return (
         <div className={styles.root}>
             <div id={"usableItems"} className={styles.usableItems}>
-                <button id={"openCart"} className={`${styles.openCart} ${quantity > 0 && !isOpenCart ? styles.visible : ""}`}
+                <button id={"openCart"} className={`${styles.openCart} ${quantity > 0 && !isOpenCart && !isOpenBurger? styles.visible : ""}`}
                         onClick={() => {
                             setIsOpenCart(true);
                             setIsOpenAboutProduct(false);
@@ -266,7 +278,7 @@ const Products: React.FC = () => {
                     {totalCost} р<br/>
                     Кол-во: {quantity}
                 </button>
-                <button id={"close"} className={`${styles.close} ${isOpenAboutProduct || isOpenCart ? styles.visible : ""}`}
+                <button id={"close"} className={`${styles.close} ${(isOpenAboutProduct || isOpenCart) && !isOpenBurger ? styles.visible : ""}`}
                         onClick={() => {
                             setIsOpenAboutProduct(false);
                             setIsOpenCart(false);
@@ -422,7 +434,6 @@ const Products: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <Search/>
             <div id={"main"} className={styles.main}>
                 <div className={styles.content}>
                     <div id={"filter"} className={styles.filterBlock}>
@@ -595,6 +606,7 @@ const Products: React.FC = () => {
                             </div>
                         </div>
                     </div>
+                    <Search/>
                     <ProductsList maxPrice={maxPrice} minPrice={minPrice} ascendingSort={ascendingSort}
                                   howSort={howSort} selectedColors={selectedColors} selectedTypes={selectedTypes}
                                   openAboutProduct={openAboutProduct}

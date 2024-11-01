@@ -2,7 +2,7 @@ import * as React from "react";
 
 import styles from "../sass/_componentsForOrders.module.scss"
 
-import Header from "./components/_header.js";
+import Header from "./components/Header/_header";
 import {useCallback, useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";

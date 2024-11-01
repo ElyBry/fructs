@@ -152,6 +152,8 @@
 .invalid {
     @include mixin.check-input-field("invalid")
 }
+.buttonGoToSignIn,
+.buttonGoToSignUp,
 .buttonSign,
 .buttonToSignUp,
 .buttonToSignIn {
@@ -161,6 +163,12 @@
     border: 0;
     padding: app.$padding-elements;
     margin-top: app.$margin-text;
+}
+.buttonGoToSignIn,
+.buttonGoToSignUp {
+    display: none;
+    color: black;
+    background-color: app.$third-color;
 }
 .blockButtonSignIn {
     text-align: center;
@@ -213,4 +221,44 @@
     text-align: center;
     margin-top: app.$margin-text;
     color: app.$invalid-color;
+}
+
+@media (max-width: 900px) {
+    .mainDiv {
+        width: 90%;
+    }
+}
+@media (max-width: 540px) {
+    .mainDiv {
+        width: 100%;
+    }
+}
+@media (max-width: 497px) {
+    .mainDiv {
+        width: 90%;
+    }
+    .panel {
+        display: none;
+    }
+    .secondBlock {
+        display: none;
+    }
+    .mainSignIn .signIn {
+        width: 100%;
+        border-radius: 30px !important;
+        h1 {
+            text-align: center;
+        }
+    }
+    .formLogin {
+        text-align: center;
+    }
+    .mainCreateAcc .createAcc {
+        width: 100%;
+        border-radius: 30px !important;
+    }
+    .buttonGoToSignIn,
+    .buttonGoToSignUp {
+        display: inline-block;
+    }
 }

@@ -1,42 +1,62 @@
 import * as React from 'react';
 
 import styles from "../../sass/_layoutFooter.module.scss"
+import axios from "axios";
+import {useEffect, useState} from "react";
 
 export default () => {
     const year = new Date().getFullYear();
-    const numberPhone: String = '+7 (999) 999-99-99';
-    const email: String = 'email@top.ru';
+    const numberPhone: String = '+7 902 400-07-06';
+    const [tradingPoint, setTradingPoint] = useState([]);
+    const [loadingTradingPoints , setLoadingTradingPoints] = useState(false);
+    const fetchTradingPoints = async () => {
+        if (tradingPoint.length > 0) return;
+        try {
+            setLoadingTradingPoints(true);
+            const response = await axios.get('api/tradingPoints');
+            const data = response.data.data;
+            if (data) {
+                setTradingPoint(data);
+            } else {
+                setTradingPoint([]);
+            }
+
+            setLoadingTradingPoints(false);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    useEffect(() => {
+        fetchTradingPoints()
+    }, []);
+
     return (
         <div id={"bgFooter"} className={styles.bgFooter}>
             <div className={styles.content}>
                 <footer>
                     <div>
-                        <h2>Ссылки</h2>
-                        <a>Заказать фрукты</a>
-                        <a>Гарантия</a>
-                        <a>О нас</a>
-                        <a>Отзывы</a>
-                        <a>Статистика</a>
-                        <a>Наши плюсы</a>
-                    </div>
-                    <div>
                         <h2>Контакты</h2>
                         <a href={"tel:" + numberPhone}>{numberPhone}</a>
-                        <a href={"email:" + email}>{email}</a>
                     </div>
                     <div>
                         <h2>Адреса наших точек</h2>
-                        <a>г.Екатеринбург, Улица 16</a>
-                    </div>
-                    <div>
-                        <h2>Юридическая информация</h2>
-                        <a>Условия пользования</a>
-                        <a>Права потребителей</a>
+                        {loadingTradingPoints ?
+                            <a>Загрука</a>
+                            :
+                            tradingPoint.length == 0 ?
+                                <a>Не найдено</a>
+                                :
+                                tradingPoint.map(point => (
+                                    <a key={point.name}>
+                                        {point.address}
+                                    </a>
+                                ))
+                        }
                     </div>
                     <p>&copy; Фруктовый мир {year}. Все права защищены<br/>by ElyBry</p>
                 </footer>
             </div>
-
         </div>
     );
 }

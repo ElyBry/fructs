@@ -1,5 +1,8 @@
 // содержит стили для хедера и футера, сетки и т.д
 @use "var";
+.noScroll {
+    overflow: hidden;
+}
 header {
     width: 100%;
     display: flex;
@@ -62,6 +65,7 @@ header {
 }
 
 .burger {
+    cursor: pointer;
     display: none;
     .burgerImg {
         position: relative;
@@ -83,7 +87,7 @@ header {
         }
         &.visible {
             &::before {
-                transform: scale(40);
+                transform: scale(80);
             }
         }
         img {
@@ -92,9 +96,68 @@ header {
     }
 }
 .burgerMenu {
+    visibility: hidden;
     display: none;
+    justify-content: center;
+    align-items: flex-start;
+    position: fixed;
+    top: 20vh;
+    left: 0;
+    width: 100%;
+    opacity:0;
+    height: 100%;
+    z-index: 10002;
+    transition: var.$transition-load;
+    overflow: hidden;
+    nav {
+        position: relative;
+        transform: translateY(-50%);
+        transition: var.$transition-load;
+        font-weight: 400;
+        text-align: center;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 auto;
+        display: inline-block;
+        position: relative;
+        height: 100%;
+        ul {
+            margin-bottom: var.$margin-text + 10px;
+        }
+        li {
+            display: block;
+            position: relative;
+            &:not(:last-child) {
+                margin-bottom: var.$margin-text;
+            }
+            a {
+                display: block;
+                position: relative;
+                text-decoration: none;
+                opacity: 0.7;
+                color: #000000;
+                transform: scale(1);
+                transition: all 0.3s;
+
+                &:hover,
+                &:focus,
+                &:active {
+                    opacity: 1;
+                    transform: scale(1.2);
+                    transition: all 0.3s;
+                }
+            }
+        }
+    }
     &.visible {
-        display: block;
+        visibility: visible;
+        opacity: 1;
+        nav {
+            transform: translateY(0);
+        }
     }
 }
 
@@ -106,5 +169,28 @@ header {
     }
     .burger {
         display:block;
+    }
+    .burgerMenu {
+        display: flex;
+    }
+}
+
+
+@media (max-width: 550px) {
+    .header {
+        padding: 0 30px;
+    }
+}
+@media (max-width: 500px) {
+    .logo {
+        gap: 5px;
+        font-size: 25px;
+    }
+}
+@media (max-width: 375px) {
+    .logo {
+        text-wrap: wrap;
+        gap: 0;
+        font-size: 25px;
     }
 }

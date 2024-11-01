@@ -11,5 +11,6 @@ class TypeProducts extends Model
     use HasFactory;
     protected $fillable = [
         'name',
+        'img'
     ];
 }

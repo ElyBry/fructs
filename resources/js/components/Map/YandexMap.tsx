@@ -9,13 +9,13 @@ const YandexMap = () => {
         script.type = "text/javascript";
 
         document.getElementById('yMap').appendChild(script);
-
-        return () => {
-            document.getElementById('yMap').removeChild(script);
-        };
     }, []);
 
-    return <div id="yMap"></div>;
+    return (
+        <div id="yMap" style={{width: "100%", height: "90%"}}>
+            Зона доставки и точки
+        </div>
+    );
 };
 
 export default YandexMap;

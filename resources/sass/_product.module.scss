@@ -8,7 +8,7 @@
     justify-content: center;
     align-items: center;
     box-shadow: var.$box-shadow-elements;
-    backdrop-filter: blur(6px);
+    //backdrop-filter: blur(6px);
     border-radius: var.$border-radius-elements;
     .error {
         text-align: center;
@@ -41,17 +41,18 @@
     }
     .textProducts {
         text-align: center;
-        font-size: 1.5rem;
+        font-size: var.$font-size-h1;
         margin: 10% auto;
     }
     .priceProducts {
         text-align: center;
-        font-size: 1.5rem;
+        font-size: var.$font-size-h1;
         margin: 0 auto 10%;
     }
     .buttonsProducts {
         display: flex;
         flex-direction: column;
+        font-size: var.$font-size-h3;
         gap: var.$padding-elements;
         padding: 0 var.$padding-elements var.$padding-elements;
         .addCart {
@@ -59,6 +60,20 @@
         }
         .aboutProducts{
             @include mixin.buttonsCart("")
+        }
+    }
+}
+
+@media (max-width: 530px) {
+    .textProducts,
+    .priceProducts {
+        margin: 2% auto !important;
+    }
+    .buttonsProducts {
+        padding: 5px !important;
+        .addCart,
+        .aboutProducts {
+            text-wrap: wrap !important;
         }
     }
 }

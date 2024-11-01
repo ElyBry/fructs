@@ -2,7 +2,7 @@ import * as React from "react";
 
 import styles from '../../sass/_componentsForAdminUsers.module.scss'
 
-import Header from "../components/_header";
+import Header from "../components/Header/_header";
 import {useCallback, useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
@@ -138,7 +138,7 @@ const Users = () => {
     }
 
     return (
-        <>
+        <div className={styles.root}>
             <Header className={styles.header}/>
             <Alert message={message}/>
             <div className={`${styles.changer} ${isOpenEdit ? styles.visible : ""}`}>
@@ -195,7 +195,7 @@ const Users = () => {
                     {loadingUsers && <p>Загрузка...</p>}
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

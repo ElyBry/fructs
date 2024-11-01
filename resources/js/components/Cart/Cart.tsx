@@ -7,13 +7,15 @@ import YandexMap from "../Map/YandexMap";
 import axios from "axios";
 
 import styles from "../../../sass/_cart.module.scss";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 import {isValidPhoneNumber, parsePhoneNumber} from "libphonenumber-js";
 import {userIsAuth} from "../User/userAtom";
 import Alert from "../Alert/Alert";
 
 const Cart = ({ isOpenCart }) => {
+
+    const navigate = useNavigate();
 
     const [cart, setCart] = useRecoilState(cartAtom);
     const quantity = useRecoilValue(quantityAtom);
@@ -139,7 +141,7 @@ const Cart = ({ isOpenCart }) => {
                 promo: promo,
                 picked_trade_point: pickedTradePoint,
                 comment: comment,
-                address: `${address} ${entrance} ${floor} ${flat}`,
+                address: `ул.${address} п.${entrance}, ${floor}э, ${flat}кв`,
                 quantity: quantity,
                 total_price: totalCost,
                 discount_percent: discountPercent,
@@ -160,6 +162,13 @@ const Cart = ({ isOpenCart }) => {
             }
         } catch (e) {
             console.error(e);
+            if (e.status == 401) {
+                setMessage("Вы не авторизованы");
+                setTimeout(() => {
+                    setMessage('');
+                }, 3000);
+                navigate('../login');
+            }
             if (e.status == 400) {
                 setMessage(e.response.data.data.error);
                 setTimeout(() => {
@@ -184,7 +193,7 @@ const Cart = ({ isOpenCart }) => {
     return (
         <>
             <Alert message={message}/>
-            <div id={"cart"} className={`${styles.cart} ${isOpenCart && quantity > 0 ? styles.visible : ""}`}>
+            <div id={"cart"} className={`${styles.cart} ${isOpenCart ? styles.visible : ""}`}>
                 <div id="cartBlock" className={styles.cartBlock}>
                     <div className={`${styles.infoOrder} ${styles.zeroStage} ${stage == 0 ? styles.active : ""}`}>
                         <div className={styles.table}>
@@ -206,17 +215,23 @@ const Cart = ({ isOpenCart }) => {
                                             <input name={"quantity"}
                                                    type={"number"}
                                                    value={item.quantity}
+                                                   min={-1}
                                                    max={item.count}
                                                    onChange={(e) => {
                                                        updateItemQuantity(item.id, e.target.value, item.count)
                                                    }}
+                                                   onBlur={() => {
+                                                       if (item.quantity === 0) {
+                                                           removeItem(item.id);
+                                                       }
+                                                   }}
                                             />/{item.count}
                                         </td>
-                                        <td className={styles.price}>{item.price}р
-                                            / {`${item.weight} ${item.type_weight}`}</td>
-                                        <td className={styles.price}>
+                                        <td className={`${styles.price}`}>{item.price}р
+                                            /{`${item.weight} ${item.type_weight}`}</td>
+                                        <td className={styles.total}>
                                             {`${item.price * item.quantity}р
-                                        /${item.weight * item.quantity} ${item.type_weight}`
+                                            /${item.weight * item.quantity} ${item.type_weight}`
                                             }</td>
                                         <td>
                                             <button className={styles.remove} onClick={() => removeItem(item.id)}><span
@@ -438,7 +453,7 @@ const Cart = ({ isOpenCart }) => {
                             </div>
                         </div>
                         <div className={styles.right}>
-                            {"<YandexMap/>"}
+                            <YandexMap/>
                         </div>
                     </div>
                     <div className={`${styles.infoOrder} ${styles.thirdStage} ${stage == 3 ? styles.active : ""}`}>

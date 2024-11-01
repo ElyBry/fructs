@@ -2,7 +2,7 @@ import * as React from "react";
 
 import styles from '../../sass/_componentsForAdminUsers.module.scss'
 
-import Header from "../components/_header";
+import Header from "../components/Header/_header";
 import {useCallback, useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
@@ -10,16 +10,15 @@ import {useRecoilState} from "recoil";
 import {userIsAuth, userRole} from "../components/User/userAtom";
 import User from "../components/User/user";
 import Alert from "../components/Alert/Alert";
-import {s} from "vite/dist/node/types.d-aGj9QkWt";
 
-const FeedBacksProducts = () => {
+const Feedbacks = () => {
     const [isAuth, setIsAuth] = useRecoilState( userIsAuth );
     const [roles, setRoles] = useState(userRole);
     const {checkRole, checkAuthAndGetRole} = User();
 
     const navigate = useNavigate();
     useEffect(() => {
-        if (!checkRole(['Super Admin', 'Admin'])) {
+        if (!checkRole(['Super Admin', 'Admin', 'Manager'])) {
             navigate('/login');
         }
     }, []);
@@ -32,9 +31,8 @@ const FeedBacksProducts = () => {
     const fetchFeedbacks = async () => {
         try {
             setLoadingFeedbacks(true);
-            const response = await axios.get(`../api/admin/feedBacksProducts?page=${pageFeedbacks}`);
+            const response = await axios.get(`../api/admin/feedBacks?page=${pageFeedbacks}`);
             const newData = response.data;
-            console.log(newData);
             setFeedbacks((prev) => [...prev, ...newData.data]);
             setHasMoreFeedbacks(newData.current_page < newData.last_page);
             setLoadingFeedbacks(false);
@@ -108,18 +106,16 @@ const FeedBacksProducts = () => {
         try {
             let response;
             if (feedback) {
-                response = await axios.put(`../api/admin/feedBacksProducts/${feedback.id}`, {
+                response = await axios.put(`../api/admin/feedBacks/${feedback.id}`, {
                     id: feedback.id,
-                    product_id: feedback.product_id,
                     user_name: feedback.user_name,
                     message: feedback.message,
                     is_approved: feedback.is_approved ? 0 : 1,
                     rating: feedback.rating
                 })
             } else {
-                response = await axios.put(`../api/admin/feedBacksProducts/${selectedFeedback.id}`, {
+                response = await axios.put(`../api/admin/feedBacks/${selectedFeedback.id}`, {
                     id: selectedFeedback.id,
-                    product_id: feedback.product_id,
                     user_name: selectedFeedback.user_name,
                     message: selectedFeedback.message,
                     is_approved: selectedFeedback.is_approved,
@@ -130,10 +126,9 @@ const FeedBacksProducts = () => {
             const newData = response.data.data;
             setFeedbacks((prevFeedBack) => {
                 return prevFeedBack.map((feedback) =>
-                    feedback.id === newData.id ? { ...feedback, ...newData } : feedback
+                    feedback.id === newData.id ? newData : feedback
                 );
             });
-
             setMessage('Отзыв успешно обновлён!');
             setTimeout(() => {
                 setMessage('');
@@ -149,7 +144,7 @@ const FeedBacksProducts = () => {
     }
 
     return (
-        <>
+        <div className={styles.root}>
             <Header className={styles.header}/>
             <Alert message={message}/>
             <div className={`${styles.changer} ${isOpenEdit ? styles.visible : ""}`}>
@@ -190,7 +185,6 @@ const FeedBacksProducts = () => {
                                 <th>ФИО</th>
                                 <th>Отзыв</th>
                                 <th>Оценка</th>
-                                <th>Продукт</th>
                                 <th>Дата</th>
                                 <th>Действия</th>
                             </tr>
@@ -202,7 +196,6 @@ const FeedBacksProducts = () => {
                                     <td>{feedback.user_name}</td>
                                     <td>{feedback.message}</td>
                                     <td>{feedback.rating}</td>
-                                    <td>{feedback.product_name}</td>
                                     <td>{feedback?.created_at?.slice(0, 10)}</td>
                                     <td className={styles.buttons}>
                                         {feedback.is_approved ?
@@ -220,8 +213,8 @@ const FeedBacksProducts = () => {
                     {loadingFeedbacks && <p>Загрузка...</p>}
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 
-export default FeedBacksProducts
+export default Feedbacks

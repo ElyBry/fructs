@@ -19,24 +19,23 @@ class TradingPointsController extends BaseController
     }
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'name' => 'required',
-            'discount' => 'required|numeric|min:0|max:100',
+            'address' => 'required',
         ]);
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
         $input = $request->all();
         $points = TradingPoints::create($input);
-        return response()->json([$points, 200]);
+        return $this->sendResponse($points, 'Успешно добавлено.');
     }
-    public function delete(TradingPoints $points)
+    public function destroy($id)
     {
+        $points = TradingPoints::find($id);
         $points->delete();
-        return response()->json(null, 204);
+        return $this->sendResponse(null, 'Успешно удалено.');
     }
-    public function update(Request $request, TradingPoints $points)
+    public function update(Request $request, $id)
     {
+        $points = TradingPoints::find($id);
         $points->update($request->all());
         return $this->sendResponse($points,'Успешно обновлено');
     }

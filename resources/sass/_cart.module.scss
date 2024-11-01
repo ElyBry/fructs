@@ -31,6 +31,7 @@
         .secondStage {
             display: none;
             grid-template-columns: 1fr 1fr;
+            grid-gap: 15px;
             &.active {
                 display: grid !important;
             }
@@ -192,6 +193,7 @@
                 }
                 div {
                     display: flex;
+                    flex-wrap: wrap;
                     gap: var.$margin-text;
                     margin-top: var.$margin-text;
                     input {
@@ -286,5 +288,24 @@
         display: flex;
         opacity: 1;
         background-color: var.$secondary-color;
+    }
+}
+
+
+@media (max-width: 830px) {
+    .cart .cartBlock .secondStage {
+        grid-template-columns: 90% 90%;
+    }
+    .cart .cartBlock {
+        width: 100%;
+        padding: 5%;
+    }
+    .infoOrder .table .price {
+        display: none;
+    }
+}
+@media (max-width: 420px) {
+    .cart .cartBlock .infoOrder .promo {
+        flex-direction: column;
     }
 }
