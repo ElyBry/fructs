@@ -95,7 +95,7 @@ Route::group([
         // Страны
         Route::resource('countries', CountriesController::class);
         // Промокоды
-        Route::resource('promo', PromoController::class);
+        Route::resource('promos', PromoController::class);
         // Заказы
         Route::get('orderItems/{order_id}', [OrderController::class, 'indexItems']);
         Route::resource('orders', OrderController::class);

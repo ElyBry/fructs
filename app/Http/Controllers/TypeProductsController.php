@@ -23,7 +23,6 @@ class TypeProductsController extends BaseController
     }
     public function store(Request $request)
     {
-        Log::info($request);
         $request->validate([
             'name' => 'required',
             'img' => 'required',
@@ -44,11 +43,10 @@ class TypeProductsController extends BaseController
             }
         }
         $types = TypeProducts::create($input);
-        return response()->json([$types, 200]);
+        return $this->sendResponse($types, "Успешно добавлено");
     }
     public function update(Request $request, $id)
     {
-        Log::info($request);
         $request->validate([
             'name' => 'required',
             'img' => 'required'
@@ -75,12 +73,17 @@ class TypeProductsController extends BaseController
         }
         $types = TypeProducts::find($id);
         $types->update($input);
-        return response()->json([$types, 200]);
+        return $this->sendResponse($types, "Успешно обновлено");
     }
-    public function delete(TypeProducts $types)
+    public function destroy($id)
     {
+        $types = TypeProducts::find($id);
+        $imagePath = public_path($types['img']);
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
         $types->delete();
-        return response()->json(null, 204);
+        return $this->sendResponse(null, 'Успешно удалено.');
     }
     public function getNewTypeProducts()
     {

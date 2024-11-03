@@ -96,18 +96,8 @@ export default ({className}) => {
                                                     </Link>
                                                 </li>
                                                 <li>
-                                                    <Link to={"/admin/tradePoints"}>
-                                                        <div className={styles.hSection}>Точки</div>
-                                                    </Link>
-                                                </li>
-                                                <li>
-                                                    <Link to={"/admin/typeProducts"}>
-                                                        <div className={styles.hSection}>Типы продуктов</div>
-                                                    </Link>
-                                                </li>
-                                                <li>
-                                                    <Link to={"/admin/users"}>
-                                                        <div className={styles.hSection}>Пользователи</div>
+                                                    <Link to={"/admin/promos"}>
+                                                        <div className={styles.hSection}>Промокоды</div>
                                                     </Link>
                                                 </li>
                                                 <li>
@@ -123,6 +113,21 @@ export default ({className}) => {
                                                 <li>
                                                     <Link to={"/admin/feedbacks"}>
                                                         <div className={styles.hSection}>Отзывы о приложении</div>
+                                                    </Link>
+                                                </li>
+                                                <li>
+                                                    <Link to={"/admin/tradePoints"}>
+                                                        <div className={styles.hSection}>Точки</div>
+                                                    </Link>
+                                                </li>
+                                                <li>
+                                                    <Link to={"/admin/typeProducts"}>
+                                                        <div className={styles.hSection}>Типы продуктов</div>
+                                                    </Link>
+                                                </li>
+                                                <li>
+                                                    <Link to={"/admin/users"}>
+                                                        <div className={styles.hSection}>Пользователи</div>
                                                     </Link>
                                                 </li>
                                             </ul>

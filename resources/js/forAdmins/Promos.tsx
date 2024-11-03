@@ -23,17 +23,17 @@ const TradePoints = () => {
         }
     }, []);
 
-    const [points, setPoints] = useState([]);
+    const [promos, setPromos] = useState([]);
     const [loading,setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
 
-    const fetchTradePoints = async () => {
+    const fetchPromos = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`../api/tradingPoints`);
+            const response = await axios.get(`../api/admin/promos`);
             const newData = response.data;
-            setPoints((prev) => [...prev, ...newData.data]);
+            setPromos((prev) => [...prev, ...newData.data]);
             setHasMore(newData.current_page < newData.last_page);
             setLoading(false);
         } catch (e) {
@@ -43,11 +43,11 @@ const TradePoints = () => {
 
     useEffect(() => {
         setPage(1);
-        setPoints([]);
+        setPromos([]);
     }, []);
 
     useEffect(() => {
-        fetchTradePoints();
+        fetchPromos();
     }, [page]);
 
     const observer = useRef<IntersectionObserver | null>(null);
@@ -70,20 +70,20 @@ const TradePoints = () => {
     const [isAdding, setIsAdding] = useState(false);
     const [isOpenEdit, setIsOpenEdit] = useState(false);
     const [isOpenRemove, setIsOpenRemove] = useState(false);
-    const [selectedPoint, setSelectedPoint] = useState(null);
+    const [selectedPromo, setSelectedPromo] = useState(null);
     const handleEdit = (point) => {
-        setSelectedPoint(point);
+        setSelectedPromo(point);
         setIsOpenEdit(true);
     }
 
     const handleDelete = (point) => {
-        setSelectedPoint(point);
+        setSelectedPromo(point);
         setIsOpenRemove(true);
     }
 
     const handleInputChange = (e, field) => {
         const { value } = e.target;
-        setSelectedPoint((prevPoint) => ({
+        setSelectedPromo((prevPoint) => ({
             ...prevPoint,
             [field]: value
         }));
@@ -95,32 +95,32 @@ const TradePoints = () => {
         try {
             let response;
             if (isAdding) {
-                response = await axios.post(`../api/admin/tradingPoints`, {
-                    name: selectedPoint.name,
-                    address: selectedPoint.address
+                response = await axios.post(`../api/admin/promos`, {
+                    name: selectedPromo.name,
+                    discount: selectedPromo.discount,
                 })
             } else {
-                response = await axios.put(`../api/admin/tradingPoints/${selectedPoint.id}`, {
-                    name: selectedPoint.name,
-                    address: selectedPoint.address
+                response = await axios.put(`../api/admin/promos/${selectedPromo.id}`, {
+                    name: selectedPromo.name,
+                    discount: selectedPromo.discount,
                 })
             }
             const newData = response.data.data;
             if (isAdding) {
-                setPoints((prevPoints) => {
-                    return [newData, ...prevPoints];
+                setPromos((prevTypes) => {
+                    return [newData, ...prevTypes];
                 });
             } else {
-                setPoints((prevPoints) => {
-                    return prevPoints.map((points) =>
+                setPromos((prevTypes) => {
+                    return prevTypes.map((points) =>
                         points.id === newData.id ? newData : points
                     );
                 });
             }
+
             setIsAdding(false);
             setIsOpenEdit(false);
-
-            setMessage('Точка успешна обновлена!');
+            setMessage('Промокод успешно обновлён!');
             setTimeout(() => {
                 setMessage('');
             }, 3000);
@@ -129,18 +129,22 @@ const TradePoints = () => {
                 console.error("Не аутентифицирован");
                 navigate('../login');
             } else {
+                setMessage(e.response.data.message);
+                setTimeout(() => {
+                    setMessage('');
+                }, 3000);
                 console.error(e);
             }
         }
     }
     const remove = async () => {
         try {
-            const response = await axios.delete(`../api/admin/tradingPoints/${selectedPoint.id}`)
-            setPoints((prevPoints) => {
-                return prevPoints.filter((points) => points.id !== selectedPoint.id);
+            const response = await axios.delete(`../api/admin/promos/${selectedPromo.id}`)
+            setPromos((types) => {
+                return types.filter((types) => types.id !== selectedPromo.id);
             });
             setIsOpenRemove(false);
-            setMessage('Точка успешна удалена!');
+            setMessage('Промокод успешно удален!');
             setTimeout(() => {
                 setMessage('');
             }, 3000);
@@ -154,30 +158,31 @@ const TradePoints = () => {
         }
     };
 
+
     return (
         <div className={styles.root}>
             <Header className={styles.header}/>
             <Alert message={message}/>
             <div className={`${styles.changer} ${isOpenRemove ? styles.visible : ""}`}>
                 <div className={styles.content}>
-                    <h1>Вы уверены что хотите удалить точку {selectedPoint ? selectedPoint.name : ""}?</h1>
+                    <h1>Вы уверены что хотите удалить промокод {selectedPromo ? selectedPromo.name : ""}?</h1>
                     <button onClick={() => remove()}>Удалить</button>
                     <button onClick={() => setIsOpenRemove(false)}>Отмена</button>
                 </div>
             </div>
             <div className={`${styles.changer} ${isOpenEdit ? styles.visible : ""}`}>
                 <div className={styles.content}>
-                    <label>Название точки</label>
+                    <label>Название</label>
                     <input
                         type="text"
-                        value={selectedPoint ? selectedPoint.name : ''}
+                        value={selectedPromo ? selectedPromo.name : ''}
                         onChange={(e) => handleInputChange(e, 'name')}
                     />
-                    <label>Адрес</label>
+                    <label>Скидка</label>
                     <input
                         type="text"
-                        value={selectedPoint ? selectedPoint.address : ''}
-                        onChange={(e) => handleInputChange(e, 'address')}
+                        value={selectedPromo ? selectedPromo.discount : ''}
+                        onChange={(e) => handleInputChange(e, 'discount')}
                     />
                     <button onClick={() => saveChanges()}>{isAdding ? "Добавить" : "Изменить"}</button>
                     <button onClick={() => {
@@ -192,24 +197,24 @@ const TradePoints = () => {
                             setIsAdding(true);
                             handleEdit({});
                         }}
-                >Добавить точку</button>
+                >Добавить промокод</button>
                 <div className={styles.usersTable}>
-                    {points.length > 0 && (
+                    {promos.length > 0 && (
                         <table>
                             <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Название</th>
-                                <th>Адрес</th>
+                                <th>Скидка</th>
                                 <th>Действия</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {points.map((point, i) => (
-                                <tr key={point.id} ref={i + 1 == points.length ? lastElementRef : null}>
+                            {promos.map((point, i) => (
+                                <tr key={point.id} ref={i + 1 == promos.length ? lastElementRef : null}>
                                     <td>{point.id}</td>
                                     <td>{point.name}</td>
-                                    <td>{point.address}</td>
+                                    <td>{point.discount}%</td>
                                     <td>
                                         <button onClick={() => handleEdit(point)}>Изменить</button>
                                         <button onClick={() => handleDelete(point)}>Удалить</button>
@@ -220,7 +225,7 @@ const TradePoints = () => {
                         </table>
                     )}
                     {loading && <p>Загрузка...</p>}
-                    {!loading && points.length == 0 && <p>Не найдено</p>}
+                    {!loading && promos.length == 0 && <p>Не найдено</p>}
                 </div>
             </div>
         </div>

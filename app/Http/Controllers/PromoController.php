@@ -19,26 +19,29 @@ class PromoController extends BaseController
     }
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'name' => 'required',
             'discount' => 'required|numeric|min:0|max:100',
         ]);
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
         $input = $request->all();
         $promo = Promos::create($input);
-        return response()->json([$promo, 200]);
+        return $this->sendResponse($promo, "Успешно добавлено");
     }
-    public function delete(Promos $promo)
+    public function update(Request $request, $id)
     {
-        $promo->delete();
-        return response()->json(null, 204);
-    }
-    public function update(Request $request, Promos $promo)
-    {
+        $request->validate([
+            'name' => 'required',
+            'discount' => 'required|numeric|min:0|max:100',
+        ]);
+        $promo = Promos::find($id);
         $promo->update($request->all());
         return $this->sendResponse($promo,'Успешно обновлено');
+    }
+    public function destroy($id)
+    {
+        $promo = Promos::find($id);
+        $promo->delete();
+        return $this->sendResponse(null, 'Успешно удалено.');
     }
     public function verify(Request $request)
     {

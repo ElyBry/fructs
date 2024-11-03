@@ -33,7 +33,6 @@ const TradePoints = () => {
             setLoading(true);
             const response = await axios.get(`../api/typeProducts`);
             const newData = response.data;
-            console.log(response.data);
             setTypes((prev) => [...prev, ...newData]);
             setHasMore(newData.current_page < newData.last_page);
             setLoading(false);
@@ -104,7 +103,6 @@ const TradePoints = () => {
                 formData.append('image', file);
             }
             formData.append('name', selectedType.name);
-            console.log(selectedType.name);
             if (isAdding) {
                 response = await axios.post(`../api/admin/typeProducts`, formData, {
                     headers: {
@@ -118,14 +116,22 @@ const TradePoints = () => {
                     }
                 });
             }
-            return;
             const newData = response.data.data;
-            setTypes((prevPoints) => {
-                return [newData, ...prevPoints];
-            });
+            if (isAdding) {
+                setTypes((prevTypes) => {
+                    return [newData, ...prevTypes];
+                });
+            } else {
+                setTypes((prevTypes) => {
+                    return prevTypes.map((points) =>
+                        points.id === newData.id ? newData : points
+                    );
+                });
+            }
+
             setIsAdding(false);
             setIsOpenEdit(false);
-            setMessage('Точка успешна обновлена!');
+            setMessage('Тип успешно обновлен!');
             setTimeout(() => {
                 setMessage('');
             }, 3000);
@@ -144,12 +150,12 @@ const TradePoints = () => {
     }
     const remove = async () => {
         try {
-            const response = await axios.delete(`../api/admin/tradingPoints/${selectedType.id}`)
-            setTypes((prevPoints) => {
-                return prevPoints.filter((points) => points.id !== selectedType.id);
+            const response = await axios.delete(`../api/admin/typeProducts/${selectedType.id}`)
+            setTypes((types) => {
+                return types.filter((types) => types.id !== selectedType.id);
             });
             setIsOpenRemove(false);
-            setMessage('Точка успешна удалена!');
+            setMessage('Тип успешно удален!');
             setTimeout(() => {
                 setMessage('');
             }, 3000);
@@ -170,7 +176,7 @@ const TradePoints = () => {
             <Alert message={message}/>
             <div className={`${styles.changer} ${isOpenRemove ? styles.visible : ""}`}>
                 <div className={styles.content}>
-                    <h1>Вы уверены что хотите удалить точку {selectedType ? selectedType.name : ""}?</h1>
+                    <h1>Вы уверены что хотите удалить тип {selectedType ? selectedType.name : ""}?</h1>
                     <button onClick={() => remove()}>Удалить</button>
                     <button onClick={() => setIsOpenRemove(false)}>Отмена</button>
                 </div>
@@ -204,7 +210,7 @@ const TradePoints = () => {
                             setIsAdding(true);
                             handleEdit({});
                         }}
-                >Добавить точку</button>
+                >Добавить тип</button>
                 <div className={styles.usersTable}>
                     {types.length > 0 && (
                         <table>

@@ -153,8 +153,13 @@ class ProductsController extends BaseController
         $product = $product->update($productData);
         return $this->sendResponse($productData,'Успешно обновлено');
     }
-    public function delete(Product $product)
+    public function destroy($id)
     {
+        $product = Product::find($id);
+        $imagePath = public_path($product['img']);
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
         $product->delete();
         return $this->sendResponse(null, 'Успешно удалено');
     }

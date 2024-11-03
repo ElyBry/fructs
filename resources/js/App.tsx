@@ -14,6 +14,7 @@ import TradePoints from "./forAdmins/TradePoints";
 import Feedbacks from "./forAdmins/Feedbacks";
 import FeedbacksProducts from "./forAdmins/FeedbacksProducts";
 import TypeProducts from "./forAdmins/TypeProducts";
+import Promos from "./forAdmins/Promos";
 
 const App = () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -38,6 +39,7 @@ const App = () => {
                     <Route path="/admin/feedbacksProducts" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <FeedbacksProducts/> : <Navigate to={"/login"}/>}/>
                     <Route path="/admin/tradePoints" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <TradePoints/> : <Navigate to={"/login"}/>}/>
                     <Route path="/admin/typeProducts" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <TypeProducts/> : <Navigate to={"/login"}/>}/>
+                    <Route path="/admin/promos" element={checkRole(['Super Admin', 'Admin', 'Manager']) ? <Promos/> : <Navigate to={"/login"}/>}/>
                 </Routes>
             </Router>
         </RecoilRoot>
