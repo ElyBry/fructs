@@ -23,7 +23,7 @@ const SignInUp = () => {
         event.preventDefault();
         if (!isValidEmail) return;
         setLoading(true);
-        const url = is === "in" ? 'http://localhost:8000/api/auth/login' : 'http://localhost:8000/api/auth/register';
+        const url = "/api/auth/" + (is === "in" ? 'login' : 'register');
         const body = is === "in" ? {
             email: email,
             password: password
