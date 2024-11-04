@@ -14,14 +14,17 @@ const useR = () => {
         if (isAuthenticated) setIsAuth(true);
         else return false;
         const user = JSON.parse(localStorage.getItem('user'));
-        setUser(user);
-        if (user.roles[0]){
-            const role = user.roles[0].name;
-            setRole(role);
-            return true;
-        } else {
-            return false;
+        if (user) {
+            setUser(user);
+            if (user.roles[0]){
+                const role = user.roles[0].name;
+                setRole(role);
+                return true;
+            } else {
+                return false;
+            }
         }
+        return false;
     }
 
     return {checkRole, checkAuthAndGetRole}

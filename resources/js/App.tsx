@@ -15,13 +15,15 @@ import Feedbacks from "./forAdmins/Feedbacks";
 import FeedbacksProducts from "./forAdmins/FeedbacksProducts";
 import TypeProducts from "./forAdmins/TypeProducts";
 import Promos from "./forAdmins/Promos";
+import useR from "./components/User/user";
+import {useEffect} from "react";
 
 const App = () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const roles = user?.roles?.map(role => role.name);
-    const checkRole = (requiredRoles) => {
-        return requiredRoles.some(role => roles?.includes(role));
-    }
+    const { checkRole, checkAuthAndGetRole } = useR();
+
+    useEffect(() => {
+        checkAuthAndGetRole();
+    }, []);
     return (
         <RecoilRoot>
             <Router>
@@ -51,6 +53,8 @@ const rootElement: HTMLElement = document.getElementById('root');
 if (rootElement) {
     const root: ReactDOM.Root = ReactDOM.createRoot(rootElement);
     root.render(
-        <App/>
+        <RecoilRoot>
+            <App/>
+        </RecoilRoot>
     );
 }

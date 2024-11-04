@@ -178,7 +178,7 @@ const Orders = () => {
     }
 
     return (
-        <>
+        <div className={styles.root}>
             <Header className={styles.header}/>
             <Alert message={message}/>
             {orders.length > 0 && (countFeedbacks == 0 || openFeedbackProducts) &&
@@ -307,7 +307,7 @@ const Orders = () => {
                     {!loadingOrders && orders.length == 0 && <h1>Ничего не найдено</h1>}
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

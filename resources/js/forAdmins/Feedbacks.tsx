@@ -12,8 +12,6 @@ import User from "../components/User/user";
 import Alert from "../components/Alert/Alert";
 
 const Feedbacks = () => {
-    const [isAuth, setIsAuth] = useRecoilState( userIsAuth );
-    const [roles, setRoles] = useState(userRole);
     const {checkRole, checkAuthAndGetRole} = User();
 
     const navigate = useNavigate();

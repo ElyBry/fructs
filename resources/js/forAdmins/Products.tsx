@@ -32,6 +32,7 @@ const Products: React.FC = () => {
 
     const navigate = useNavigate();
     useEffect(() => {
+        checkAuthAndGetRole();
         if (!checkRole(['Super Admin', 'Admin', 'Manager'])) {
             navigate('/login');
         }
