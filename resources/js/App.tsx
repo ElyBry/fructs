@@ -18,9 +18,9 @@ import Promos from "./forAdmins/Promos";
 
 const App = () => {
     const user = JSON.parse(localStorage.getItem('user'));
-    const roles = user.roles.map(role => role.name);
+    const roles = user?.roles?.map(role => role.name);
     const checkRole = (requiredRoles) => {
-        return requiredRoles.some(role => roles.includes(role));
+        return requiredRoles.some(role => roles?.includes(role));
     }
     return (
         <RecoilRoot>
