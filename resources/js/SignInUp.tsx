@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom/client';
 
 import styles from "../sass/_componentsForSignInUp.module.scss"
 import {Link, useNavigate} from "react-router-dom";
+import TelegramConnect from "./components/TelegramConnect/TelegramConnect";
 
 const SignInUp = () => {
     const navigate = useNavigate();
@@ -169,18 +170,18 @@ const SignInUp = () => {
                     </div>
                     <div id={"sign_in"} className={styles.signIn}>
                         <h1>Войти</h1>
-                        {/*
                         <div className={styles.fromAcc}>
                             <div className={styles.icons}>
-                                <a href={"#"}><img src={"../../image/icons/icon-google.png"}/></a>
+                                {/*<a href={"#"}><img src={"../../image/icons/icon-google.png"}/></a>
                                 <a href={"#"}><img src={"../../image/icons/icon-telegram.png"}/></a>
                                 <a href={"#"}><img src={"../../image/icons/icon-vk.png"}/></a>
+                                */}
+                                <TelegramConnect/>
                             </div>
                             <div className={styles.note}>
                                 или используйте вашу почту и пароль для входа:
                             </div>
                         </div>
-                        */}
 
                         <div id={"form_login"} className={styles.formLogin}>
                             <form onSubmit={(e) => handleSubmit(e, "in")}>

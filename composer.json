@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "azate/laravel-telegram-login-auth": "^2.4",
         "illuminate/http": "*",
         "illuminate/queue": "*",
         "illuminate/view": "*",
