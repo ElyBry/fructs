@@ -132,8 +132,22 @@ const SignInUp = () => {
     useEffect(() => {
         window.onTelegramAuth = function (user) {
             console.log(user);
-            //localStorage.setItem('user', JSON.stringify(user));
-            //navigate('/products');
+
+            fetch('/api/telegram/callback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    navigate('/products');
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                });
         };
     }, []);
     return  (

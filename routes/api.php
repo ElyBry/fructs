@@ -10,6 +10,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\TradingPointsController;
 use App\Http\Controllers\TypeProductsController;
 use App\Http\Controllers\UserController;
@@ -20,7 +21,7 @@ Route::group([
 ], function () {
     // Интеграции
         // Телеграм
-
+    Route::post('/telegram/callback', [TelegramController::class, 'handleTelegramCallback']);
     // Продукты
     Route::get('products', [ProductsController::class, 'index']);
     Route::get('popularProduct', [ProductsController::class, 'getMostPopularProduct']);
