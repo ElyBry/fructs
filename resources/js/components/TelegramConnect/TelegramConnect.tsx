@@ -17,10 +17,6 @@ const Telegram = () => {
         script.type = "text/javascript";
 
         document.getElementById('telegram').appendChild(script);
-
-        return () => {
-            document.getElementById('telegram').removeChild(script);
-        };
     }, []);
 
     return (
