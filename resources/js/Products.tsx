@@ -381,25 +381,27 @@ const Products: React.FC = () => {
                             </>
                             :
                             <>
-                                <div className={styles.infoCard}>
-                                    <div className={styles.star}>
-                                        <span className={"material-symbols-outlined"}>star_rate</span>
-                                        <div>
-                                            {popularProduct["average_rating"]}
-                                            {popularProduct["average_rating"] ? <hr/> : ""}
-                                            {popularProduct["count_feeds"]}
+                                {popularProduct &&
+                                    <div className={styles.infoCard}>
+                                        <div className={styles.star}>
+                                            <span className={"material-symbols-outlined"}>star_rate</span>
+                                            <div>
+                                                {popularProduct["average_rating"]}
+                                                {popularProduct["average_rating"] ? <hr/> : ""}
+                                                {popularProduct["count_feeds"]}
+                                            </div>
+                                        </div>
+                                        <div className={styles.leftSide}>
+                                            <h4>Хит Продаж(за месяц)</h4>
+                                            <h1>{popularProduct["title"]}</h1>
+                                            <h3>{popularProduct["price"] + "р/ "} {`${popularProduct["weight"]} ${popularProduct["type_weight"]}`}</h3>
+                                            <button onClick={() => openAboutProduct(popularProduct)}>Подробнее</button>
+                                        </div>
+                                        <div className={styles.rightSide}>
+                                            <img src={popularProduct["img"]}/>
                                         </div>
                                     </div>
-                                    <div className={styles.leftSide}>
-                                        <h4>Хит Продаж(за месяц)</h4>
-                                        <h1>{popularProduct["title"]}</h1>
-                                        <h3>{popularProduct["price"] + "р/ "} {`${popularProduct["weight"]} ${popularProduct["type_weight"]}`}</h3>
-                                        <button onClick={() => openAboutProduct(popularProduct)}>Подробнее</button>
-                                    </div>
-                                    <div className={styles.rightSide}>
-                                        <img src={popularProduct["img"]}/>
-                                    </div>
-                                </div>
+                                }
                                 <div className={styles.infoCard}>
                                     <div className={styles.leftSide}>
                                         <h4>Новая Категория</h4>
@@ -410,25 +412,27 @@ const Products: React.FC = () => {
                                         <img src={newCategory["img"]}/>
                                     </div>
                                 </div>
-                                <div className={styles.infoCard}>
-                                    <div className={styles.star}>
-                                        <span className={"material-symbols-outlined"}>star_rate</span>
-                                        <div>
-                                            {newProduct["average_rating"]}
-                                            {newProduct["average_rating"] ? <hr/> : ""}
-                                            {newProduct["count_feeds"]}
+                                {newProduct &&
+                                    <div className={styles.infoCard}>
+                                        <div className={styles.star}>
+                                            <span className={"material-symbols-outlined"}>star_rate</span>
+                                            <div>
+                                                {newProduct["average_rating"]}
+                                                {newProduct["average_rating"] ? <hr/> : ""}
+                                                {newProduct["count_feeds"]}
+                                            </div>
+                                        </div>
+                                        <div className={styles.leftSide}>
+                                            <h4>Новый Продукт</h4>
+                                            <h1>{newProduct["title"]}</h1>
+                                            <h3>{newProduct["price"] + "р/ "} {`${newProduct["weight"]} ${newProduct["type_weight"]}`}</h3>
+                                            <button onClick={() => openAboutProduct(newProduct)}>Подробнее</button>
+                                        </div>
+                                        <div className={styles.rightSide}>
+                                            <img src={newProduct["img"]}/>
                                         </div>
                                     </div>
-                                    <div className={styles.leftSide}>
-                                        <h4>Новый Продукт</h4>
-                                        <h1>{newProduct["title"]}</h1>
-                                        <h3>{newProduct["price"] + "р/ "} {`${newProduct["weight"]} ${newProduct["type_weight"]}`}</h3>
-                                        <button onClick={() => openAboutProduct(newProduct)}>Подробнее</button>
-                                    </div>
-                                    <div className={styles.rightSide}>
-                                        <img src={newProduct["img"]}/>
-                                    </div>
-                                </div>
+                                }
                             </>
                         }
                     </div>

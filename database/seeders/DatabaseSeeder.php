@@ -18,12 +18,12 @@ class DatabaseSeeder extends Seeder
             CountriesSeeder::class,
             PaymentSeeder::class,
             PermissionTableSeeder::class,
-            ProductsTableSeeder::class,
+            //ProductsTableSeeder::class,
             ColorSeeder::class,
             TypeProductsSeeder::class,
-            FeedBackSeeder::class,
-            OrderSeeder::class,
-            PromoSeeder::class,
+            //FeedBackSeeder::class,
+            //OrderSeeder::class,
+            //PromoSeeder::class,
             TradingPointSeeder::class,
         ]);
         $superAdmin = User::factory()->create([
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         $superAdmin->assignRole('Super Admin');
         $admin = User::factory()->create([
             'name' => 'Азиз',
-            'email' => 'aziz@aziz.com',
+            'email' => 'buzrugov@gmail.com',
             'password' => Hash::make('AzizPassword'),
         ]);
         $admin->assignRole('Admin');
