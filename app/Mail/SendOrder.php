@@ -18,22 +18,22 @@ class SendOrder extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($orderArray)
+    public function __construct(array $orderArray)
     {
         $this->orderArray = $orderArray;
     }
 
     public function build()
     {
-        Log::info($this->orderArray);
+        Log::info('Order Array: ' . json_encode($this->orderArray));
         return $this->view('emails.orders.notification')
-            ->subject('Новый заказ: ' . $this->orderArray->id)
+            ->subject('Новый заказ: ' . $this->orderArray['id'])
             ->with([
-                'orderId' => $this->orderArray->id,
-                'total_price' => $this->orderArray->total_price,
-                'address' => $this->orderArray->address,
-                'number' => $this->orderArray->number,
-                'how_connect' => $this->orderArray->how_connect,
+                'orderId' => $this->orderArray['id'],
+                'total_price' => $this->orderArray['total_price'],
+                'address' => $this->orderArray['address'],
+                'number' => $this->orderArray['number'],
+                'how_connect' => $this->orderArray['how_connect'],
             ]);
     }
     /**
