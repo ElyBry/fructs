@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SendOrder extends Mailable
 {
@@ -17,13 +18,14 @@ class SendOrder extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($order)
+    public function __construct($orderArray)
     {
-        $this->orderArray = $order;
+        $this->orderArray = $orderArray;
     }
 
     public function build()
     {
+        Log::info($this->orderArray);
         return $this->view('emails.orders.notification')
             ->subject('Новый заказ: ' . $this->orderArray->id)
             ->with([
