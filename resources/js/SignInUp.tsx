@@ -129,6 +129,13 @@ const SignInUp = () => {
 
     }
 
+    useEffect(() => {
+        window.onTelegramAuth = function (user) {
+            console.log(user);
+            //localStorage.setItem('user', JSON.stringify(user));
+            //navigate('/products');
+        };
+    }, []);
     return  (
         <div className={styles.root}>
             <div className={`${styles.mainDiv} ${reset ? styles.display : ""}`}>

@@ -18,10 +18,6 @@ const Telegram = () => {
 
         document.getElementById('telegram').appendChild(script);
 
-        window.onTelegramAuth = function (user) {
-            alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');
-        };
-
         return () => {
             document.getElementById('telegram').removeChild(script);
         };

@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController as BaseController;
+use App\Mail\SendOrder;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItems;
 use App\Models\Reservations;
+use App\Models\User;
 use Composer\XdebugHandler\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends BaseController
@@ -133,8 +136,7 @@ class OrderController extends BaseController
                 $promo->update(['count' => $promo->count - 1]);
             }
         }
-
-        $order = Order::create([
+        $orderArray = [
             'user_id' => $user_id,
             'picked_trade_point' => $input['picked_trade_point'],
             'number' => $input['number'],
@@ -150,7 +152,9 @@ class OrderController extends BaseController
             'payment_status_id' => $input['payment_status_id'],
             'quantity' => $input['quantity'],
             'comment' => $input['comment'],
-        ]);
+        ];
+        $order = Order::create($orderArray);
+        $orderArray['id'] = $order->id;
 
         foreach ($input['cart'] as $product) {
             OrderItems::create([
@@ -168,6 +172,13 @@ class OrderController extends BaseController
                 'product_id' => $product['id'],
                 'reserved_quantity' => $product['quantity']
             ]);
+        }
+        $emails = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['admin', 'manager', 'Super Admin']);
+        })->pluck('email')->toArray();
+
+        foreach ($emails as $email) {
+            Mail::to($email)->send(new SendOrder($orderArray));
         }
 
         return response()->json([$order, 200]);
