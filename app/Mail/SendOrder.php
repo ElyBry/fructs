@@ -26,7 +26,7 @@ class SendOrder extends Mailable
     public function build()
     {
         Log::info('Order Array: ' . json_encode($this->orderArray));
-        return $this->view('emails.orders.notification')
+        return $this->view('emails.orders.notifications')
             ->subject('Новый заказ: ' . $this->orderArray['id'])
             ->with([
                 'orderId' => $this->orderArray['id'],
