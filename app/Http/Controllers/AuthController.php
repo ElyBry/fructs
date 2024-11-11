@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController as BaseController;
 use App\Models\User;
-use Azate\LaravelTelegramLoginAuth\TelegramLoginAuth;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,11 +12,27 @@ use Illuminate\Support\Str;
 
 class AuthController extends BaseController
 {
+    protected $telegramToken;
+
+    public function validate(Request $request)
+    {
+        $this->telegramToken = env('TELEGRAM_BOT_TOKEN');
+
+        $data_check_string = $request->get('hash');
+        $hash = hash_hmac('sha256', $data_check_string, $this->telegramToken);
+        if (strcmp($hash, $data_check_string) !== 0) {
+            throw new Exception('Data check hash error');
+        }
+        if ((time() - $request['auth_date']) > 86400) {
+            throw new Exception('Data is outdated');
+        }
+        return $request;
+    }
 
     public function handleTelegramCallback( Request $request)
     {
         try {
-            $user = TelegramLoginAuth::class->validate($request);
+            $user = $this->validate($request);
         } catch (Exception $e) {
             return $this->sendError('Ошибка аутентификации через Telegram.', ['error' => $e->getMessage()], 400);
         }
