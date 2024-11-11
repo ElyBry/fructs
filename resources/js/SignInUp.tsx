@@ -131,8 +131,6 @@ const SignInUp = () => {
 
     useEffect(() => {
         window.onTelegramAuth = function (user) {
-            console.log(user);
-
             fetch('/api/auth/telegram/callback', {
                 method: 'POST',
                 headers: {
@@ -143,6 +141,7 @@ const SignInUp = () => {
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
+                    localStorage.setItem('user', JSON.stringify(data));
                     navigate('/products');
                 })
                 .catch(error => {

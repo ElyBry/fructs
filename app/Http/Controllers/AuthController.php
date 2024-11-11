@@ -56,6 +56,7 @@ class AuthController extends BaseController
             $newUser->name = $user->get('first_name') . " " . $user->get('last_name');
             $newUser->password = bcrypt(Str::random(16));
             $newUser->save();
+            $newUser->assignRole('User');
 
             auth()->login($newUser);
         }
@@ -67,7 +68,7 @@ class AuthController extends BaseController
         $success['role'] = auth()->user()->getRoleNames();
         $cookie = $this->respondWithToken($token);
         $isAuth = $this->respondWithSuccessAuth(true);
-        return $this->sendResponse($success, 'Новый пользователь успешно зарегистрирован и авторизован.')
+        return $this->sendResponse($success, 'Пользователь успешно авторизован.')
             ->withCookie($cookie)
             ->withCookie($isAuth);
     }
