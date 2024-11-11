@@ -18,13 +18,23 @@ class AuthController extends BaseController
     {
         $this->telegramToken = env('TELEGRAM_BOT_TOKEN');
 
-        $data_check_string = $request->get('hash');
-        $hash = hash_hmac('sha256', $data_check_string, $this->telegramToken);
+        $check_hash = $request->get('hash');
+        $data_check_arr = [];
+        foreach ($request->all() as $key => $value) {
+            $data_check_arr[] =$key . '=' . $value;
+        }
+        sort($data_check_arr);
+        $data_check_string = implode('\n', $data_check_arr);
+        $secret_key = hash('sha256', $this->telegramToken, true);
+        $hash = hash_hmac('sha256', $data_check_string, $secret_key);
+        Log::error($data_check_string);
+        Log::error($hash);
+        Log::error($secret_key);
         if (strcmp($hash, $data_check_string) !== 0) {
-            throw new Exception('Data check hash error');
+            throw new Exception('Пароли не совпадают');
         }
         if ((time() - $request['auth_date']) > 86400) {
-            throw new Exception('Data is outdated');
+            throw new Exception('Истёк срок годности');
         }
         return $request;
     }
