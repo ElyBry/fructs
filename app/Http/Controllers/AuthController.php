@@ -4,25 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController as BaseController;
 use App\Models\User;
+use Azate\LaravelTelegramLoginAuth\TelegramLoginAuth;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends BaseController
 {
 
-    public function handleTelegramCallback()
+    public function handleTelegramCallback(TelegramLoginAuth $telegramLoginAuth, Request $request)
     {
         try {
-            $user = Socialite::driver('telegram')->user();
+            $user = $telegramLoginAuth->validate($request);
         } catch (Exception $e) {
             return $this->sendError('Ошибка аутентификации через Telegram.', ['error' => $e->getMessage()], 400);
         }
-
-        $authUser = User::where('telegram_id', $user->id)->first();
+        Log::error($user);
+        $authUser = User::where('telegram_id', $user->getId())->first();
         if ($authUser) {
             auth()->login($authUser);
             $token = auth()->generateToken();
@@ -37,8 +37,7 @@ class AuthController extends BaseController
         }
 
         $newUser = new User();
-        $newUser->name = $user->name;
-        $newUser->email = $user->email;
+        $newUser->name = $user->getUsername();
         $newUser->password = bcrypt(Str::random(16));
         $newUser->save();
 
