@@ -38,7 +38,7 @@ class AuthController extends BaseController
             throw new Exception('Data is outdated');
         }
 
-        return $auth_data->request->all();
+        return $auth_data;
     }
 
     public function handleTelegramCallback( Request $request)
