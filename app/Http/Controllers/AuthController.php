@@ -24,11 +24,12 @@ class AuthController extends BaseController
             $data_check_arr[] =$key . '=' . $value;
         }
         sort($data_check_arr);
-        $data_check_string = implode('\n', $data_check_arr);
+        $data_check_string = implode("\n", $data_check_arr);
         $secret_key = hash('sha256', $this->telegramToken, true);
         $hash = hash_hmac('sha256', $data_check_string, $secret_key);
         Log::error($data_check_string);
         Log::error($hash);
+        Log::error($check_hash);
         Log::error($secret_key);
         if (strcmp($hash, $check_hash) !== 0) {
             throw new Exception('Пароли не совпадают');
