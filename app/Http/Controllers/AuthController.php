@@ -51,25 +51,18 @@ class AuthController extends BaseController
         $authUser = User::where('telegram_id', $user->get('id'))->first();
         if ($authUser) {
             auth()->login($authUser);
-            $token = auth()->generateToken();
+        } else {
+            $newUser = new User();
+            $newUser->name = $user->get('first_name') . " " . $user->get('last_name');
+            $newUser->password = bcrypt(Str::random(16));
+            $newUser->save();
 
-            $success['user'] = auth()->user();
-            $success['role'] = auth()->user()->getRoleNames();
-            $cookie = $this->respondWithToken($token);
-            $isAuth = $this->respondWithSuccessAuth(true);
-            return $this->sendResponse($success, 'Пользователь успешно авторизован.')
-                ->withCookie($cookie)
-                ->withCookie($isAuth);
+            auth()->login($newUser);
         }
-
-        $newUser = new User();
-        $newUser->name = $user->get('first_name') . " " . $user->get('last_name');
-        $newUser->password = bcrypt(Str::random(16));
-        $newUser->save();
-
-        auth()->login($newUser);
-        $token = auth()->generateToken();
-
+        $credentials = [
+            'telegram_id' => $user->get('id'),
+        ];
+        $token = auth()->attempt($credentials);
         $success['user'] = auth()->user();
         $success['role'] = auth()->user()->getRoleNames();
         $cookie = $this->respondWithToken($token);
