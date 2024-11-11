@@ -30,7 +30,7 @@ class AuthController extends BaseController
         Log::error($data_check_string);
         Log::error($hash);
         Log::error($secret_key);
-        if (strcmp($hash, $data_check_string) !== 0) {
+        if (strcmp($hash, $check_hash) !== 0) {
             throw new Exception('Пароли не совпадают');
         }
         if ((time() - $request['auth_date']) > 86400) {
