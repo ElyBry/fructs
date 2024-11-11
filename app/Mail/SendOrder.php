@@ -23,19 +23,6 @@ class SendOrder extends Mailable
         $this->orderArray = $orderArray;
     }
 
-    public function build()
-    {
-        Log::info('Order Array: ' . json_encode($this->orderArray));
-        return $this->view('emails.orders.notifications')
-            ->subject('Новый заказ: ' . $this->orderArray['id'])
-            ->with([
-                'orderId' => $this->orderArray['id'],
-                'total_price' => $this->orderArray['total_price'],
-                'address' => $this->orderArray['address'],
-                'number' => $this->orderArray['number'],
-                'how_connect' => $this->orderArray['how_connect'],
-            ]);
-    }
     /**
      * Get the message envelope.
      */
@@ -52,7 +39,14 @@ class SendOrder extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.orders.notifications',
+            with: [
+                'orderId' => $this->orderArray['id'],
+                'total_price' => $this->orderArray['total_price'],
+                'address' => $this->orderArray['address'],
+                'number' => $this->orderArray['number'],
+                'how_connect' => $this->orderArray['how_connect'],
+            ],
         );
     }
 
