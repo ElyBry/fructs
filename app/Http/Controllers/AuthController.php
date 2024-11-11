@@ -22,6 +22,7 @@ class AuthController extends BaseController
             return $this->sendError('Ошибка аутентификации через Telegram.', ['error' => $e->getMessage()], 400);
         }
         Log::error($user);
+        Log::error($request);
         $authUser = User::where('telegram_id', $user->getId())->first();
         if ($authUser) {
             auth()->login($authUser);
