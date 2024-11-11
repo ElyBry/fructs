@@ -4,13 +4,56 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController as BaseController;
 use App\Models\User;
-use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends BaseController
 {
+
+    public function handleTelegramCallback()
+    {
+        try {
+            $user = Socialite::driver('telegram')->user();
+        } catch (Exception $e) {
+            return $this->sendError('Ошибка аутентификации через Telegram.', ['error' => $e->getMessage()], 400);
+        }
+
+        $authUser = User::where('telegram_id', $user->id)->first();
+        if ($authUser) {
+            auth()->login($authUser);
+            $token = auth()->generateToken();
+
+            $success['user'] = auth()->user();
+            $success['role'] = auth()->user()->getRoleNames();
+            $cookie = $this->respondWithToken($token);
+            $isAuth = $this->respondWithSuccessAuth(true);
+            return $this->sendResponse($success, 'Пользователь успешно авторизован.')
+                ->withCookie($cookie)
+                ->withCookie($isAuth);
+        }
+
+        $newUser = new User();
+        $newUser->name = $user->name;
+        $newUser->email = $user->email;
+        $newUser->password = bcrypt(Str::random(16));
+        $newUser->save();
+
+        auth()->login($newUser);
+        $token = auth()->generateToken();
+
+        $success['user'] = auth()->user();
+        $success['role'] = auth()->user()->getRoleNames();
+        $cookie = $this->respondWithToken($token);
+        $isAuth = $this->respondWithSuccessAuth(true);
+        return $this->sendResponse($success, 'Новый пользователь успешно зарегистрирован и авторизован.')
+            ->withCookie($cookie)
+            ->withCookie($isAuth);
+    }
+
     protected function respondWithToken($token)
     {
         return cookie('token', $token, null,null,null,true,true)->withExpires(now()->addHour());
@@ -88,4 +131,5 @@ class AuthController extends BaseController
             ->withCookie($cookie)
             ->withCookie($isAuth);
     }
+
 }

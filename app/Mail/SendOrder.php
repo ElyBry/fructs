@@ -29,7 +29,7 @@ class SendOrder extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send Order',
+            subject: 'Новый заказ!',
         );
     }
 
@@ -43,7 +43,6 @@ class SendOrder extends Mailable
             with: [
                 'orderId' => $this->orderArray['id'],
                 'total_price' => $this->orderArray['total_price'],
-                'address' => $this->orderArray['address'],
                 'number' => $this->orderArray['number'],
                 'how_connect' => $this->orderArray['how_connect'],
             ],
