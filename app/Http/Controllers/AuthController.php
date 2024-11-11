@@ -14,10 +14,10 @@ use Illuminate\Support\Str;
 class AuthController extends BaseController
 {
 
-    public function handleTelegramCallback(TelegramLoginAuth $telegramLoginAuth, Request $request)
+    public function handleTelegramCallback( Request $request)
     {
         try {
-            $user = $telegramLoginAuth->validate($request);
+            $user = TelegramLoginAuth::class->validate($request);
         } catch (Exception $e) {
             return $this->sendError('Ошибка аутентификации через Telegram.', ['error' => $e->getMessage()], 400);
         }
