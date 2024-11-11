@@ -54,6 +54,7 @@ class AuthController extends BaseController
         } else {
             $newUser = new User();
             $newUser->name = $user->get('first_name') . " " . $user->get('last_name');
+            $newUser->telegram_id = $user->get('id');
             $newUser->password = bcrypt(Str::random(16));
             $newUser->save();
             $newUser->assignRole('User');

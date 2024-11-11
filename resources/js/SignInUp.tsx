@@ -140,8 +140,7 @@ const SignInUp = () => {
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
-                    localStorage.setItem('user', JSON.stringify(data));
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
                     navigate('/products');
                 })
                 .catch(error => {
