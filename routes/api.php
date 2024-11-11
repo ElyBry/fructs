@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => 'api'
 ], function () {
+    Route::post('/auth/telegram/callback', [AuthController::class, 'handleTelegramCallback']);
     // Продукты
     Route::get('products', [ProductsController::class, 'index']);
     Route::get('popularProduct', [ProductsController::class, 'getMostPopularProduct']);

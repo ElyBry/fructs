@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-Route::post('/auth/telegram/callback', [AuthController::class, 'handleTelegramCallback']);
+
 Route::get('{reactRoutes}', function () {
     return view('main'); // your start view
 })->where('reactRoutes', '^((?!api).)*$');

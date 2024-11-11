@@ -133,11 +133,10 @@ const SignInUp = () => {
         window.onTelegramAuth = function (user) {
             console.log(user);
 
-            fetch('/auth/telegram/callback', {
+            fetch('/api/auth/telegram/callback', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 },
                 body: JSON.stringify(user),
             })
