@@ -133,7 +133,7 @@ const SignInUp = () => {
         window.onTelegramAuth = function (user) {
             console.log(user);
 
-            fetch('/api/telegram/callback', {
+            fetch('/auth/telegram/callback', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
