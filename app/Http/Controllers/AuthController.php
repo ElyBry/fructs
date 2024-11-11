@@ -14,30 +14,26 @@ class AuthController extends BaseController
 {
     protected $botToken;
 
-    public function validate(Request $request)
+    public function validate($auth_data)
     {
         $this->botToken = env('TELEGRAM_BOT_TOKEN');
-        $check_hash = $request->get('hash');
-
+        $check_hash = $auth_data['hash'];
+        unset($auth_data['hash']);
         $data_check_arr = [];
-        foreach ($request->all() as $key => $value) {
+        foreach ($auth_data as $key => $value) {
             $data_check_arr[] = $key . '=' . $value;
         }
         sort($data_check_arr);
         $data_check_string = implode("\n", $data_check_arr);
-
         $secret_key = hash('sha256', $this->botToken, true);
-
         $hash = hash_hmac('sha256', $data_check_string, $secret_key);
-
-        if (hash_equals($hash, $check_hash)) {
-            if ((time() - $request['auth_date']) > 86400) {
-                throw new Exception('Данные устарели');
-            }
-            return $request;
-        } else {
-            throw new Exception('Данные не от Telegram');
+        if (strcmp($hash, $check_hash) !== 0) {
+            throw new Exception('Data is NOT from Telegram');
         }
+        if ((time() - $auth_data['auth_date']) > 86400) {
+            throw new Exception('Data is outdated');
+        }
+        return $auth_data;
     }
 
     public function handleTelegramCallback( Request $request)
