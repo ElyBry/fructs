@@ -5,7 +5,7 @@ declare global {
         onTelegramAuth: (user: any) => void;
     }
 }
-const Telegram = () => {
+const Telegram = ({id}) => {
     useEffect(() => {
         const script = document.createElement('script');
         script.src = "https://telegram.org/js/telegram-widget.js?22";
@@ -16,11 +16,11 @@ const Telegram = () => {
         script.async = true;
         script.type = "text/javascript";
 
-        document.getElementById('telegram').appendChild(script);
+        document.getElementById(id).appendChild(script);
     }, []);
 
     return (
-        <div id="telegram"></div>
+        <div id={id}></div>
     );
 };
 

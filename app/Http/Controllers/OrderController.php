@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController as BaseController;
 use App\Mail\SendOrder;
+use App\Models\Notifications;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItems;
@@ -178,7 +179,15 @@ class OrderController extends BaseController
         })->pluck('email')->toArray();
 
         foreach ($emails as $email) {
-            Mail::to($email)->send(new SendOrder($orderArray));
+            if ($email) {
+                Mail::to($email)->send(new SendOrder($orderArray));
+            }
+        }
+        $telegramController = new TelegramController();
+        $notifications = Notifications::all();
+
+        foreach ($notifications as $notification) {
+            $telegramController->sendMessage($notification->user_id, "Новый заказ " . $order->id . " на сумму " . $order->total_price . "р. Номер телефона: " . $order->number);
         }
 
         return response()->json([$order, 200]);

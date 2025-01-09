@@ -6,22 +6,13 @@ import Header from "../components/Header/_header";
 import {useCallback, useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import {useRecoilState} from "recoil";
-import {userIsAuth, userRole} from "../components/User/userAtom";
-import User from "../components/User/user";
 import Alert from "../components/Alert/Alert";
+import useAuthCheck from "../components/User/useAuthCheck";
 
 const Users = () => {
-    const [isAuth, setIsAuth] = useRecoilState( userIsAuth );
-    const [roles, setRoles] = useState(userRole);
-    const {checkRole, checkAuthAndGetRole} = User();
+    useAuthCheck(['Super Admin', 'Admin']);
 
     const navigate = useNavigate();
-    useEffect(() => {
-        if (!checkRole(['Super Admin', 'Admin'])) {
-            navigate('/login');
-        }
-    }, []);
 
     const [users, setUsers] = useState([]);
     const [loadingUsers,setLoadingUsers] = useState(false);
@@ -91,10 +82,14 @@ const Users = () => {
     const [isOpenRemove, setIsOpenRemove] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const handleEdit = (user) => {
-        setSelectedUser(user);
+        console.log(user);
+        setSelectedUser({
+            ...selectedUser,
+            ...user,
+            email: user.email || '',
+        });
         setIsOpenEdit(true);
     }
-
     const handleDelete = (user) => {
         setSelectedUser(user);
         setIsOpenRemove(true);

@@ -16,14 +16,24 @@ import FeedbacksProducts from "./forAdmins/FeedbacksProducts";
 import TypeProducts from "./forAdmins/TypeProducts";
 import Promos from "./forAdmins/Promos";
 import useR from "./components/User/user";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 
 const App = () => {
     const { checkRole, checkAuthAndGetRole } = useR();
+    const [isAuthLoaded, setIsAuthLoaded] = useState(false);
 
     useEffect(() => {
-        checkAuthAndGetRole();
+        const loadAuth = async () => {
+            await checkAuthAndGetRole();
+            setIsAuthLoaded(true);
+        };
+        loadAuth();
     }, []);
+
+    if (!isAuthLoaded) {
+        return ;
+    }
+
     return (
         <RecoilRoot>
             <Router>

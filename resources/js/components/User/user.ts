@@ -1,5 +1,6 @@
 import { useRecoilState } from 'recoil';
 import {userIsAuth, userRole, User} from "./userAtom";
+import {useEffect} from "react";
 
 const useR = () => {
     const [isAuth, setIsAuth] = useRecoilState( userIsAuth );

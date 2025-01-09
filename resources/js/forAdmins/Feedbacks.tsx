@@ -6,20 +6,12 @@ import Header from "../components/Header/_header";
 import {useCallback, useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import {useRecoilState} from "recoil";
-import {userIsAuth, userRole} from "../components/User/userAtom";
-import User from "../components/User/user";
 import Alert from "../components/Alert/Alert";
+import useAuthCheck from "../components/User/useAuthCheck";
 
 const Feedbacks = () => {
-    const {checkRole, checkAuthAndGetRole} = User();
-
     const navigate = useNavigate();
-    useEffect(() => {
-        if (!checkRole(['Super Admin', 'Admin', 'Manager'])) {
-            navigate('/login');
-        }
-    }, []);
+    useAuthCheck(['Super Admin', 'Admin', 'Manager']);
 
     const [feedbacks, setFeedbacks] = useState([]);
     const [loadingFeedbacks,setLoadingFeedbacks] = useState(false);

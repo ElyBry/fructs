@@ -1,10 +1,9 @@
 import * as React from 'react';
 import {useCallback, useEffect, useRef, useState} from 'react';
-import * as ReactDOM from 'react-dom/client';
 
 import styles from "../../sass/_componentsForProducts.module.scss";
 
-import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
 import axios from "axios";
 
 import Footer from "../components/_footer";
@@ -17,28 +16,15 @@ import { countriesList } from "../components/CountriesSearch/countriesAtom";
 
 import ProductsList from "../components/Products/ProductsList";
 
-import {userIsAuth, userRole} from "../components/User/userAtom";
 import {useNavigate} from "react-router-dom";
-import User from "../components/User/user";
 import {productsAtom} from "../components/Products/productsAtom";
-import {FileUploadFile} from "primereact/fileupload";
 import Alert from "../components/Alert/Alert";
-import product from "../components/Products/Product";
+import useAuthCheck from "../components/User/useAuthCheck";
 
 const Products: React.FC = () => {
-    const [isAuth, setIsAuth] = useRecoilState( userIsAuth );
-    const [roles, setRoles] = useState(userRole);
-    const {checkRole, checkAuthAndGetRole} = User();
+    useAuthCheck(['Super Admin', 'Admin', 'Manager']);
 
     const navigate = useNavigate();
-    useEffect(() => {
-        checkAuthAndGetRole();
-        if (!checkRole(['Super Admin', 'Admin', 'Manager'])) {
-            navigate('/login');
-        }
-    }, []);
-
-
     const selectedCountries = useRecoilValue(countriesList);
 
     const [minPrice, setMinPrice] = useState('');

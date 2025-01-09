@@ -10,23 +10,16 @@ import {useRecoilState} from "recoil";
 import {userIsAuth, userRole} from "../components/User/userAtom";
 import User from "../components/User/user";
 import Alert from "../components/Alert/Alert";
+import useAuthCheck from "../components/User/useAuthCheck";
 
 const Orders = () => {
-    const [isAuth, setIsAuth] = useRecoilState( userIsAuth );
-    const [roles, setRoles] = useState(userRole);
-    const {checkRole, checkAuthAndGetRole} = User();
+    useAuthCheck(['Super Admin', 'Admin', 'Manager']);
 
     const navigate = useNavigate();
     const [loadingOrders, setLoadingOrders] = useState(false);
     const [orders, setOrders] = useState([]);
     const [hasMoreOrders, setHasMoreOrders] = useState(true);
     const [page, setPage] = useState(1);
-
-    useEffect(() => {
-        if (!checkRole(['Super Admin', 'Admin', 'Manager'])) {
-            navigate('/login');
-        }
-    }, []);
 
     const fetchOrders = async () => {
         try {
@@ -115,7 +108,7 @@ const Orders = () => {
     }
     const [message, setMessage] = useState('');
     return (
-        <>
+        <div className={styles.root}>
             <Header className={styles.header}/>
             <Alert message={message}/>
             <div className={styles.orders}>
@@ -197,7 +190,7 @@ const Orders = () => {
                     {!loadingOrders && orders.length == 0 && <h1>Ничего не найдено</h1>}
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

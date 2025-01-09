@@ -49,9 +49,14 @@ class UserController extends BaseController {
 
     public function update(Request $request, $id)
     {
+        $user = User::find($id);
+        if (!$user->telegram_id) {
+            $request->validate([
+                'email' => 'email|unique:users,email,'.$id,
+            ]);
+        }
         $request->validate([
             'name' => 'required',
-            'email' => 'email|unique:users,email,'.$id,
             'password' => 'same:confirm-password',
             'role_id' => 'required'
         ]);
@@ -63,7 +68,6 @@ class UserController extends BaseController {
             $input = Arr::except($input,array('password'));
         }
 
-        $user = User::find($id);
         $user->update($input);
         DB::table('model_has_roles')->where('model_id',$id)->update(['role_id' => $input['role_id']]);
 

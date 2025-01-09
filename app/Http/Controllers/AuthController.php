@@ -9,48 +9,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\JWT;
 
 class AuthController extends BaseController
 {
-    protected $botToken;
-
-    public function validate(Request $auth_data)
-    {
-        $this->botToken = env('TELEGRAM_BOT_TOKEN');
-        $check_hash = $auth_data->input('hash');
-        $auth_data->request->remove('hash');
-
-        $data_check_arr = [];
-        foreach ($auth_data->request->all() as $key => $value) {
-            $data_check_arr[] = $key . '=' . $value;
-        }
-
-        sort($data_check_arr);
-        $data_check_string = implode("\n", $data_check_arr);
-        $secret_key = hash('sha256', $this->botToken, true);
-        $hash = hash_hmac('sha256', $data_check_string, $secret_key);
-
-        if (strcmp($hash, $check_hash) !== 0) {
-            throw new Exception('Data is NOT from Telegram');
-        }
-
-        if ((time() - $auth_data->input('auth_date')) > 86400) {
-            throw new Exception('Data is outdated');
-        }
-
-        return $auth_data;
-    }
 
     public function handleTelegramCallback( Request $request)
     {
         try {
-            $user = $this->validate($request);
+            $telegramController = new TelegramController();
+            $user = $telegramController->validate($request);
         } catch (Exception $e) {
             return $this->sendError('Ошибка аутентификации через Telegram.', ['error' => $e->getMessage()], 400);
         }
         $authUser = User::where('telegram_id', $user->get('id'))->first();
         if ($authUser) {
             auth()->login($authUser);
+            $token = JWTAuth::fromUser($authUser);
         } else {
             $newUser = new User();
             $newUser->name = $user->get('first_name') . " " . $user->get('last_name');
@@ -60,11 +36,8 @@ class AuthController extends BaseController
             $newUser->assignRole('User');
 
             auth()->login($newUser);
+            $token = JWTAuth::fromUser($newUser);
         }
-        $credentials = [
-            'telegram_id' => $user->get('id'),
-        ];
-        $token = auth()->attempt($credentials);
         $success['user'] = auth()->user();
         $success['role'] = auth()->user()->getRoleNames();
         $cookie = $this->respondWithToken($token);

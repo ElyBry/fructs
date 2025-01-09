@@ -221,7 +221,7 @@ const Main: React.FC = () => {
                         <div className={`${styles.sliderContent} slider-content`}>
                             <div className={styles.guaranteeText}>
                                 <div className={styles.imgGuarantee}>
-                                    <img src={"image/background-images/woman.jpg"}/>
+                                    <img src={"image/background-images/woman.webp"}/>
                                 </div>
                                 <div>
                                     <h2>Качество</h2>
@@ -234,7 +234,7 @@ const Main: React.FC = () => {
                             </div>
                             <div className={styles.guaranteeText}>
                                 <div className={styles.imgGuarantee}>
-                                    <img src={"image/background-images/woman_refund.jpg"}/>
+                                    <img src={"image/background-images/woman_refund.webp"}/>
                                 </div>
                                 <div>
                                     <h2>Возврат</h2>
@@ -245,7 +245,7 @@ const Main: React.FC = () => {
                             </div>
                             <div className={styles.guaranteeText}>
                                 <div className={styles.imgGuarantee}>
-                                    <img src={"image/background-images/courier-delivering.jpg"}/>
+                                    <img src={"image/background-images/courier-delivering.webp"}/>
                                 </div>
                                 <div>
                                     <h2>Доставка</h2>
@@ -258,7 +258,7 @@ const Main: React.FC = () => {
                             </div>
                             <div className={styles.guaranteeText}>
                                 <div className={styles.imgGuarantee}>
-                                    <img src={"image/background-images/meal_with_transparency.jpg"}/>
+                                    <img src={"image/background-images/meal_with_transparency.webp"}/>
                                 </div>
                                 <div>
                                     <h2>Прозрачность</h2>

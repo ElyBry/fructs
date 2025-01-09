@@ -5,6 +5,7 @@ import * as ReactDOM from 'react-dom/client';
 import styles from "../sass/_componentsForSignInUp.module.scss"
 import {Link, useNavigate} from "react-router-dom";
 import TelegramConnect from "./components/TelegramConnect/TelegramConnect";
+import useR from "./components/User/user";
 
 const SignInUp = () => {
     const navigate = useNavigate();
@@ -19,6 +20,8 @@ const SignInUp = () => {
     const [errorSignUp, setErrorSignUp] = useState('');
     const [loading, setLoading] = useState(false);
     const [reset, setReset] = useState(false);
+
+    const { checkAuthAndGetRole } = useR();
 
     const handleSubmit = (event, is = "") => {
         event.preventDefault();
@@ -61,6 +64,7 @@ const SignInUp = () => {
                 }
                 if (data.success) {
                     localStorage.setItem('user', JSON.stringify(data.data.user));
+                    checkAuthAndGetRole();
                     navigate('/products');
                 }
                 setLoading(false);
@@ -195,7 +199,7 @@ const SignInUp = () => {
                                 <a href={"#"}><img src={"../../image/icons/icon-telegram.png"}/></a>
                                 <a href={"#"}><img src={"../../image/icons/icon-vk.png"}/></a>
                                 */}
-                                <TelegramConnect/>
+                                <TelegramConnect id={"tg1"}/>
                             </div>
                             <div className={styles.note}>
                                 или используйте вашу почту и пароль для входа:
@@ -246,19 +250,6 @@ const SignInUp = () => {
                 <div id={"main_create_acc"} className={styles.mainCreateAcc}>
                     <div id={"create_acc"} className={styles.createAcc}>
                         <h1>Создать аккаунт</h1>
-                        {/*
-                        <div className={styles.from_acc}>
-                            <div className={styles.icons}>
-                                <a href={"#"}><img src={"../../image/icons/icon-google.png"}/></a>
-                                <a href={"#"}><img src={"../../image/icons/icon-telegram.png"}/></a>
-                                <a href={"#"}><img src={"../../image/icons/icon-vk.png"}/></a>
-                            </div>
-                            <div className={styles.note}>
-                                или используйте ваш email для регистрации:
-                            </div>
-                        </div>
-                        */}
-
                         <div id={"form_registration"} className={styles.formRegistration}>
                             <form onSubmit={handleSubmit}>
                                 <div className={styles.input}>

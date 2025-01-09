@@ -10,6 +10,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\TradingPointsController;
 use App\Http\Controllers\TypeProductsController;
 use App\Http\Controllers\UserController;
@@ -126,6 +127,8 @@ Route::group([
         Route::post('/refresh', [AuthController::class, 'refresh']);
         Route::post('/profile', [AuthController::class, 'profile']);
     });
+    //Телеграм
+    Route::post('/telegram-webhook', [TelegramController::class, 'handleWebhook']);
 });
 
 
