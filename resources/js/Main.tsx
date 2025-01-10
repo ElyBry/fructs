@@ -197,17 +197,17 @@ const Main: React.FC = () => {
                 <div className={styles.content}>
                     <div id={"statsBlock"} className={styles.statsBlock}>
                         <div className={`${styles.statsText} statsText`}>
-                            <img src={"../image/icons/elements/basket.svg"} alt={"Заказы"}/>
+                            <img src={"../image/icons/elements/basket.svg"} loading={"lazy"} alt={"Заказы"}/>
                             <h3>Совершено более</h3>
                             <h2>1000 доставок</h2>
                         </div>
                         <div className={`${styles.statsText} statsText`}>
-                            <img src={"../image/icons/elements/clients.svg"} alt={"Клиенты"}/>
+                            <img src={"../image/icons/elements/clients.svg"} loading={"lazy"} alt={"Клиенты"}/>
                             <h3>Около </h3>
                             <h2>30 постоянных клиентов</h2>
                         </div>
                         <div className={`${styles.statsText} statsText`}>
-                            <img src={"../image/icons/elements/clock.svg"} alt={"Лет"}/>
+                            <img src={"../image/icons/elements/clock.svg"} loading={"lazy"} alt={"Лет"}/>
                             <h3>Работаем для вас</h3>
                             <h2>Более 8 лет</h2>
                         </div>
@@ -284,6 +284,7 @@ const Main: React.FC = () => {
                 </div>
             </div>
             <div className={`${styles.block} ${styles.bestBlock}`} id={"bestBlock"}>
+                <img src={"../image/background-images/fruits-falling-realistic-composition.webp"} loading={"lazy"} alt={""}/>
                 <div className={styles.content}>
                     <h1>Только у нас <span className={styles.highlight}>сладкие </span>и <span
                         className={styles.highlight}>насыщенные</span> фрукты и овощи в нелетнее время</h1>
@@ -295,7 +296,7 @@ const Main: React.FC = () => {
                     <div className={styles.workMain}>
                         <div className={styles.work}>
                             <div className={styles.workImg}>
-                                <img src={"../image/icons/elements/shopping.svg"}  alt={"Иконка корзина для продуктов"}/>
+                                <img src={"../image/icons/elements/shopping.svg"} loading={"lazy"} alt={"Иконка корзина для продуктов"}/>
                             </div>
                             <div className={styles.workText}>
                                 Вы совершаете заказ на сайте
@@ -303,7 +304,7 @@ const Main: React.FC = () => {
                         </div>
                         <div className={styles.work}>
                             <div className={styles.workImg}>
-                                <img src={"../image/icons/elements/chat.svg"} alt={"Иконка сообщения"}/>
+                                <img src={"../image/icons/elements/chat.svg"} loading={"lazy"} alt={"Иконка сообщения"}/>
                             </div>
                             <div className={styles.workText}>
                                 Курьер связывается с вами
@@ -311,7 +312,7 @@ const Main: React.FC = () => {
                         </div>
                         <div className={styles.work}>
                             <div className={styles.workImg}>
-                                <img src={"../image/icons/elements/clock-lines.svg"} alt={"Иконка таймера"}/>
+                                <img src={"../image/icons/elements/clock-lines.svg"} loading={"lazy"} alt={"Иконка таймера"}/>
                             </div>
                             <div className={styles.workText}>
                                 Вы назначаете удобное <span className={styles.highlight}>для вас</span> время
@@ -319,7 +320,7 @@ const Main: React.FC = () => {
                         </div>
                         <div className={styles.work}>
                             <div className={styles.workImg}>
-                                <img src={"../image/icons/elements/delivery.svg"} alt={"Иконка движущийся грузовой машины"}/>
+                                <img src={"../image/icons/elements/delivery.svg"} loading={"lazy"} alt={"Иконка движущийся грузовой машины"}/>
                             </div>
                             <div className={styles.workText}>
                                 Вы получаете заказ в <span className={styles.highlight}>указанный срок</span>

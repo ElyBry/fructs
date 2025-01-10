@@ -172,9 +172,12 @@
     }
 }
 .bestBlock {
-    background-image: url("../../public/image/background-images/fruits-falling-realistic-composition.webp");
-    background-size: cover;
-    background-attachment: fixed;
+    img {
+        height: 100vh;
+        width: 100%;
+        position: absolute;
+        object-fit: cover;
+    }
     height: 100vh;
     width: 100%;
     .content {
