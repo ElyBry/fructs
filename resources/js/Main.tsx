@@ -221,7 +221,7 @@ const Main: React.FC = () => {
                         <div className={`${styles.sliderContent} slider-content`}>
                             <div className={styles.guaranteeText}>
                                 <div className={styles.imgGuarantee}>
-                                    <img src={"image/background-images/woman.webp"} loading={"lazy"}/>
+                                    <img src={"image/background-images/woman.webp"} loading={"lazy"} alt={"Девушка держит фрукты"}/>
                                 </div>
                                 <div>
                                     <h2>Качество</h2>
@@ -234,7 +234,7 @@ const Main: React.FC = () => {
                             </div>
                             <div className={styles.guaranteeText}>
                                 <div className={styles.imgGuarantee}>
-                                    <img src={"image/background-images/woman_refund.webp"} loading={"lazy"}/>
+                                    <img src={"image/background-images/woman_refund.webp"} loading={"lazy"} alt={"Доставка фруктов"}/>
                                 </div>
                                 <div>
                                     <h2>Возврат</h2>
@@ -245,7 +245,7 @@ const Main: React.FC = () => {
                             </div>
                             <div className={styles.guaranteeText}>
                                 <div className={styles.imgGuarantee}>
-                                    <img src={"image/background-images/courier-delivering.webp"} loading={"lazy"}/>
+                                    <img src={"image/background-images/courier-delivering.webp"} loading={"lazy"} alt={"Доставка фруктов"}/>
                                 </div>
                                 <div>
                                     <h2>Доставка</h2>
@@ -258,7 +258,7 @@ const Main: React.FC = () => {
                             </div>
                             <div className={styles.guaranteeText}>
                                 <div className={styles.imgGuarantee}>
-                                    <img src={"image/background-images/meal_with_transparency.webp"} loading={"lazy"}/>
+                                    <img src={"image/background-images/meal_with_transparency.webp"} loading={"lazy"} alt={"Фрукты на столе"}/>
                                 </div>
                                 <div>
                                     <h2>Прозрачность</h2>
@@ -295,7 +295,7 @@ const Main: React.FC = () => {
                     <div className={styles.workMain}>
                         <div className={styles.work}>
                             <div className={styles.workImg}>
-                                <img src={"../image/icons/elements/shopping.svg"}/>
+                                <img src={"../image/icons/elements/shopping.svg"}  alt={"Иконка корзина для продуктов"}/>
                             </div>
                             <div className={styles.workText}>
                                 Вы совершаете заказ на сайте
@@ -303,7 +303,7 @@ const Main: React.FC = () => {
                         </div>
                         <div className={styles.work}>
                             <div className={styles.workImg}>
-                                <img src={"../image/icons/elements/chat.svg"}/>
+                                <img src={"../image/icons/elements/chat.svg"} alt={"Иконка сообщения"}/>
                             </div>
                             <div className={styles.workText}>
                                 Курьер связывается с вами
@@ -311,7 +311,7 @@ const Main: React.FC = () => {
                         </div>
                         <div className={styles.work}>
                             <div className={styles.workImg}>
-                                <img src={"../image/icons/elements/clock-lines.svg"}/>
+                                <img src={"../image/icons/elements/clock-lines.svg"} alt={"Иконка таймера"}/>
                             </div>
                             <div className={styles.workText}>
                                 Вы назначаете удобное <span className={styles.highlight}>для вас</span> время
@@ -319,7 +319,7 @@ const Main: React.FC = () => {
                         </div>
                         <div className={styles.work}>
                             <div className={styles.workImg}>
-                                <img src={"../image/icons/elements/delivery.svg"}/>
+                                <img src={"../image/icons/elements/delivery.svg"} alt={"Иконка движущийся грузовой машины"}/>
                             </div>
                             <div className={styles.workText}>
                                 Вы получаете заказ в <span className={styles.highlight}>указанный срок</span>
@@ -427,13 +427,13 @@ const Main: React.FC = () => {
                     <Link to={'/products'}>Заказать</Link>
                 </div>
                 <div className={styles.right}>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/apple.webp"} loading={"lazy"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/onion.webp"} loading={"lazy"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/carrot.webp"} loading={"lazy"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/eggplant.webp"} loading={"lazy"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/garlic.webp"} loading={"lazy"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/orange.webp"} loading={"lazy"}/>
-                    <img className={`${styles.cart} cart`} src={"image/fruits/cart.webp"} loading={"lazy"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/apple.webp"} loading={"lazy"} alt={"Яблоко"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/onion.webp"} loading={"lazy"} alt={"Лук"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/carrot.webp"} loading={"lazy"} alt={"Морковь"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/eggplant.webp"} loading={"lazy"} alt={"Баклажан"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/garlic.webp"} loading={"lazy"} alt={"Чеснок"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/orange.webp"} loading={"lazy"} alt={"Апельсин"}/>
+                    <img className={`${styles.cart} cart`} src={"image/fruits/cart.webp"} loading={"lazy"} alt={"Корзина для продуктов"}/>
                 </div>
             </div>
             <div className={`${styles.block} ${styles.feedbackBlock}`} id={"feedbackBlock"}>
@@ -460,7 +460,7 @@ const Main: React.FC = () => {
                     ))}
                     {loadingFeedbacks && <h2>Загрузка...</h2>}
                     {!loadingFeedbacks && hasMore && <button onClick={() => setPage(page + 1)}>Загрузить ещё</button>}
-                    {!loadingFeedbacks && feedbacks && feedbacks.length == 0 && <h2>Не найдено</h2>}
+                    {!loadingFeedbacks && feedbacks && feedbacks.length == 0 && <h2>Отзывов пока нету</h2>}
                 </div>
             </div>
             <div className={styles.block}>
