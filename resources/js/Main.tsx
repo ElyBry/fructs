@@ -221,7 +221,7 @@ const Main: React.FC = () => {
                         <div className={`${styles.sliderContent} slider-content`}>
                             <div className={styles.guaranteeText}>
                                 <div className={styles.imgGuarantee}>
-                                    <img src={"image/background-images/woman.webp"}/>
+                                    <img src={"image/background-images/woman.webp"} loading={"lazy"}/>
                                 </div>
                                 <div>
                                     <h2>Качество</h2>
@@ -234,7 +234,7 @@ const Main: React.FC = () => {
                             </div>
                             <div className={styles.guaranteeText}>
                                 <div className={styles.imgGuarantee}>
-                                    <img src={"image/background-images/woman_refund.webp"}/>
+                                    <img src={"image/background-images/woman_refund.webp"} loading={"lazy"}/>
                                 </div>
                                 <div>
                                     <h2>Возврат</h2>
@@ -245,7 +245,7 @@ const Main: React.FC = () => {
                             </div>
                             <div className={styles.guaranteeText}>
                                 <div className={styles.imgGuarantee}>
-                                    <img src={"image/background-images/courier-delivering.webp"}/>
+                                    <img src={"image/background-images/courier-delivering.webp"} loading={"lazy"}/>
                                 </div>
                                 <div>
                                     <h2>Доставка</h2>
@@ -258,7 +258,7 @@ const Main: React.FC = () => {
                             </div>
                             <div className={styles.guaranteeText}>
                                 <div className={styles.imgGuarantee}>
-                                    <img src={"image/background-images/meal_with_transparency.webp"}/>
+                                    <img src={"image/background-images/meal_with_transparency.webp"} loading={"lazy"}/>
                                 </div>
                                 <div>
                                     <h2>Прозрачность</h2>
@@ -427,13 +427,13 @@ const Main: React.FC = () => {
                     <Link to={'/products'}>Заказать</Link>
                 </div>
                 <div className={styles.right}>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/apple.webp"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/onion.webp"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/carrot.webp"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/eggplant.webp"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/garlic.webp"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/orange.webp"}/>
-                    <img className={`${styles.cart} cart`} src={"image/fruits/cart.webp"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/apple.webp"} loading={"lazy"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/onion.webp"} loading={"lazy"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/carrot.webp"} loading={"lazy"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/eggplant.webp"} loading={"lazy"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/garlic.webp"} loading={"lazy"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/orange.webp"} loading={"lazy"}/>
+                    <img className={`${styles.cart} cart`} src={"image/fruits/cart.webp"} loading={"lazy"}/>
                 </div>
             </div>
             <div className={`${styles.block} ${styles.feedbackBlock}`} id={"feedbackBlock"}>
