@@ -18,6 +18,10 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="image/logos/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="image/logos/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="image/logos/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
     @viteReactRefresh
     @vite(['resources/js/App.tsx'])
 </head>

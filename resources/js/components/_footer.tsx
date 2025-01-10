@@ -48,7 +48,7 @@ export default () => {
                                 <a>Не найдено</a>
                                 :
                                 tradingPoint.map(point => (
-                                    <a key={point.name}>
+                                    <a href="https://yandex.ru/maps/54/yekaterinburg/?from=mapframe&l=sat&ll=60.629335%2C56.823529&mode=usermaps&source=mapframe&um=constructor%3A54703ffb231a6d94c85c37a22254eb22e5cb2205453236d6681278ad1c399eb3&utm_source=mapframe&z=12" key={point.name}>
                                         {point.address}
                                     </a>
                                 ))
