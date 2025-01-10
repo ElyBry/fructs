@@ -427,13 +427,13 @@ const Main: React.FC = () => {
                     <Link to={'/products'}>Заказать</Link>
                 </div>
                 <div className={styles.right}>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/apple.png"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/onion.png"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/carrot.png"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/eggplant.png"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/garlic.png"}/>
-                    <img className={`${styles.fruit} fruit`} src={"image/fruits/orange.png"}/>
-                    <img className={`${styles.cart} cart`} src={"image/fruits/cart.png"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/apple.webp"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/onion.webp"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/carrot.webp"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/eggplant.webp"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/garlic.webp"}/>
+                    <img className={`${styles.fruit} fruit`} src={"image/fruits/orange.webp"}/>
+                    <img className={`${styles.cart} cart`} src={"image/fruits/cart.webp"}/>
                 </div>
             </div>
             <div className={`${styles.block} ${styles.feedbackBlock}`} id={"feedbackBlock"}>

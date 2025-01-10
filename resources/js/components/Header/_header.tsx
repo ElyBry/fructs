@@ -178,7 +178,7 @@ export default ({className}) => {
             <header className={`${styles.header} ${className}`}>
                 <Link to={"/"}>
                     <div id={"logo"} className={styles.logo}>
-                        <img src={"../../image/logos/logo.png"} alt={"Доставка фруктов"}/>
+                        <img src={"../../image/logos/logo.webp"} alt={"Доставка фруктов"}/>
                         Фруктовый мир
                     </div>
                 </Link>
