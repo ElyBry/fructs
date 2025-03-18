@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+    mysql:
+        image: mysql:latest
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}       # Название базы данных
+            MYSQL_PASSWORD: ${DB_PASSWORD}       # Пароль пользователя (если нужно)
+        ports:
+            - "3306:3306"  # Порт MySQL по умолчанию
+        volumes:
+            - mysql_data:/var/lib/mysql  # Том для хранения данных
+
+volumes:
+    mysql_data:  # Том для хранения данных MySQL
+

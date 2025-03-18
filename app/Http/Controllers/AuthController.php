@@ -14,7 +14,6 @@ use Tymon\JWTAuth\JWT;
 
 class AuthController extends BaseController
 {
-
     public function handleTelegramCallback( Request $request)
     {
         try {
